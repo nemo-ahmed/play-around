@@ -6,7 +6,8 @@ import React from 'react'
 const client = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10 * 60 * 60 * 1000,
+      // ? 10 mins
+      staleTime: 10_60_1000,
       retry: 1,
     },
   },
