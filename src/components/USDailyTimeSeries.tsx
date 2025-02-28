@@ -5,23 +5,23 @@ import {Chart, type ChartWrapperOptions} from 'react-google-charts'
 
 const options: ChartWrapperOptions['options'] = {
   title: 'US Daily Timeseries',
-
   legend: {position: 'bottom'},
+  //   curveType: 'function',
   animation: {
     duration: 1000,
     easing: 'out',
   },
+  intervals: {style: 'line'},
   backgroundColor: 'transparent',
 }
 
 function USDailyTimeSeries() {
   const {data} = useUSDaily()
-
   const chartData = useMemo(
     () =>
       data?.data
         ?.reduce(
-          (acc: [string, number][], item) =>
+          (acc: (number | string)[][], item) =>
             acc.concat([[item.date, item.cases.total.value]]),
           [],
         )
@@ -29,15 +29,17 @@ function USDailyTimeSeries() {
       [],
     [data?.data],
   )
+  console.log(chartData)
   return (
-    <div className="rounded-md bg-slate-400 w-fit h-fit">
+    <div className="rounded-md bg-slate-400 w-full h-fit">
       <Chart
         options={options}
-        chartType={'LineChart'}
-        data={[['date', 'cases'], ...chartData]}
+        chartType={'AreaChart'}
+        data={[['date', 'Cases'], ...chartData]}
         chartVersion="51"
         height={400}
-        width="600px"
+        width="100%"
+        formatters={[{type: 'NumberFormat', column: 0, options: {}}]}
       />
     </div>
   )
