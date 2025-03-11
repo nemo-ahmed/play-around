@@ -5,18 +5,20 @@ const MIN_ON_DISPLAY_DATA_SIZE = 100
 const INCREMENT_BY = 12
 
 function useInfiniteScroll<T = unknown>({
-  data,
+  data = [],
   total,
   isFetching,
 }: {
-  data: T[]
+  data?: T[]
   total?: number
   isFetching?: boolean
 }) {
+  console.log(data)
   const [start, setStart] = useState(0)
   const [end, setEnd] = useState(100)
   const [displayData, setDisplayData] = useState(data.slice(0, end))
   const stackTotal = total ?? data.length
+
   const onScroll = useCallback<UIEventHandler<HTMLTableSectionElement>>(
     e => {
       if (data.length <= MIN_ON_DISPLAY_DATA_SIZE || isFetching) return

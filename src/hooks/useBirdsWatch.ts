@@ -1,7 +1,7 @@
-'use client'
-import useInfiniteScroll from '@/hooks/useInfiniteScroll'
-import {BirdDataType} from '@/types/useBirds'
-import React from 'react'
+import genericFetch from '@/api/fetch'
+import {BIRDS_URL} from '@/api/urls'
+import {BirdsWatchResponse} from '@/types/useBirds'
+import {useQuery} from '@tanstack/react-query'
 
 // ? id: the catalogue number of the recording on xeno-canto
 // ? gen: the generic name of the species
@@ -41,53 +41,11 @@ import React from 'react'
 // ? mic: microphone used
 // ? smp: sample rate
 
-const heads: Record<string, keyof BirdDataType> = {
-  id: 'id',
-  name: 'en',
-  type: 'type',
-  gender: 'sex',
-  taken: 'date',
-  uploaded: 'uploaded',
-}
-
-function Table({data: incomingData}: {data: BirdDataType[]}) {
-  const {data, onScroll} = useInfiniteScroll({
-    data: incomingData,
+function useBirdsWatch() {
+  return useQuery<BirdsWatchResponse>({
+    queryFn: () => genericFetch({url: `${BIRDS_URL}`}),
+    queryKey: ['US', 'Daily'],
   })
-
-  return (
-    <table className="w-full">
-      <thead>
-        <tr className="grid grid-cols-6 border-[0.5px]">
-          {Object.keys(heads).map(header => (
-            <th
-              key={`table-header-${header}`}
-              className="border-r-[0.5px] capitalize"
-            >
-              {header}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody
-        className="flex flex-col h-[calc(100dvh-250px)] overflow-auto w-full"
-        onScroll={onScroll}
-      >
-        {data.map(n => (
-          <tr key={n.id} className="grid grid-cols-6 border-[.5px] border-t-0">
-            {Object.values(heads).map(key => (
-              <td
-                key={`table-body-${n.id}-${key}`}
-                className=" px-1 py-0.5 capitalize"
-              >
-                {(n[key] as string) ?? 'N/A'}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )
 }
 
-export default Table
+export default useBirdsWatch
