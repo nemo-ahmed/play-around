@@ -8,10 +8,16 @@ function useInfiniteScroll<T = unknown>({
   data = [],
   total,
   isFetching,
+  onPageChange,
+  numPages,
+  page,
 }: {
   data?: T[]
   total?: number
+  page?: number
+  numPages?: number
   isFetching?: boolean
+  onPageChange: (p: number) => void
 }) {
   console.log(data)
   const [start, setStart] = useState(0)
@@ -19,6 +25,7 @@ function useInfiniteScroll<T = unknown>({
   const [displayData, setDisplayData] = useState(data.slice(0, end))
   const stackTotal = total ?? data.length
 
+  // TODO: Change Page to Indexing
   const onScroll = useCallback<UIEventHandler<HTMLTableSectionElement>>(
     e => {
       if (data.length <= MIN_ON_DISPLAY_DATA_SIZE || isFetching) return
@@ -26,7 +33,11 @@ function useInfiniteScroll<T = unknown>({
         (e.currentTarget.scrollTop + e.currentTarget.offsetHeight) /
         e.currentTarget.scrollHeight
 
-      if (scrollProgress < 0.25 && end - MAX_ON_DISPLAY_DATA_SIZE > 0) {
+      if (
+        scrollProgress < 0.25 &&
+        end - MAX_ON_DISPLAY_DATA_SIZE > 0 &&
+        start > 0
+      ) {
         const currentOtherEnd = end - MAX_ON_DISPLAY_DATA_SIZE
         const newStart = start - INCREMENT_BY
         const newEnd = end - INCREMENT_BY
@@ -39,12 +50,21 @@ function useInfiniteScroll<T = unknown>({
               : MAX_ON_DISPLAY_DATA_SIZE,
           ),
         )
-        if (newStart > 0) {
+        if (start > 0) {
           setStart(newStart)
         }
 
         if (newEnd > MAX_ON_DISPLAY_DATA_SIZE) {
           setEnd(newEnd)
+        }
+        if (
+          page &&
+          numPages &&
+          page > 1 &&
+          start < data.length * 0.1 &&
+          !isFetching
+        ) {
+          onPageChange(-1)
         }
       }
 
@@ -57,9 +77,22 @@ function useInfiniteScroll<T = unknown>({
         if (displayData.length > MAX_ON_DISPLAY_DATA_SIZE) {
           setStart(prev => prev + INCREMENT_BY)
         }
+        if (page && numPages && page < numPages && end > data.length * 0.9) {
+          onPageChange(1)
+        }
       }
     },
-    [data, isFetching, end, stackTotal, start, displayData.length],
+    [
+      data,
+      isFetching,
+      end,
+      stackTotal,
+      start,
+      displayData.length,
+      page,
+      numPages,
+      onPageChange,
+    ],
   )
   return {data: displayData, onScroll}
 }

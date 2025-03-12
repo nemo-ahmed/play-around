@@ -41,10 +41,19 @@ import {useQuery} from '@tanstack/react-query'
 // ? mic: microphone used
 // ? smp: sample rate
 
-function useBirdsWatch() {
+function useBirdsWatch({
+  page = 1,
+  query = 'cnt:portugal',
+}: {
+  query: string
+  page: number
+}) {
+  const url = new URL(BIRDS_URL)
+  url.searchParams.append('query', query)
+  url.searchParams.append('page', page.toString())
   return useQuery<BirdsWatchResponse>({
-    queryFn: () => genericFetch({url: `${BIRDS_URL}`}),
-    queryKey: ['US', 'Daily'],
+    queryFn: () => genericFetch({url: url.toString()}),
+    queryKey: ['Birds', 'watch', query, `page:${page}`],
   })
 }
 

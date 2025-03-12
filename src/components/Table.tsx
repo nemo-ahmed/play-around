@@ -50,19 +50,32 @@ const heads: Record<string, keyof BirdDataType> = {
   uploaded: 'uploaded',
 }
 
-function Table({data: incomingData}: {data: BirdDataType[]}) {
+function Table({
+  data: incomingData,
+  onPageChange,
+  page,
+  numPages,
+}: {
+  data: BirdDataType[]
+  onPageChange: (p: number) => void
+  page: number
+  numPages: number
+}) {
   const {data, onScroll} = useInfiniteScroll({
     data: incomingData,
+    onPageChange,
+    page,
+    numPages,
   })
 
   return (
-    <table className="w-full">
-      <thead>
-        <tr className="grid grid-cols-6 border-[0.5px]">
+    <table className="w-full text-gray-300 ">
+      <thead className="bg-black/20">
+        <tr className="grid grid-cols-6 border-[0.5px]  border-gray-500">
           {Object.keys(heads).map(header => (
             <th
               key={`table-header-${header}`}
-              className="border-r-[0.5px] capitalize"
+              className="border-r-[0.5px]  border-gray-500 capitalize text-start py-1.5 px-1"
             >
               {header}
             </th>
@@ -74,13 +87,16 @@ function Table({data: incomingData}: {data: BirdDataType[]}) {
         onScroll={onScroll}
       >
         {data.map(n => (
-          <tr key={n.id} className="grid grid-cols-6 border-[.5px] border-t-0">
+          <tr
+            key={n.id}
+            className="grid grid-cols-6 border-[.5px] border-t-0 border-gray-500 py-0.5"
+          >
             {Object.values(heads).map(key => (
               <td
                 key={`table-body-${n.id}-${key}`}
-                className=" px-1 py-0.5 capitalize"
+                className="px-1 py-0.5 capitalize"
               >
-                {(n[key] as string) ?? 'N/A'}
+                {(n[key] as string) || 'N/A'}
               </td>
             ))}
           </tr>

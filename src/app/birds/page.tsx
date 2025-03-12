@@ -2,13 +2,17 @@
 
 import Table from '@/components/Table'
 import useBirdsWatch from '@/hooks/useBirdsWatch'
-import React from 'react'
+import React, {useCallback, useState} from 'react'
 
 function BirdsWatching() {
-  const {data} = useBirdsWatch()
+  const [page, setPage] = useState(1)
+
+  const {data} = useBirdsWatch({page, query: 'cnt:portugal'})
+
+  const onPageChange = useCallback((p: number) => setPage(prev => prev + p), [])
 
   return (
-    <div className="px-3 py-2.5 flex flex-col gap-2">
+    <div className="px-3 py-2.5 flex flex-col gap-2 bg-zinc-950 h-screen">
       <h1 className="text-gray-50">Birds Watching API</h1>
       <div className="flex justify-center">
         <div className="grid grid-cols-3 gap-2 w-fit">
@@ -28,7 +32,14 @@ function BirdsWatching() {
           </div>
         </div>
       </div>
-      {data?.recordings && <Table data={data?.recordings} />}
+      {data?.recordings && (
+        <Table
+          data={data.recordings}
+          onPageChange={onPageChange}
+          page={data.page}
+          numPages={data.numPages}
+        />
+      )}
     </div>
   )
 }
