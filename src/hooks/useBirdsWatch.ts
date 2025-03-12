@@ -2,6 +2,7 @@ import genericFetch from '@/api/fetch'
 import {BIRDS_URL} from '@/api/urls'
 import {BirdsWatchResponse} from '@/types/useBirds'
 import {useQuery} from '@tanstack/react-query'
+import useInfiniteData from './useInfiniteData'
 
 // ? id: the catalogue number of the recording on xeno-canto
 // ? gen: the generic name of the species
@@ -51,10 +52,23 @@ function useBirdsWatch({
   const url = new URL(BIRDS_URL)
   url.searchParams.append('query', query)
   url.searchParams.append('page', page.toString())
-  return useQuery<BirdsWatchResponse>({
+  const {data, isFetching, isLoading} = useQuery<BirdsWatchResponse>({
     queryFn: () => genericFetch({url: url.toString()}),
     queryKey: ['Birds', 'watch', query, `page:${page}`],
   })
+  const infiniteData = useInfiniteData({
+    data,
+    page,
+    onDataReturn(obj) {
+      const vals = Object.values(obj)
+      return {
+        ...vals.at(0),
+        recordings: vals.flatMap(d => d?.recordings ?? []),
+      } as BirdsWatchResponse
+    },
+    isLoading: isFetching || isLoading,
+  })
+  return {data: infiniteData as BirdsWatchResponse, isFetching}
 }
 
 export default useBirdsWatch

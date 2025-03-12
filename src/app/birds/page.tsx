@@ -7,7 +7,7 @@ import React, {useCallback, useState} from 'react'
 function BirdsWatching() {
   const [page, setPage] = useState(1)
 
-  const {data} = useBirdsWatch({page, query: 'cnt:portugal'})
+  const {data, isFetching} = useBirdsWatch({page, query: 'cnt:portugal'})
 
   const onPageChange = useCallback((p: number) => setPage(prev => prev + p), [])
 
@@ -25,9 +25,9 @@ function BirdsWatching() {
             <span>{data?.numSpecies}</span>
           </div>
           <div className="shadow-md shadow-gray-700 flex flex-col items-center justify-center px-3 py-2.5 rounded-md bg-gray-500 gap-1">
-            <span>Page</span>
+            <span>Loaded Page</span>
             <span>
-              {data?.page}/{data?.numPages}
+              {page ?? data?.page}/{data?.numPages}
             </span>
           </div>
         </div>
@@ -36,8 +36,9 @@ function BirdsWatching() {
         <Table
           data={data.recordings}
           onPageChange={onPageChange}
-          page={data.page}
+          page={page ?? data.page}
           numPages={data.numPages}
+          isFetching={isFetching}
         />
       )}
     </div>

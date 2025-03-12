@@ -55,17 +55,20 @@ function Table({
   onPageChange,
   page,
   numPages,
+  isFetching,
 }: {
   data: BirdDataType[]
   onPageChange: (p: number) => void
   page: number
   numPages: number
+  isFetching: boolean
 }) {
   const {data, onScroll} = useInfiniteScroll({
     data: incomingData,
     onPageChange,
     page,
     numPages,
+    isFetching,
   })
 
   return (
