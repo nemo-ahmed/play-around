@@ -1,4 +1,3 @@
-'use client'
 import USDailyTimeSeries from '@/components/USDailyTimeSeries'
 
 export default function LineChart() {
