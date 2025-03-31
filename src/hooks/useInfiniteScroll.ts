@@ -17,7 +17,7 @@ function useInfiniteScroll<T = unknown>({
   page?: number
   numPages?: number
   isFetching?: boolean
-  onPageChange: (p: number) => void
+  onPageChange?: (p: number) => void
 }) {
   const [start, setStart] = useState(0)
   const [end, setEnd] = useState(100)
@@ -90,7 +90,7 @@ function useInfiniteScroll<T = unknown>({
           start < data.length * 0.1 &&
           !isFetching
         ) {
-          onPageChange(-1)
+          onPageChange?.(-1)
         }
       }
 
@@ -112,7 +112,7 @@ function useInfiniteScroll<T = unknown>({
           end >= data.length - INCREMENT_BY * 3 &&
           !isFetching
         ) {
-          onPageChange(1)
+          onPageChange?.(1)
         }
       }
       if (scrollProgress >= 0.98 && end < data.length) {

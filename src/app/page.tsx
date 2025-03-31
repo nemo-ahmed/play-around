@@ -7,6 +7,7 @@ export default function Home() {
       <main className="h-[calc(100vh-4rem)] overflow-auto flex gap-2">
         <Link href="/chart">Chart</Link>
         <Link href="/birds">Birds</Link>
+        <Link href="/birdsMix">BirdsMix</Link>
       </main>
     </div>
   )

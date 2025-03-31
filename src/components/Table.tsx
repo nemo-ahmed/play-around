@@ -58,8 +58,8 @@ function Table({
   isFetching,
 }: {
   data: BirdDataType[]
-  onPageChange: (p: number) => void
-  page: number
+  onPageChange?: (p: number) => void
+  page?: number
   numPages: number
   isFetching: boolean
 }) {
