@@ -11,6 +11,7 @@ function Nav() {
       <CustomLink isActive={path === '/chart'}>chart</CustomLink>
       <CustomLink isActive={path === '/birds'}>birds</CustomLink>
       <CustomLink isActive={path === '/birdsMix'}>birdsMix</CustomLink>
+      <CustomLink isActive={path === '/reader'}>reader</CustomLink>
     </nav>
   )
 }
