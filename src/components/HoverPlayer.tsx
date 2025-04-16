@@ -1,29 +1,26 @@
 'use client'
 import {useHoveredParagraphCoordinate} from '@/hooks/useHoveredParagraphCoordinate'
-import {useGetTopLevelReadableElementsOnPage} from '@/hooks/parser'
+import {useGetTopLevelReadableElementsOnPage} from '@/hooks/useGetTopLevelReadableElementsOnPage'
 import {readAndHighlight} from '@/lib/play'
+import {IoIosPause, IoIosPlay} from 'react-icons/io'
+import {useState, type ButtonHTMLAttributes} from 'react'
 
 // This is a simple play button SVG that you can use in your hover player
-const PlayButton = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    id="play-icon"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{
-      cursor: 'pointer',
-      background: '#6B78FC',
-      borderRadius: '50%',
-    }}
+const PlayButton = ({
+  isPlaying,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & {isPlaying: boolean}) => (
+  <button
+    type="button"
     {...props}
+    className="size-6 rounded-full bg-blue-600 flex items-center justify-center"
   >
-    <path
-      d="M16.3711 11.3506C16.8711 11.6393 16.8711 12.361 16.3711 12.6497L10.3711 16.1138C9.87109 16.4024 9.24609 16.0416 9.24609 15.4642L9.24609 8.53603C9.24609 7.95868 9.87109 7.59784 10.3711 7.88651L16.3711 11.3506Z"
-      fill="white"
-    />
-  </svg>
+    {isPlaying ? (
+      <IoIosPause size={20} />
+    ) : (
+      <IoIosPlay size={20} className="pl-0.5" />
+    )}
+  </button>
 )
 
 /**
@@ -33,23 +30,34 @@ const PlayButton = (props: React.SVGProps<SVGSVGElement>) => (
  * This component should make use of the useHoveredParagraphCoordinate hook to get information about the hovered paragraph
  */
 export default function HoverPlayer() {
+  const [isPaused, setIsPaused] = useState(false)
   const topLevelElements = useGetTopLevelReadableElementsOnPage()
   const hoveredElement = useHoveredParagraphCoordinate(
     topLevelElements as HTMLElement[],
   )
-  console.log(topLevelElements)
 
   if (!hoveredElement) return null
-
   return (
     <div
       style={{
-        position: 'fixed',
+        position: 'absolute',
         top: hoveredElement.top,
         left: hoveredElement.left,
       }}
     >
-      <PlayButton onClick={() => readAndHighlight(hoveredElement.element)} />
+      <PlayButton
+        isPlaying={isPaused}
+        onClick={() => {
+          const speech = window.speechSynthesis
+          if (speech.speaking && !isPaused) {
+            speech.pause()
+            setIsPaused(true)
+          } else if (isPaused) {
+            speech.resume()
+            setIsPaused(false)
+          } else readAndHighlight(hoveredElement.element)
+        }}
+      />
     </div>
   )
 }

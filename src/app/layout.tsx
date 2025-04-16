@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <Nav />
         <AppLayout>
-          <main>{children}</main>
+          <main id="body">{children}</main>
         </AppLayout>
       </body>
     </html>

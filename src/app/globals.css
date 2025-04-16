@@ -26,3 +26,8 @@ body {
 ::highlight(speechify-word-highlight) {
   background-color: #6b78fc;
 }
+
+::selection {
+  background-color: #f06;
+  color: white;
+}

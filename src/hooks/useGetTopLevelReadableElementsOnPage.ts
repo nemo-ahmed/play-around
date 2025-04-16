@@ -2,21 +2,6 @@
 import type {Ele} from '@/types/typings'
 import {useMemo} from 'react'
 
-const IGNORE_LIST = [
-  'H1',
-  'H2',
-  'H3',
-  'H4',
-  'H5',
-  'H6',
-  'BUTTON',
-  'LABEL',
-  'SPAN',
-  'IMG',
-  'PRE',
-  'SCRIPT',
-  'SVG',
-]
 const CONTAINER_LIST = ['DIV', 'SECTION', 'ARTICLE', 'MAIN']
 const READABLE_LIST = ['P', 'CODE', 'BLOCKQUOTE']
 
@@ -27,7 +12,8 @@ export function useGetTopLevelReadableElementsOnPage(): Ele[] {
     }
     // ? Iterate on body subChildren Elements to find readable TopLevelElements
     const elements: Ele[] = []
-    let eles = [...document.body.children]
+    // ? This is for consistence. as react-query devtool replaces the content
+    let eles = [...(document.getElementById('body')?.children || [])]
     console.log(eles, document.body.children)
     while (eles.length > 0) {
       const element = eles[0]
@@ -44,11 +30,8 @@ export function useGetTopLevelReadableElementsOnPage(): Ele[] {
       } else if (element.childNodes.length > 1) {
         const filtered = [...element.childNodes].reduce(
           (acc, el) => {
-            if (IGNORE_LIST.includes(el.nodeName)) return acc
-            ;(READABLE_LIST.includes(el.nodeName)
-              ? acc.readables
-              : acc.containers
-            ).push(el)
+            if (READABLE_LIST.includes(el.nodeName)) acc.readables.push(el)
+            if (CONTAINER_LIST.includes(el.nodeName)) acc.containers.push(el)
             return acc
           },
           {
