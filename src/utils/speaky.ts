@@ -1,5 +1,3 @@
-// ? This File wasn't written by me. For some reason. i cant say who for now
-
 function getWordRange(element: Element, charIndex: number, charLength: number) {
   const range = document.createRange()
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null)
@@ -26,7 +24,10 @@ function getWordRange(element: Element, charIndex: number, charLength: number) {
   return range
 }
 
-export function readAndHighlight(element: HTMLElement) {
+export const readAndHighlight = (
+  element: HTMLElement,
+  voice?: SpeechSynthesisVoice,
+) => {
   const speechSynthesis = window.speechSynthesis
   const utterance = new SpeechSynthesisUtterance(element.textContent || '')
 
@@ -49,6 +50,10 @@ export function readAndHighlight(element: HTMLElement) {
   wholeElementRange.selectNode(element)
   const highlight = new Highlight(wholeElementRange)
   CSS.highlights.set('speechify-paragraph-highlight', highlight)
+
+  if (voice?.name) {
+    utterance.voice = voice
+  }
 
   speechSynthesis.speak(utterance)
 }

@@ -1,20 +1,21 @@
 'use client'
 import type {Ele} from '@/types/typings'
-import {useMemo} from 'react'
+import {useEffect, useState} from 'react'
 
 const CONTAINER_LIST = ['DIV', 'SECTION', 'ARTICLE', 'MAIN']
 const READABLE_LIST = ['P', 'CODE', 'BLOCKQUOTE']
 
 export function useGetTopLevelReadableElementsOnPage(): Ele[] {
-  const parsedElements = useMemo(() => {
-    if (typeof document === 'undefined') {
-      return []
-    }
+  const [parsedElements, setParsedElements] = useState<Ele[]>([])
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+
+    let eles = [
+      ...(document.getElementsByTagName('main').item(0)?.children || []),
+    ]
     // ? Iterate on body subChildren Elements to find readable TopLevelElements
     const elements: Ele[] = []
     // ? This is for consistence. as react-query devtool replaces the content
-    let eles = [...(document.getElementById('body')?.children || [])]
-    console.log(eles, document.body.children)
     while (eles.length > 0) {
       const element = eles[0]
       console.log('aaa', elements, eles)
@@ -47,7 +48,7 @@ export function useGetTopLevelReadableElementsOnPage(): Ele[] {
       }
     }
 
-    return elements
+    setParsedElements(elements)
   }, [])
 
   return parsedElements

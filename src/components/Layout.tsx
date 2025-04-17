@@ -1,4 +1,5 @@
 'use client'
+import SpeakyProvider from '@/context/Speaky'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import React from 'react'
@@ -20,7 +21,7 @@ function AppLayout({
   return (
     <QueryClientProvider client={client}>
       <ReactQueryDevtools />
-      {children}
+      <SpeakyProvider>{children}</SpeakyProvider>
     </QueryClientProvider>
   )
 }

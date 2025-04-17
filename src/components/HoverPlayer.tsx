@@ -1,11 +1,11 @@
 'use client'
 import {useHoveredParagraphCoordinate} from '@/hooks/useHoveredParagraphCoordinate'
 import {useGetTopLevelReadableElementsOnPage} from '@/hooks/useGetTopLevelReadableElementsOnPage'
-import {readAndHighlight} from '@/lib/play'
 import {IoIosPause, IoIosPlay} from 'react-icons/io'
 import {useState, type ButtonHTMLAttributes} from 'react'
+import {useSpeaky} from '@/context/Speaky'
+import {readAndHighlight} from '@/utils/speaky'
 
-// This is a simple play button SVG that you can use in your hover player
 const PlayButton = ({
   isPlaying,
   ...props
@@ -23,14 +23,9 @@ const PlayButton = ({
   </button>
 )
 
-/**
- * **TBD:**
- * Implement a hover player that appears next to the paragraph when the user hovers over it
- * The hover player should contain a play button that when clicked, should play the text of the paragraph
- * This component should make use of the useHoveredParagraphCoordinate hook to get information about the hovered paragraph
- */
 export default function HoverPlayer() {
   const [isPaused, setIsPaused] = useState(false)
+  const {voice} = useSpeaky()
   const topLevelElements = useGetTopLevelReadableElementsOnPage()
   const hoveredElement = useHoveredParagraphCoordinate(
     topLevelElements as HTMLElement[],
@@ -55,7 +50,7 @@ export default function HoverPlayer() {
           } else if (isPaused) {
             speech.resume()
             setIsPaused(false)
-          } else readAndHighlight(hoveredElement.element)
+          } else readAndHighlight?.(hoveredElement.element, voice)
         }}
       />
     </div>
