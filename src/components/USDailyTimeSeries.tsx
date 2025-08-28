@@ -31,7 +31,7 @@ function USDailyTimeSeries() {
   )
   console.log(chartData)
   return (
-    <div className="rounded-md bg-slate-400 w-full h-fit w-[500px]">
+    <div className="rounded-md bg-slate-400 h-fit w-[500px]">
       <Chart
         options={options}
         chartType={'AreaChart'}
