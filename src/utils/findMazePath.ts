@@ -13,7 +13,8 @@ export const gridValidation = (
   }, []).length === matrix.length
 
 export function getPath(matrix: number[][]) {
-  const solution = [...matrix]
+  // ? to Prevent overriding the original
+  const solution = JSON.parse(JSON.stringify(matrix))
   const obj: Record<number, number[]> = {}
   const isValid = gridValidation(matrix, (row, i) => {
     obj[i] = row.reduce((acc: number[], n, j) => {
@@ -27,8 +28,6 @@ export function getPath(matrix: number[][]) {
 
   if (!isValid) return matrix
 
-  // ? Walls are not needed to find the path.
-  // ? Removing far away paths
   let curr = -1
   for (const i in obj) {
     const row = obj[i]
