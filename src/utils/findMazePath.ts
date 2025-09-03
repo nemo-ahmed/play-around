@@ -14,7 +14,7 @@ export const gridValidation = (
 
 export function getPath(matrix: number[][]) {
   // ? to Prevent overriding the original
-  const solution = JSON.parse(JSON.stringify(matrix))
+  const solution: number[][] = JSON.parse(JSON.stringify(matrix))
   const obj: Record<number, number[]> = {}
   const isValid = gridValidation(matrix, (row, i) => {
     obj[i] = row.reduce((acc: number[], n, j) => {
