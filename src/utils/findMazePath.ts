@@ -6,7 +6,6 @@ export const gridValidation = (
 ) =>
   matrix.reduce((validation: boolean[], row, i) => {
     fn?.(row, i)
-
     const isRowValid = row.includes(0) && row.includes(1)
     if (!isRowValid) return validation
     return [...validation, isRowValid]
