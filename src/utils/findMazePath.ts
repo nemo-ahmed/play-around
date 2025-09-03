@@ -32,11 +32,12 @@ export function getPath(matrix: number[][]) {
   let curr = -1
   for (const i in obj) {
     const row = obj[i]
+    const nextRow = obj[Number(i) + 1]
     if (row.length === 1) {
       curr = row[0]
       solution[i][row[0]] = REPLACING_NUMBER
       continue
-    } else if (Number(i) === matrix.length - 1) {
+    } else if (Number(i) === matrix.length - 1 && row.includes(curr)) {
       obj[i] = [curr]
       solution[i][curr] = REPLACING_NUMBER
       break
@@ -44,16 +45,17 @@ export function getPath(matrix: number[][]) {
 
     const res = row.filter(
       (x, _, arr) =>
-        obj[Number(i) + 1]?.includes(x) ||
-        (arr.length === 0
-          ? (curr !== -1 && curr === x) ||
-            (i === '0' && obj[Number(i) + 1]?.includes(x)) // ? First row or same column
+        // ? Straight
+        nextRow?.includes(x) ||
+        // ? Check if its surrounded with 3 walls
+        ((!row.includes(x - 1) || !row.includes(x + 1)) &&
+        !nextRow.includes(x) &&
+        obj[Number(i) - 1] &&
+        !obj[Number(i) - 1]?.includes(x)
+          ? false
           : (curr !== -1 && curr === x) ||
             ((arr.includes(x - 1) || arr.includes(x + 1)) && // ? Checking Side ways
-              (row.includes(x + 1) ||
-                row.includes(x - 1) ||
-                // ? Checking Bottom
-                obj[Number(i) + 1]?.includes(x)))),
+              (row.includes(x + 1) || row.includes(x - 1)))),
     )
     obj[i] = res
     res.forEach(n => {
