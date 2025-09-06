@@ -106,6 +106,25 @@
   --foreground: #171717;
 }
 
+@layer {
+  .container {
+    background: color-mix(
+      in srgb,
+      var(--foreground) 20%,
+      var(--background) 80%
+    );
+    @apply w-fit flex flex-col gap-2 px-4 py-3  rounded;
+  }
+
+  form {
+    button {
+      @apply rounded-2xl border-2 border-zinc-500 w-fit px-4 self-center text-zinc-200;
+      &:active {
+        @apply bg-zinc-500;
+      }
+    }
+  }
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
