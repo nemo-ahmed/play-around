@@ -29,6 +29,7 @@ function Nav() {
         <CustomLink isActive={path === '/birdsMix'}>birdsMix</CustomLink>
         <CustomLink isActive={path === '/reader'}>reader</CustomLink>
         <CustomLink isActive={path === '/maze'}>maze</CustomLink>
+        <CustomLink isActive={path === '/form'}>form</CustomLink>
       </div>
       <div>
         {options.length > 0 && (
