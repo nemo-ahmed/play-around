@@ -99,44 +99,58 @@
   --color-eerie-black-700: #6f7d8b;
   --color-eerie-black-800: #9fa8b2;
   --color-eerie-black-900: #cfd4d8;
-}
-
-:root {
+  /* 
   --background: #ffffff;
   --foreground: #171717;
+  @variant dark {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  } */
 }
 
-@layer {
+@layer components {
+  .card {
+    @apply shadow shadow-gray-200 dark:shadow-gray-700 flex flex-col items-center justify-center px-3 py-2.5 rounded-md bg-gray-300 dark:bg-gray-700 gap-1;
+  }
+
   .container {
-    background: color-mix(
+    /* background: color-mix(
       in srgb,
       var(--foreground) 20%,
       var(--background) 80%
-    );
+    ); */
     @apply w-fit flex flex-col gap-2 px-4 py-3  rounded;
-  }
-
-  form {
-    button {
-      @apply rounded-2xl border-2 border-zinc-500 w-fit px-4 self-center text-zinc-200;
-      &:active {
-        @apply bg-zinc-500;
-      }
-    }
-  }
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: #0a0a0a;
+  background: #ededed;
   font-family: Arial, Helvetica, sans-serif;
+  @variant dark {
+    color: #ffffff;
+    background: #171717;
+  }
+  /* & > * {
+    background: inherit;
+  } */
+  nav {
+    @apply h-[3.2rem];
+  }
+  main {
+    @apply max-h-[calc(100dvh-3.2rem)] overflow-hidden;
+  }
 }
+
+form {
+  button {
+    @apply rounded-2xl border-2 border-zinc-500 w-fit px-4 self-center;
+    &:active {
+      @apply bg-gray-500;
+    }
+  }
+}
+
 ::highlight(speechify-paragraph-highlight) {
   background-color: rgba(107, 120, 252, 0.5);
 }

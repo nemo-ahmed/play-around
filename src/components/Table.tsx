@@ -72,13 +72,13 @@ function Table({
   })
 
   return (
-    <table className="w-full text-gray-300 ">
+    <table className="w-full text-gray-700 dark:text-gray-300">
       <thead className="bg-black/20">
-        <tr className="grid grid-cols-6 border-[0.5px]  border-gray-500">
+        <tr className="grid grid-cols-6 border-[0.5px] border-gray-500">
           {Object.keys(heads).map(header => (
             <th
               key={`table-header-${header}`}
-              className="border-r-[0.5px]  border-gray-500 capitalize text-start py-1.5 px-1"
+              className="border-r-[0.5px] border-gray-500 capitalize text-start py-1.5 px-1"
             >
               {header}
             </th>
@@ -86,7 +86,7 @@ function Table({
         </tr>
       </thead>
       <tbody
-        className="flex flex-col h-[calc(100dvh-250px)] overflow-auto w-full"
+        className="flex flex-col h-[calc(100dvh-13.7rem)] overflow-auto w-full"
         onScroll={onScroll}
       >
         {data.map(n => (

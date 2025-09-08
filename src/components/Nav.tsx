@@ -21,7 +21,7 @@ function Nav() {
   }, [])
 
   return (
-    <nav className="flex gap-2 items-center justify-between">
+    <nav className="flex gap-2 items-center justify-between p-2">
       <div className="flex gap-2 items-center">
         <CustomLink isActive={path === '/'}>home</CustomLink>
         <CustomLink isActive={path === '/chart'}>chart</CustomLink>
@@ -34,7 +34,7 @@ function Nav() {
       <div>
         {options.length > 0 && (
           <select
-            className="text-black"
+            className="p-2 rounded bg-gray-300 dark:bg-gray-700"
             onClick={e => {
               e.preventDefault()
               const find = options.find(x => x.name === e.currentTarget.value)
