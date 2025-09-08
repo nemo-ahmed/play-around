@@ -137,7 +137,7 @@ body {
     @apply h-[3.2rem] text-gray-600 dark:text-gray-400;
   }
   main {
-    @apply max-h-[calc(100dvh-3.2rem)] overflow-hidden;
+    @apply max-h-[calc(100dvh-3.2rem)] overflow-auto;
   }
 
   blockquote {
