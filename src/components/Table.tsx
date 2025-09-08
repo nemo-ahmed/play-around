@@ -86,7 +86,7 @@ function Table({
         </tr>
       </thead>
       <tbody
-        className="flex flex-col h-[calc(100dvh-13.7rem)] overflow-auto w-full"
+        className="flex flex-col h-[calc(100dvh-13.7rem)] overflow-auto"
         onScroll={onScroll}
       >
         {data.map(n => (

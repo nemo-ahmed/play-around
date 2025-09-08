@@ -124,30 +124,31 @@
 }
 
 body {
+  @apply bg-eerie-black-900 dark:bg-eerie-black-200;
   color: #0a0a0a;
-  background: #ededed;
+  /* background: #ededed; */
   font-family: Arial, Helvetica, sans-serif;
   @variant dark {
     color: #ffffff;
-    background: #171717;
+    /* background: #171717; */
   }
-  /* & > * {
-    background: inherit;
-  } */
+
   nav {
-    @apply h-[3.2rem];
+    @apply h-[3.2rem] text-gray-600 dark:text-gray-400;
   }
   main {
     @apply max-h-[calc(100dvh-3.2rem)] overflow-hidden;
+  }
+
+  blockquote {
+    @apply border-l-[20px] border-gray-600 py-5 pl-2.5 pr-8 flex items-center justify-center;
+    quotes: '\201C' '\201D' '\2018' '\2019';
   }
 }
 
 form {
   button {
-    @apply rounded-2xl border-2 border-zinc-500 w-fit px-4 self-center;
-    &:active {
-      @apply bg-gray-500;
-    }
+    @apply rounded-2xl border-2 border-zinc-500 w-fit px-4 self-center active:text-gray-700 active:dark:text-gray-300;
   }
 }
 

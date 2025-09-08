@@ -12,7 +12,12 @@ function CustomLink({
 }) {
   if (isActive)
     return (
-      <span className={className + ' text-zinc-500 cursor-default'}>
+      <span
+        className={
+          className +
+          ' text-gray-700 dark:text-gray-300 cursor-default font-medium'
+        }
+      >
         {children}
       </span>
     )
