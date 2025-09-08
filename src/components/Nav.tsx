@@ -30,11 +30,13 @@ function Nav() {
         <CustomLink isActive={path === '/reader'}>reader</CustomLink>
         <CustomLink isActive={path === '/maze'}>maze</CustomLink>
         <CustomLink isActive={path === '/form'}>form</CustomLink>
+        <CustomLink isActive={path === '/products'}>products</CustomLink>
       </div>
       <div>
         {options.length > 0 && (
           <select
-            className="p-2 rounded bg-gray-300 dark:bg-gray-700"
+            className="p-2 pr-4 rounded bg-gray-950/5 dark:bg-gray-50/5"
+            id="voices-select"
             onClick={e => {
               e.preventDefault()
               const find = options.find(x => x.name === e.currentTarget.value)

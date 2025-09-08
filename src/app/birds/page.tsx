@@ -14,7 +14,7 @@ function BirdsWatching() {
   const commonStyles = 'card'
 
   return (
-    <div className="px-3 py-2.5 flex flex-col gap-2 h-screen">
+    <div className="px-3 py-2.5 flex flex-col gap-2">
       <h1 className="text-gray-950 dark:text-gray-50">Birds Watching API</h1>
       <div className="flex justify-center">
         <div className="grid grid-cols-3 gap-2 w-fit">
