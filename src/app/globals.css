@@ -141,7 +141,7 @@ body {
   }
 
   blockquote {
-    @apply border-l-[20px] border-gray-600 py-5 pl-2.5 pr-8 flex items-center justify-center;
+    @apply border-l-[20px] border-gray-600 py-5 pl-2.5 pr-8 text-center;
     quotes: '\201C' '\201D' '\2018' '\2019';
   }
 }
