@@ -5,17 +5,18 @@ import {CgSpinnerTwoAlt} from 'react-icons/cg'
 import {FaRegCircle} from 'react-icons/fa'
 
 const prods = Array(10).fill(null)
+
 const updateProds = () =>
-  new Promise((resolve, reject) =>
-    setTimeout(() => {
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
       if (Math.random() > 0.9) {
         return reject('rejected')
       }
       prods.push(null)
       return resolve('added')
-    }, 2000),
-  ).catch(err => {
-    console.log(err)
+    }, 2000)
+    clearTimeout(timer)
+  }).catch(err => {
     return err
   })
 
@@ -30,8 +31,7 @@ function Products() {
 
     return await updateProds()
   }, null)
-  const fakeProducts = prods
-  console.log(prods, state)
+
   return (
     <div className="p-4">
       <form action={submitAction}>
