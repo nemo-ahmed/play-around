@@ -1,5 +1,5 @@
-import genericFetch from '@/api/fetch'
-import {BIRDS_URL} from '@/api/urls'
+import genericFetch from '@/utils/fetch'
+import {BIRDS_URL} from '@/utils/urls'
 import {BirdsWatchResponse} from '@/types/useBirds'
 import {useQuery} from '@tanstack/react-query'
 import useInfiniteData from './useInfiniteData'
@@ -49,12 +49,12 @@ function useBirdsWatch({
   query: string
   page: number
 }) {
-  const url = new URL(BIRDS_URL)
+  const url = new URL('/api/birds', process.env.URL || 'http://localhost:3000')
   url.searchParams.append('query', query)
   url.searchParams.append('page', page.toString())
   const {data, isFetching, isLoading} = useQuery<BirdsWatchResponse>({
     queryFn: () => genericFetch({url: url.toString()}),
-    queryKey: ['Birds', 'watch', query, `page:${page}`],
+    queryKey: ['birds', 'watch', query, `page:${page}`],
   })
   const infiniteData = useInfiniteData({
     data,

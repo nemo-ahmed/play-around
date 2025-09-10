@@ -1,5 +1,5 @@
-import genericFetch from '@/api/fetch'
-import {COVID_URL} from '@/api/urls'
+import genericFetch from '@/utils/fetch'
+import {COVID_URL} from '@/utils/urls'
 import {useQuery} from '@tanstack/react-query'
 
 import {USDailyType} from '@/types/usDaily'

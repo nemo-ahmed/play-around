@@ -1,20 +1,9 @@
 import 'server-only'
 
-import genericFetch from '@/api/fetch'
-import {BIRDS_URL} from '@/api/urls'
-import {BirdsWatchResponse} from '@/types/useBirds'
-import {unstable_cache as withCache} from 'next/cache'
 import {lazy, Suspense} from 'react'
+import {BirdsWatchResponse} from '@/types/useBirds'
 
-const getBirds = withCache(
-  async () => {
-    return await genericFetch<BirdsWatchResponse>({
-      url: BIRDS_URL + '?query=cnt:portugal',
-    })
-  },
-  ['birds'],
-  {revalidate: 1000 * 60 * 60 * 24, tags: ['posts']},
-)
+const getBirds = async () => await fetch(process.env.URL + '/api/birds/')
 
 const Table = lazy(() =>
   getBirds().then(() => {
@@ -24,7 +13,10 @@ const Table = lazy(() =>
 )
 
 export default async function BirdsMix() {
-  const data = await getBirds()
+  const res = await getBirds()
+  console.log(res)
+  const data = (await res.json()) as BirdsWatchResponse
+  console.log(data)
   const commonStyles = 'card'
 
   return (
