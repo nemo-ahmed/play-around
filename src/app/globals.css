@@ -101,6 +101,12 @@
   --color-eerie-black-900: #cfd4d8;
 }
 
+@keyframes borderanimation {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
 @layer components {
   .card {
     @apply shadow shadow-gray-950/5 dark:shadow-gray-50/5 flex flex-col items-center justify-center px-3 py-2.5 rounded-md bg-gray-950/5 dark:bg-gray-50/5 gap-1;
@@ -108,6 +114,66 @@
 
   .container {
     @apply w-fit flex flex-col gap-2 px-4 py-3  rounded;
+  }
+
+  .spinner-border {
+    --border-radius: 1rem;
+    --color: green;
+    --percentage: 10%;
+    --spinner-color: var(--color-eerie-black-900);
+
+    @variant dark {
+      --spinner-color: var(--color-eerie-black-200);
+    }
+
+    --color-second: color-mix(
+      in srgb,
+      var(--spinner-color) var(--percentage),
+      transparent
+    );
+
+    @apply relative isolate w-36 h-36 flex items-center justify-center overflow-hidden;
+    border-radius: calc(var(--border-radius));
+
+    &::before,
+    &::after {
+      @apply absolute;
+      content: '';
+    }
+
+    &::before {
+      /* width: 200%;
+      height: 200%; */
+      background-image: conic-gradient(
+        #6b728250,
+        var(--color),
+        #6b728250,
+        #6b728250,
+        var(--color),
+        #6b728250,
+        #6b728250
+      );
+      inset: -50%;
+      z-index: -2;
+      animation: borderanimation 4s linear infinite;
+    }
+
+    &:hover::before {
+      animation-play-state: paused;
+    }
+
+    &::after {
+      --inset: 4px;
+      background: #111;
+      inset: var(--inset);
+      border-radius: calc(var(--border-radius) - var(--inset));
+      z-index: -1;
+      transition: all 0.3s linear;
+    }
+
+    &:hover::after {
+      background: var(--spinner-color);
+    }
   }
 }
 
