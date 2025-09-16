@@ -28,11 +28,11 @@ function Spinner({
       />
       <div
         style={{
-          height: height - borderWidth,
-          width: width - borderWidth,
-          borderRadius: 14.7,
+          height: height,
+          width: width,
         }}
-        className="flex items-center justify-center z-20 bg-eerie-black-200 absolute"
+        // ? this bg clip is awesome
+        className="flex items-center justify-center z-20 bg-eerie-black-200 border-4 rounded-2xl border-transparent bg-clip-content absolute"
       >
         asdasd asd {height} X {width}
       </div>
