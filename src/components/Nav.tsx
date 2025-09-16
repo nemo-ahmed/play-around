@@ -32,6 +32,7 @@ function Nav() {
         <CustomLink isActive={path === '/form'}>form</CustomLink>
         <CustomLink isActive={path === '/products'}>products</CustomLink>
         <CustomLink isActive={path === '/weird-css'}>weird-css</CustomLink>
+        <CustomLink isActive={path === '/soduku'}>soduku</CustomLink>
       </div>
       <div>
         {options.length > 0 && (
