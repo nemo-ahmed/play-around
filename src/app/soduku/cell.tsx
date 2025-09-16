@@ -1,64 +1,59 @@
 'use client'
-import React, {useId, useState} from 'react'
+import type {SodukuNumbers} from '@/context/Soduku'
+import React, {useState} from 'react'
 import {
-  PiNumberEight,
-  PiNumberFive,
-  PiNumberFour,
-  PiNumberNine,
-  PiNumberOne,
-  PiNumberSeven,
-  PiNumberSix,
-  PiNumberThree,
-  PiNumberTwo,
+  PiNumberEightBold,
+  PiNumberFiveBold,
+  PiNumberFourBold,
+  PiNumberNineBold,
+  PiNumberOneBold,
+  PiNumberSevenBold,
+  PiNumberSixBold,
+  PiNumberThreeBold,
+  PiNumberTwoBold,
 } from 'react-icons/pi'
 
-type OurNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-
 const DYNAMIC_NUMBERS = {
-  1: <PiNumberOne size="100%" fill="inherit" />,
-  2: <PiNumberTwo size="100%" fill="inherit" />,
-  3: <PiNumberThree size="100%" fill="inherit" />,
-  4: <PiNumberFour size="100%" fill="inherit" />,
-  5: <PiNumberFive size="100%" fill="inherit" />,
-  6: <PiNumberSix size="100%" fill="inherit" />,
-  7: <PiNumberSeven size="100%" fill="inherit" />,
-  8: <PiNumberEight size="100%" fill="inherit" />,
-  9: <PiNumberNine size="100%" fill="inherit" />,
+  1: <PiNumberOneBold size="100%" fill="inherit" />,
+  2: <PiNumberTwoBold size="100%" fill="inherit" />,
+  3: <PiNumberThreeBold size="100%" fill="inherit" />,
+  4: <PiNumberFourBold size="100%" fill="inherit" />,
+  5: <PiNumberFiveBold size="100%" fill="inherit" />,
+  6: <PiNumberSixBold size="100%" fill="inherit" />,
+  7: <PiNumberSevenBold size="100%" fill="inherit" />,
+  8: <PiNumberEightBold size="100%" fill="inherit" />,
+  9: <PiNumberNineBold size="100%" fill="inherit" />,
 }
 
-const NumbersCell = ({id}: {id: string}) => {
-  const [selected, setSelected] = useState<number[]>([])
+export const NumbersCell = ({variant}: {variant: 'note' | 'keypad'}) => {
+  const [selected, setSelected] = useState<SodukuNumbers[]>([])
+  const cellStyles: Record<typeof variant, string> = {
+    keypad:
+      'size-full fill-eerie-black-500 dark:fill-eerie-black-700 hover:fill-eerie-black-400 hover:dark:fill-eerie-black-600 border-collapse border border-eerie-black-300 dark:border-eerie-black-700',
+    note: "size-full fill-transparent hover:fill-eerie-black-500 hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600",
+  }
   return (
-    <div className="grid grid-cols-3 grid-rows-3 content-center gap-0.5">
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+    <div className="grid grid-cols-3 grid-rows-3 content-center">
+      {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
         <button
-          key={id + '_' + n}
-          className="size-full fill-transparent hover:fill-eerie-black-500 hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600"
+          key={'note-numbers-' + n}
+          className={cellStyles[variant]}
           data-selected={selected.includes(n)}
           onClick={() => {
-            console.log(n)
             setSelected(prev =>
               prev.includes(n) ? prev.filter(x => x !== n) : [...prev, n],
             )
           }}
         >
-          {DYNAMIC_NUMBERS[n as OurNumbers]}
+          {DYNAMIC_NUMBERS[n]}
         </button>
       ))}
     </div>
   )
 }
 
-const InputCell = ({id, value}: {id: string; value: OurNumbers}) => {
+const InputCell = ({value}: {value: SodukuNumbers}) => {
   return (
-    // <input
-    //   type="text"
-    //   id={id}
-    //   min={1}
-    //   max={9}
-    //   value={value}
-    //   className="bg-transparent cursor-default outline-none text-[34px] w-full h-full text-center text-eerie-black-500 dark:text-eerie-black-600"
-    // />
     <div className="flex items-center justify-center size-full fill-eerie-black-500 dark:fill-eerie-black-600">
       {DYNAMIC_NUMBERS?.[value]}
     </div>
@@ -66,9 +61,7 @@ const InputCell = ({id, value}: {id: string; value: OurNumbers}) => {
 }
 
 function BabyCell() {
-  const [value, setValue] = useState<OurNumbers>()
-  const [isFocused, setIsFocused] = useState(false)
-  const id = useId()
+  const [value, setValue] = useState<SodukuNumbers>()
 
   return (
     <div
@@ -78,7 +71,7 @@ function BabyCell() {
         const nKey = Number(e.key)
         console.log(nKey, e.key)
         if (nKey >= 1 && nKey <= 9) {
-          setValue(nKey as OurNumbers)
+          setValue(nKey as SodukuNumbers)
         } else if (e.key === 'Backspace' || e.key === 'Delete') {
           setValue(undefined)
         } else if (e.key === 'Escape') {
@@ -89,7 +82,7 @@ function BabyCell() {
         'group border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700 bg-eerie-black-100 dark:bg-eerie-black-800'
       }
     >
-      {value ? <InputCell id={id} value={value} /> : <NumbersCell id={id} />}
+      {value ? <InputCell value={value} /> : <NumbersCell variant="note" />}
     </div>
   )
 }
@@ -116,4 +109,19 @@ function Cell() {
   )
 }
 
-export default Cell
+function SodukuComp() {
+  return (
+    <div className="flex items-center justify-around size-full">
+      <section className="grid grid-cols-3 grid-rows-3 center size-[50dvw] border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+          <Cell key={`daddy-cell-${n}`} />
+        ))}
+      </section>
+      <div className="border-collapse border border-eerie-black-300 dark:border-eerie-black-700 size-[40dvh] bg-eerie-black-100 dark:bg-eerie-black-800">
+        <NumbersCell variant="keypad" />
+      </div>
+    </div>
+  )
+}
+
+export default SodukuComp
