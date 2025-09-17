@@ -1,5 +1,7 @@
 'use client'
 import type {SodukuNumbers} from '@/context/Soduku'
+import {getColIndex, getRowIndex} from '@/utils/soduku'
+import {get} from 'http'
 import React, {useState} from 'react'
 import {
   PiNumberEightBold,
@@ -60,8 +62,16 @@ const InputCell = ({value}: {value: SodukuNumbers}) => {
   )
 }
 
-function BabyCell() {
-  const [value, setValue] = useState<SodukuNumbers>()
+function BabyCell({
+  boxIndex,
+  cellIndex,
+  value,
+}: {
+  boxIndex: number
+  cellIndex: number
+  value: SodukuNumbers | null
+}) {
+  // const [value, setValue] = useState<SodukuNumbers>()
 
   return (
     <div
@@ -71,9 +81,9 @@ function BabyCell() {
         const nKey = Number(e.key)
         console.log(nKey, e.key)
         if (nKey >= 1 && nKey <= 9) {
-          setValue(nKey as SodukuNumbers)
+          // setValue(nKey as SodukuNumbers)
         } else if (e.key === 'Backspace' || e.key === 'Delete') {
-          setValue(undefined)
+          // setValue(undefined)
         } else if (e.key === 'Escape') {
           ;(e.target as HTMLInputElement).blur()
         }
@@ -81,13 +91,31 @@ function BabyCell() {
       className={
         'group border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700 bg-eerie-black-100 dark:bg-eerie-black-800'
       }
+      onClick={() => {
+        console.log(
+          {
+            col: (cellIndex % 3) + Math.floor(boxIndex / 3) * 3,
+            row: Math.floor(cellIndex / 3) + Math.floor(boxIndex / 3) * 3,
+          },
+          ((cellIndex + 1) % 3) + Math.floor((boxIndex + 1) / 3) * 3,
+          ((boxIndex + 1) % 3) + Math.floor((cellIndex + 1) / 3) * 3,
+          ((cellIndex + 1) % 3) + Math.floor((cellIndex + 1) / 3) * 3,
+          ((boxIndex + 1) % 3) + Math.floor((boxIndex + 1) / 3) * 3,
+        )
+      }}
     >
-      {value ? <InputCell value={value} /> : <NumbersCell variant="note" />}
+      {value !== null ? (
+        <InputCell
+          value={getRowIndex({boxIndex, cellIndex}) as SodukuNumbers}
+        />
+      ) : (
+        <NumbersCell variant="note" />
+      )}
     </div>
   )
 }
 
-function Cell() {
+function Row({boxIndex, row}: {boxIndex: number; row: SodukuNumbers[]}) {
   // ! 👻 Todo Shit 💩
   // ? for a better UX
   // ? Mount the number pad on cell focus
@@ -102,8 +130,13 @@ function Cell() {
 
   return (
     <div className="border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700 grid grid-cols-3 grid-rows-3">
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
-        <BabyCell key={`baby-cell-${n}`} />
+      {row.map((value, i) => (
+        <BabyCell
+          key={`baby-cell-${i}`}
+          boxIndex={boxIndex}
+          cellIndex={i}
+          value={value}
+        />
       ))}
     </div>
   )
@@ -112,9 +145,19 @@ function Cell() {
 function SodukuComp() {
   return (
     <div className="flex items-center justify-around size-full">
-      <section className="grid grid-cols-3 grid-rows-3 center size-[50dvw] border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
-          <Cell key={`daddy-cell-${n}`} />
+      <section className="relative grid grid-cols-3 grid-rows-3 center size-[50dvw] border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700">
+        {[
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        ].map((row, i) => (
+          <Row key={`row-${i}`} boxIndex={i} row={row as SodukuNumbers[]} />
         ))}
       </section>
       <div className="border-collapse border border-eerie-black-300 dark:border-eerie-black-700 size-[40dvh] bg-eerie-black-100 dark:bg-eerie-black-800">
