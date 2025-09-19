@@ -1,8 +1,6 @@
 'use client'
-import type {SodukuNumbers} from '@/context/Soduku'
-import {getColIndex, getRowIndex} from '@/utils/soduku'
-import {get} from 'http'
-import React, {useState} from 'react'
+import {SodukuCell, useSoduku, type SodukuNumbers} from '@/context/Soduku'
+import {useEffect, useState} from 'react'
 import {
   PiNumberEightBold,
   PiNumberFiveBold,
@@ -15,16 +13,18 @@ import {
   PiNumberTwoBold,
 } from 'react-icons/pi'
 
+const iconStyle = 'flex items-center justify-center size-full'
+
 const DYNAMIC_NUMBERS = {
-  1: <PiNumberOneBold size="100%" fill="inherit" />,
-  2: <PiNumberTwoBold size="100%" fill="inherit" />,
-  3: <PiNumberThreeBold size="100%" fill="inherit" />,
-  4: <PiNumberFourBold size="100%" fill="inherit" />,
-  5: <PiNumberFiveBold size="100%" fill="inherit" />,
-  6: <PiNumberSixBold size="100%" fill="inherit" />,
-  7: <PiNumberSevenBold size="100%" fill="inherit" />,
-  8: <PiNumberEightBold size="100%" fill="inherit" />,
-  9: <PiNumberNineBold size="100%" fill="inherit" />,
+  1: <PiNumberOneBold size="100%" className={iconStyle} fill="inherit" />,
+  2: <PiNumberTwoBold size="100%" className={iconStyle} fill="inherit" />,
+  3: <PiNumberThreeBold size="100%" className={iconStyle} fill="inherit" />,
+  4: <PiNumberFourBold size="100%" className={iconStyle} fill="inherit" />,
+  5: <PiNumberFiveBold size="100%" className={iconStyle} fill="inherit" />,
+  6: <PiNumberSixBold size="100%" className={iconStyle} fill="inherit" />,
+  7: <PiNumberSevenBold size="100%" className={iconStyle} fill="inherit" />,
+  8: <PiNumberEightBold size="100%" className={iconStyle} fill="inherit" />,
+  9: <PiNumberNineBold size="100%" className={iconStyle} fill="inherit" />,
 }
 
 export const NumbersCell = ({variant}: {variant: 'note' | 'keypad'}) => {
@@ -54,88 +54,100 @@ export const NumbersCell = ({variant}: {variant: 'note' | 'keypad'}) => {
   )
 }
 
-const InputCell = ({value}: {value: SodukuNumbers}) => {
-  return (
-    <div className="flex items-center justify-center size-full fill-eerie-black-500 dark:fill-eerie-black-600">
-      {DYNAMIC_NUMBERS?.[value]}
-    </div>
-  )
-}
-
 function BabyCell({
   boxIndex,
   cellIndex,
   value,
+  isGiven,
+  isFalse,
 }: {
   boxIndex: number
   cellIndex: number
   value: SodukuNumbers | null
+  isGiven: boolean
+  isFalse: boolean
 }) {
-  // const [value, setValue] = useState<SodukuNumbers>()
+  const {onChange} = useSoduku()
+  const keyStyles = {
+    true: ' fill-eerie-black-500 dark:fill-eerie-black-600 border-eerie-black-300 dark:border-eerie-black-700',
+    [`${isGiven}`]:
+      ' fill-eerie-black-500/60 dark:fill-eerie-black-600/60 border-eerie-black-300 dark:border-eerie-black-700',
+    [`${isFalse}`]: ' fill-red-600/90 bg-red-600/20 border-red-600/90',
+  }
+  console.log({
+    boxIndex,
+    cellIndex,
+  })
 
+  if (value) {
+    return (
+      <button
+        onKeyDown={e => {
+          e.preventDefault()
+          e.stopPropagation()
+          const nKey = Number(e.key)
+          console.log(nKey, e.key, {
+            boxIndex,
+            cellIndex,
+            value: nKey as SodukuNumbers,
+          })
+          if (nKey >= 1 && nKey <= 9) {
+            onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
+          } else if (e.key === 'Backspace' || e.key === 'Delete') {
+            onChange({boxIndex, cellIndex, value: null})
+          } else if (e.key === 'Escape') {
+            ;(e.target as HTMLInputElement).blur()
+          }
+        }}
+        className={'group border-collapse border-[0.5px]' + keyStyles.true}
+      >
+        {value !== null ? (
+          DYNAMIC_NUMBERS[value]
+        ) : (
+          <NumbersCell variant="note" />
+        )}
+      </button>
+    )
+  }
   return (
     <div
       onKeyDown={e => {
-        e.stopPropagation()
+        console.log(e.key, {
+          boxIndex,
+          cellIndex,
+          isGiven,
+        })
         e.preventDefault()
+        e.stopPropagation()
+        if (isGiven) return
+
         const nKey = Number(e.key)
-        console.log(nKey, e.key)
         if (nKey >= 1 && nKey <= 9) {
-          // setValue(nKey as SodukuNumbers)
+          onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
         } else if (e.key === 'Backspace' || e.key === 'Delete') {
-          // setValue(undefined)
+          onChange({boxIndex, cellIndex, value: null})
         } else if (e.key === 'Escape') {
           ;(e.target as HTMLInputElement).blur()
         }
       }}
-      className={
-        'group border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700 bg-eerie-black-100 dark:bg-eerie-black-800'
-      }
-      onClick={() => {
-        console.log(
-          {
-            col: (cellIndex % 3) + Math.floor(boxIndex / 3) * 3,
-            row: Math.floor(cellIndex / 3) + Math.floor(boxIndex / 3) * 3,
-          },
-          ((cellIndex + 1) % 3) + Math.floor((boxIndex + 1) / 3) * 3,
-          ((boxIndex + 1) % 3) + Math.floor((cellIndex + 1) / 3) * 3,
-          ((cellIndex + 1) % 3) + Math.floor((cellIndex + 1) / 3) * 3,
-          ((boxIndex + 1) % 3) + Math.floor((boxIndex + 1) / 3) * 3,
-        )
-      }}
+      className={'group border-collapse border-[0.5px]' + keyStyles.true}
     >
-      {value !== null ? (
-        <InputCell
-          value={getRowIndex({boxIndex, cellIndex}) as SodukuNumbers}
-        />
-      ) : (
-        <NumbersCell variant="note" />
-      )}
+      <NumbersCell variant="note" />
     </div>
   )
 }
 
-function Row({boxIndex, row}: {boxIndex: number; row: SodukuNumbers[]}) {
-  // ! 👻 Todo Shit 💩
-  // ? for a better UX
-  // ? Mount the number pad on cell focus
-  // ? unmount it on blur
-  // ? Input will be mounted while blurred
-
-  // ? Next Step
-  // ? Add highlighting logic [Better in context to freely play around in the cells without worrying about props drilling]
-  // ? maxed capacity number reach
-  // ? Number Pad
-  // ? Dynamic styling for 3x3 boxes 😈
-
+function Row({boxIndex, grid}: {boxIndex: number; grid: SodukuCell[]}) {
   return (
     <div className="border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700 grid grid-cols-3 grid-rows-3">
-      {row.map((value, i) => (
+      {grid.map((value, i) => (
         <BabyCell
           key={`baby-cell-${i}`}
           boxIndex={boxIndex}
           cellIndex={i}
-          value={value}
+          value={value.value}
+          isGiven={value.isGiven}
+          isFalse={value.isFalse}
         />
       ))}
     </div>
@@ -143,21 +155,27 @@ function Row({boxIndex, row}: {boxIndex: number; row: SodukuNumbers[]}) {
 }
 
 function SodukuComp() {
+  const {state} = useSoduku()
+  const [size, setSize] = useState('')
+  useEffect(() => {
+    if (typeof screen !== 'undefined')
+      setSize(
+        screen.availWidth > screen.availHeight
+          ? ' size-[50dvw]'
+          : ' size-[50dhw]',
+      )
+  }, [])
+
   return (
     <div className="flex items-center justify-around size-full">
-      <section className="relative grid grid-cols-3 grid-rows-3 center size-[50dvw] border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700">
-        {[
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-          [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        ].map((row, i) => (
-          <Row key={`row-${i}`} boxIndex={i} row={row as SodukuNumbers[]} />
+      <section
+        className={
+          'relative grid grid-cols-3 grid-rows-3 center border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700  bg-eerie-black-100 dark:bg-eerie-black-800' +
+          size
+        }
+      >
+        {state.map((grid, i) => (
+          <Row key={`grid-${i}`} boxIndex={i} grid={grid} />
         ))}
       </section>
       <div className="border-collapse border border-eerie-black-300 dark:border-eerie-black-700 size-[40dvh] bg-eerie-black-100 dark:bg-eerie-black-800">

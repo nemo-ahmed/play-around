@@ -1,7 +1,13 @@
+import {SodukuType} from '@/types/soduku'
 import {readFile} from '@/utils/convertTxtToJson'
 import {NextRequest, NextResponse} from 'next/server'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const params = req.nextUrl.searchParams
+  const offset = params.get('offset') || '0'
+  const limit = params.get('limit') || '10'
+  const rating = params.get('rating')
+
   // ? I was too lazy to convert 100k+ lines so i did this 🐨
   // console.log('reading')
   // const res = await readFile('/src/data/evilsoduku.txt')
@@ -17,8 +23,20 @@ export async function GET() {
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
   const res = await readFile('/src/data/evilsoduku.json')
+  let arr = Object.values(JSON.parse(res)) as SodukuType[]
 
-  return new Response(JSON.stringify(JSON.parse(res), null, 2), {
+  if (rating) {
+    arr = arr.filter(item => item.rating >= rating)
+  }
+
+  if (arr.length === 0) {
+    return new Response(
+      `No Data found that is equal or higher than the given rating.`,
+      {status: 204},
+    )
+  }
+  const data = arr.slice(Number(offset), Number(offset) + Number(limit))
+  return new Response(JSON.stringify(data, null, 2), {
     status: 200,
     headers: {'Content-Type': 'application/json'},
   })

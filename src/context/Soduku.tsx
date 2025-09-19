@@ -1,5 +1,6 @@
 'use client'
 
+import {SodukuType} from '@/types/soduku'
 import {getColIndex, getRowIndex} from '@/utils/soduku'
 import {createContext, type ReactNode, useContext, useState} from 'react'
 
@@ -14,42 +15,65 @@ export interface SodukuCell {
 
 export type SodukuGrid = SodukuCell[][]
 
-interface SodukuType {
+interface SodukuContextType {
   state: SodukuGrid
   onChange: (params: {
     boxIndex: number
     cellIndex: number
-    value: SodukuNumbers
+    value: SodukuCell['value']
   }) => void
-  onStart: (soduku: SodukuNumbers[][]) => void
+  onRest: () => void
 }
 
-const Soduku = createContext<Partial<SodukuType>>({})
+const Soduku = createContext<Partial<SodukuContextType>>({})
 
-export default function SodukuProvider({children}: {children: ReactNode}) {
-  const [state, setState] = useState<SodukuGrid>([])
+const initSoduku = (soduku: string) => {
+  // ? keep in mind if we find a soduku API we will need to check if its sent by box or by row
+  return (soduku.match(/[0-9].{0,8}/gi) ?? []).map(row => {
+    console.log(row)
+    return row.split('').map(cell => ({
+      value:
+        !/[1-9]/.test(cell) && cell === '0'
+          ? null
+          : (Number(cell) as SodukuNumbers),
+      isFalse: false,
+      isGiven: /[1-9]/.test(cell),
+      notes: [],
+    }))
+  }) as SodukuGrid
+}
+
+export default function SodukuProvider({
+  children,
+  data,
+}: {
+  children: ReactNode
+  data: SodukuType
+}) {
+  const [state, setState] = useState<SodukuGrid>(() => initSoduku(data.data))
 
   function onChange({
     boxIndex,
     cellIndex,
     value,
-  }: {
-    boxIndex: number
-    cellIndex: number
-    value: SodukuNumbers
-  }) {
+  }: Parameters<SodukuContextType['onChange']>[0]) {
+    console.log({boxIndex, cellIndex, value})
     const colIndex = getColIndex({boxIndex, cellIndex}) as SodukuNumbers
     const rowIndex = getRowIndex({boxIndex, cellIndex}) as SodukuNumbers
 
     const currentBox = state[boxIndex].map(({value: v}) => v)
+    // ! I dont like this. lets make it faster
     const {currentRow, currentCol} = state.reduce(
       (
         acc: Record<'currentRow' | 'currentCol', Array<SodukuNumbers | null>>,
         box,
-      ) => ({
-        currentRow: [...acc.currentRow, box[rowIndex].value],
-        currentCol: [...acc.currentCol, box[colIndex].value],
-      }),
+      ) => {
+        console.log(box, rowIndex, colIndex, box[rowIndex], box[colIndex])
+        return {
+          currentRow: [...acc.currentRow, box[rowIndex].value],
+          currentCol: [...acc.currentCol, box[colIndex].value],
+        }
+      },
       {currentRow: [], currentCol: []},
     )
 
@@ -66,29 +90,21 @@ export default function SodukuProvider({children}: {children: ReactNode}) {
     })
   }
 
-  const onStart = (soduku: SodukuNumbers[][]) => {
-    // ? keep in mind if we find a soduku API we will need to check if its sent by box or by row
-    const newSoduku: SodukuGrid = soduku.map(row =>
-      row.map(cell => ({
-        value: cell,
-        isFalse: false,
-        isGiven: cell !== null,
-        notes: [],
-      })),
-    )
-    setState(newSoduku)
+  // ? We need to add a button for this
+  const onRest = () => {
+    setState(initSoduku(data.data))
   }
 
-  const value: SodukuType = {state, onChange, onStart}
+  const value: SodukuContextType = {state, onChange, onRest}
   return <Soduku value={value}>{children}</Soduku>
 }
 
 export function useSoduku() {
   const soduku = useContext(Soduku)
-  if (!soduku?.state || !soduku?.onChange || !soduku?.onStart) {
+  if (!soduku?.state || !soduku?.onChange || !soduku?.onRest) {
     throw new Error('useSoduku need to be used inside Soduku`s Provider')
   }
-  const requiredSoduku = soduku as SodukuType
+  const requiredSoduku = {...soduku} as SodukuContextType
 
   return requiredSoduku
 }
