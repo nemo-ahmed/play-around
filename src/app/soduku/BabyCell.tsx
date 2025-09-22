@@ -7,7 +7,7 @@ import {
   isSodukuNumber,
   validateSodukuValue,
 } from '@/utils/soduku'
-import {useRef, useState, useEffect, useTransition} from 'react'
+import {useEffect, useState} from 'react'
 import {NumbersCell} from './NumbersCell'
 import {cx} from '@/other/exports'
 
@@ -20,15 +20,9 @@ export function BabyCell({
   cellIndex: number
   value: Nullish<SodukuNumbers>
 }) {
-  const {onChange, state, givenRef} = useSoduku()
+  const {onChange, state, givenRef, selected, onSelectChange} = useSoduku()
 
-  const containerRef = useRef<HTMLButtonElement>(null)
-  const btnRef = useRef<HTMLButtonElement>(null)
-  const notesRef = useRef<HTMLDivElement>(null)
   const [notes, setNotes] = useState<SodukuNumbers[]>([])
-  const [hasFocus, setHasFocus] = useState(false)
-
-  const [, startTransition] = useTransition()
 
   const cellKey = `${boxIndex}-${cellIndex}`
   // ? This will be use to Validation. Should be quicker than before
@@ -40,6 +34,18 @@ export function BabyCell({
     boxIndex,
     cellIndex,
   })
+
+  const hasFocus =
+    selected && selected.colIndex === colIndex && selected.rowIndex === rowIndex
+
+  function onBlur() {
+    onSelectChange(undefined)
+  }
+
+  const isHighlightBG =
+    selected &&
+    (selected.colIndex === colIndex || selected.rowIndex === rowIndex)
+  const isValueHighlighted = selected?.value && selected.value === value
   const isGiven = givenRef?.[cellKey]
   const isFalse =
     value &&
@@ -47,24 +53,26 @@ export function BabyCell({
       validateSodukuValue(state.rowState[rowIndex], value) ||
       validateSodukuValue(state.gridState[boxIndex], value))
 
-  // ? on outside clickish
-  const isOutside = containerRef.current?.contains(document.activeElement)
-  useEffect(() => {
-    if (isOutside) return
-    containerRef.current?.blur()
-  }, [isOutside])
+  const onkeydown = (e: KeyboardEvent) => {
+    if (isGiven) return
+    const nKey = Number(e.key)
 
-  useEffect(() => {
-    console.log(hasFocus)
-    if (hasFocus) return
-    if (typeof value === 'number') {
-      console.log('btnRef.current?.focus')
-      btnRef.current?.focus()
-    } else {
-      console.log('notesRef.current?.focus')
-      notesRef.current?.focus()
+    if (nKey >= 1 && nKey <= 9) {
+      onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
+    } else if (e.key === 'Backspace' || e.key === 'Delete') {
+      onChange({boxIndex, cellIndex, value: null})
+    } else if (e.key === 'Escape') {
+      onBlur()
     }
-  }, [hasFocus, value])
+  }
+  useEffect(() => {
+    if (isGiven || !hasFocus) return
+    window.addEventListener('keydown', onkeydown)
+    return () => {
+      window.removeEventListener('keydown', onkeydown)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasFocus])
 
   const keyStyles = cx({
     'absolute size-full fill-eerie-black-500 dark:fill-eerie-black-600':
@@ -75,94 +83,47 @@ export function BabyCell({
       !isGiven && isFalse,
   })
 
-  // if (!document.activeElement?.isSameNode(notesRef.current) && !value) {
-  //   notesRef.current?.focus()
-  // } else if (!document.activeElement?.isSameNode(btnRef.current) && value) {
-  //   btnRef.current?.focus()
-  // }
-
-  // ? This will be a good place to use <Active /> when its lunched
+  // ? This will be a good place to use <Active /> when its launched
   return (
     <div
-      ref={e => {
-        if (e) {
-        }
-      }}
       className={cx(
         'relative size-full group border-collapse border-[0.5px]',
         'border-eerie-black-300 dark:border-eerie-black-700',
-        'hover:bg-eerie-black/18 dark:hover:bg-eerie-black/18 focus-within:bg-eerie-black/18',
+        'hover:bg-eerie-black/18 dark:hover:bg-eerie-black/18',
+        {
+          'bg-eerie-black/10': isHighlightBG,
+          'bg-eerie-black/18': hasFocus,
+          'bg-eerie-black/30': isValueHighlighted,
+        },
       )}
-      data-focus={hasFocus || undefined}
-      onBlurCapture={() => {
-        setHasFocus(false)
+      onBlur={() => {
+        onBlur()
       }}
     >
       {!hasFocus && (
+        // ? This is to prevent adding notes when focusing cell
         <button
           className="size-full absolute bg-transparent z-10"
           type="button"
           onClick={() => {
-            setHasFocus(true)
+            onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
           }}
         />
       )}
-      <button
-        ref={btnRef}
+      <div
         data-visible={isSodukuNumber(value)}
-        onKeyDown={e => {
-          e.preventDefault()
-          e.stopPropagation()
-          if (isGiven) return
-          const nKey = Number(e.key)
-
-          if (nKey >= 1 && nKey <= 9) {
-            onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
-          } else if (e.key === 'Backspace' || e.key === 'Delete') {
-            onChange({boxIndex, cellIndex, value: null})
-            startTransition(() => {
-              notesRef.current?.focus()
-            })
-          } else if (e.key === 'Escape') {
-            setHasFocus(false)
-          }
-        }}
         className={cx('outline-0 data-[visible=true]:hidden', keyStyles)}
       >
         {value && DYNAMIC_NUMBERS[value]}
-      </button>
+      </div>
       <div
-        ref={notesRef}
-        onClick={() => {
-          if (typeof value === 'number') btnRef.current?.focus()
-          else notesRef.current?.focus()
-          setHasFocus(true)
-        }}
         data-visible={isSodukuNumber(value)}
-        onKeyDown={e => {
-          e.preventDefault()
-          e.stopPropagation()
-          if (isGiven) return
-          const nKey = Number(e.key)
-
-          if (nKey >= 1 && nKey <= 9) {
-            onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
-            startTransition(() => {
-              btnRef.current?.focus()
-            })
-          } else if (e.key === 'Backspace' || e.key === 'Delete') {
-            onChange({boxIndex, cellIndex, value: null})
-          } else if (e.key === 'Escape') {
-            setHasFocus(false)
-          }
-        }}
         className={cx('outline-0 data-[visible=false]:hidden', keyStyles)}
       >
         {(hasFocus || notes.length > 0) && (
           <NumbersCell
             variant="note"
             onChange={n => {
-              console.log(hasFocus)
               if (hasFocus)
                 setNotes(
                   prev =>

@@ -15,7 +15,7 @@ import {
 export type SodukuNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
 export interface SodukuCell {
-  value: SodukuNumbers | null
+  value: Nullish<SodukuNumbers>
   isGiven: boolean
   isFalse: boolean
   notes: SodukuNumbers[]
@@ -24,19 +24,24 @@ export interface SodukuCell {
 export type SodukuGrid = SodukuCell[][]
 type SodukuMatrix = Nullish<SodukuNumbers>[][]
 
+type Selected = {
+  value: Nullish<SodukuNumbers>
+  rowIndex: number
+  colIndex: number
+  cellIndex: number
+  boxIndex: number
+}
 interface SodukuContextType {
-  state: {
-    rowState: SodukuMatrix
-    colState: SodukuMatrix
-    gridState: SodukuMatrix
-  }
+  state: Record<'rowState' | 'colState' | 'gridState', SodukuMatrix>
   onChange: (params: {
     boxIndex: number
     cellIndex: number
-    value: SodukuCell['value']
+    value: Nullish<SodukuNumbers>
   }) => void
   onRest: () => void
   givenRef: Record<string, boolean>
+  selected?: Selected
+  onSelectChange: (props?: Selected) => void
 }
 
 const Soduku = createContext<Partial<SodukuContextType>>({})
@@ -56,6 +61,8 @@ export default function SodukuProvider({
     colState: [],
     gridState: [],
   })
+  const [selected, setSelections] = useState<SodukuContextType['selected']>()
+
   const initSoduku = useCallback(() => {
     const rowArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
     const colArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
@@ -99,6 +106,7 @@ export default function SodukuProvider({
     const colIndex = getColIndex({boxIndex, cellIndex})
     const rowIndex = getRowIndex({boxIndex, cellIndex})
 
+    setSelections({boxIndex, cellIndex, colIndex, rowIndex, value})
     setState(prev => {
       prev.rowState[rowIndex][colIndex] = value
       prev.colState[colIndex][rowIndex] = value
@@ -117,6 +125,8 @@ export default function SodukuProvider({
     onChange,
     onRest,
     givenRef: givensRef.current,
+    selected,
+    onSelectChange: setSelections,
   }
   return <Soduku value={value}>{children}</Soduku>
 }

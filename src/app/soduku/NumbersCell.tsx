@@ -1,5 +1,5 @@
 'use client'
-import type {SodukuNumbers} from '@/context/Soduku'
+import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 
 export const NumbersCell = ({
@@ -11,6 +11,7 @@ export const NumbersCell = ({
   onChange?: (n: SodukuNumbers) => void
   selected?: SodukuNumbers[]
 }) => {
+  const {onChange: onKeypadClick, selected: selectedCell} = useSoduku()
   const cellStyles: Record<typeof variant, string> = {
     keypad:
       'size-full fill-eerie-black-500 dark:fill-eerie-black-700 hover:fill-eerie-black-400 hover:dark:fill-eerie-black-600 border-collapse border border-eerie-black-300 dark:border-eerie-black-700',
@@ -24,6 +25,13 @@ export const NumbersCell = ({
           className={cellStyles[variant]}
           data-selected={selected?.includes(n)}
           onClick={() => {
+            if (variant === 'keypad' && selectedCell) {
+              onKeypadClick({
+                boxIndex: selectedCell.boxIndex,
+                cellIndex: selectedCell.cellIndex,
+                value: n,
+              })
+            }
             onChange?.(n)
           }}
         >
