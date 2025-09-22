@@ -1,5 +1,5 @@
 import React, {Suspense} from 'react'
-import SodukuComp from './cell'
+import SodukuComp from './Cell'
 import {SodukuTypeReturn} from '@/types/soduku'
 import SodukuProvider from '@/context/Soduku'
 
@@ -12,11 +12,14 @@ async function Page() {
   return (
     <div className="flex flex-col gap-4">
       <Suspense>
-        {data?.map(puzzle => (
-          <SodukuProvider data={puzzle} key={puzzle.id}>
-            <SodukuComp key={puzzle.id} />
-          </SodukuProvider>
-        ))}
+        {data?.map(
+          (puzzle, i) =>
+            i === 0 && (
+              <SodukuProvider data={puzzle} key={puzzle.id}>
+                <SodukuComp key={puzzle.id} />
+              </SodukuProvider>
+            ),
+        )}
       </Suspense>
     </div>
   )

@@ -1,8 +1,16 @@
 'use client'
 
 import {SodukuType} from '@/types/soduku'
-import {getColIndex, getRowIndex} from '@/utils/soduku'
-import {createContext, type ReactNode, useContext, useState} from 'react'
+import {getColIndex, getRowIndex, isSodukuNumber} from '@/utils/soduku'
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 export type SodukuNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
@@ -14,34 +22,26 @@ export interface SodukuCell {
 }
 
 export type SodukuGrid = SodukuCell[][]
+type SodukuMatrix = Nullish<SodukuNumbers>[][]
 
 interface SodukuContextType {
-  state: SodukuGrid
+  state: {
+    rowState: SodukuMatrix
+    colState: SodukuMatrix
+    gridState: SodukuMatrix
+  }
   onChange: (params: {
     boxIndex: number
     cellIndex: number
     value: SodukuCell['value']
   }) => void
   onRest: () => void
+  givenRef: Record<string, boolean>
 }
 
 const Soduku = createContext<Partial<SodukuContextType>>({})
 
-const initSoduku = (soduku: string) => {
-  // ? keep in mind if we find a soduku API we will need to check if its sent by box or by row
-  return (soduku.match(/[0-9].{0,8}/gi) ?? []).map(row => {
-    console.log(row)
-    return row.split('').map(cell => ({
-      value:
-        !/[1-9]/.test(cell) && cell === '0'
-          ? null
-          : (Number(cell) as SodukuNumbers),
-      isFalse: false,
-      isGiven: /[1-9]/.test(cell),
-      notes: [],
-    }))
-  }) as SodukuGrid
-}
+const emptyMatrixJSON = JSON.stringify(Array(9).fill(Array(9).fill(null)))
 
 export default function SodukuProvider({
   children,
@@ -50,7 +50,45 @@ export default function SodukuProvider({
   children: ReactNode
   data: SodukuType
 }) {
-  const [state, setState] = useState<SodukuGrid>(() => initSoduku(data.data))
+  const givensRef = useRef<Record<string, boolean>>({})
+  const [state, setState] = useState<SodukuContextType['state']>({
+    rowState: [],
+    colState: [],
+    gridState: [],
+  })
+  const initSoduku = useCallback(() => {
+    const rowArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
+    const colArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
+    const dataArr = data.data.match(/[0-9].{0,8}/gi) ?? []
+
+    const gridArr: SodukuMatrix = dataArr.map((grid, gridIndex) => {
+      return grid.split('').map((cell, cellIndex) => {
+        const value = isSodukuNumber(cell)
+          ? null
+          : (Number(cell) as SodukuNumbers)
+        if (value) {
+          givensRef.current[`${gridIndex}-${cellIndex}`] = true
+        }
+        const colIndex = getColIndex({
+          boxIndex: gridIndex,
+          cellIndex,
+        })
+        const rowIndex = getRowIndex({
+          boxIndex: gridIndex,
+          cellIndex,
+        })
+        rowArr[rowIndex][colIndex] = value
+        colArr[colIndex][rowIndex] = value
+        return value
+      })
+    })
+
+    setState({rowState: rowArr, colState: colArr, gridState: gridArr})
+  }, [data.data])
+
+  useEffect(() => {
+    initSoduku()
+  }, [initSoduku])
 
   function onChange({
     boxIndex,
@@ -58,44 +96,28 @@ export default function SodukuProvider({
     value,
   }: Parameters<SodukuContextType['onChange']>[0]) {
     console.log({boxIndex, cellIndex, value})
-    const colIndex = getColIndex({boxIndex, cellIndex}) as SodukuNumbers
-    const rowIndex = getRowIndex({boxIndex, cellIndex}) as SodukuNumbers
-
-    const currentBox = state[boxIndex].map(({value: v}) => v)
-    // ! I dont like this. lets make it faster
-    const {currentRow, currentCol} = state.reduce(
-      (
-        acc: Record<'currentRow' | 'currentCol', Array<SodukuNumbers | null>>,
-        box,
-      ) => {
-        console.log(box, rowIndex, colIndex, box[rowIndex], box[colIndex])
-        return {
-          currentRow: [...acc.currentRow, box[rowIndex].value],
-          currentCol: [...acc.currentCol, box[colIndex].value],
-        }
-      },
-      {currentRow: [], currentCol: []},
-    )
-
-    const isFound =
-      currentRow.includes(value) ||
-      currentCol.includes(value) ||
-      currentBox.includes(value)
+    const colIndex = getColIndex({boxIndex, cellIndex})
+    const rowIndex = getRowIndex({boxIndex, cellIndex})
 
     setState(prev => {
-      const newState = [...prev]
-      newState[boxIndex][cellIndex].isFalse = isFound
-      newState[boxIndex][cellIndex].value = value
-      return newState
+      prev.rowState[rowIndex][colIndex] = value
+      prev.colState[colIndex][rowIndex] = value
+      prev.gridState[boxIndex][cellIndex] = value
+      return {...prev}
     })
   }
 
   // ? We need to add a button for this
   const onRest = () => {
-    setState(initSoduku(data.data))
+    initSoduku()
   }
 
-  const value: SodukuContextType = {state, onChange, onRest}
+  const value: SodukuContextType = {
+    state,
+    onChange,
+    onRest,
+    givenRef: givensRef.current,
+  }
   return <Soduku value={value}>{children}</Soduku>
 }
 

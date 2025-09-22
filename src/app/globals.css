@@ -179,6 +179,7 @@
 
 body {
   @apply bg-eerie-black-900 dark:bg-eerie-black-200 h-screen;
+
   color: #0a0a0a;
   /* background: #ededed; */
   font-family: Arial, Helvetica, sans-serif;
@@ -205,14 +206,14 @@ form {
     @apply rounded-2xl border-2 border-zinc-500 w-fit px-4 self-center active:text-gray-700 active:dark:text-gray-300;
   }
 }
+/* 
+  ::highlight(speechify-paragraph-highlight) {
+    background-color: rgba(107, 120, 252, 0.5);
+  }
 
-/* ::highlight(speechify-paragraph-highlight) {
-  background-color: rgba(107, 120, 252, 0.5);
-}
-
-::highlight(speechify-word-highlight) {
-  background-color: #6b78fc;
-} */
+  ::highlight(speechify-word-highlight) {
+    background-color: #6b78fc;
+  } */
 
 ::selection {
   background-color: #f06;
