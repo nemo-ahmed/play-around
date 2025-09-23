@@ -52,7 +52,7 @@ export const NumbersCell = ({
         >
           <button
             type="button"
-            className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 scale-95"
+            className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
             onClick={onRest}
           >
             <BsArrowRepeat className="size-9/12" />
@@ -64,7 +64,7 @@ export const NumbersCell = ({
           <button
             type="button"
             aria-label="erase"
-            className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 scale-95"
+            className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
             onClick={() => {
               if (variant === 'keypad' && selectedCell) {
                 onKeypadClick({
