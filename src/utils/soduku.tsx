@@ -48,6 +48,9 @@ export function validateSodukuValue(
 export const isSodukuNumber = (n: SodukuNumbers | string | null) =>
   n && !/[1-9]/.test(n.toString())
 
+export const validateSodukuLine = (n: SodukuNumbers[][]) =>
+  /(123456789){8}/.test(n.map(x => x.sort((a, b) => a - b).join('')).join(''))
+
 const iconStyle = 'flex items-center justify-center size-full'
 export const DYNAMIC_NUMBERS = {
   1: <PiNumberOneBold size="100%" className={iconStyle} fill="inherit" />,
