@@ -1,6 +1,6 @@
 import {SodukuType} from '@/types/soduku'
 import {readFile} from '@/utils/convertTxtToJson'
-import {NextRequest, NextResponse} from 'next/server'
+import {NextRequest} from 'next/server'
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
   })
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const data = await req.json()
 

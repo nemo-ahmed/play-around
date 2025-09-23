@@ -1,6 +1,8 @@
 'use client'
 import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
+import {cx} from '@/other/exports'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
+import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 
 export const NumbersCell = ({
   variant,
@@ -11,33 +13,72 @@ export const NumbersCell = ({
   onChange?: (n: SodukuNumbers) => void
   selected?: SodukuNumbers[]
 }) => {
-  const {onChange: onKeypadClick, selected: selectedCell} = useSoduku()
+  const {onChange: onKeypadClick, selected: selectedCell, onRest} = useSoduku()
   const cellStyles: Record<typeof variant, string> = {
     keypad:
       'size-full fill-eerie-black-500 dark:fill-eerie-black-700 hover:fill-eerie-black-400 hover:dark:fill-eerie-black-600 border-collapse border border-eerie-black-300 dark:border-eerie-black-700',
     note: "size-full fill-transparent hover:fill-eerie-black-500 hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600",
   }
   return (
-    <div className="grid grid-cols-3 grid-rows-3 content-center">
-      {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
-        <button
-          key={'note-numbers-' + n}
-          className={cellStyles[variant]}
-          data-selected={selected?.includes(n)}
-          onClick={() => {
-            if (variant === 'keypad' && selectedCell) {
-              onKeypadClick({
-                boxIndex: selectedCell.boxIndex,
-                cellIndex: selectedCell.cellIndex,
-                value: n,
-              })
-            }
-            onChange?.(n)
-          }}
+    <div className="block">
+      <div className="grid grid-cols-3 grid-rows-3 content-center">
+        {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
+          <button
+            key={'note-numbers-' + n}
+            className={cellStyles[variant]}
+            data-selected={selected?.includes(n)}
+            onClick={() => {
+              if (variant === 'keypad' && selectedCell) {
+                onKeypadClick({
+                  boxIndex: selectedCell.boxIndex,
+                  cellIndex: selectedCell.cellIndex,
+                  value: n,
+                })
+              }
+              onChange?.(n)
+            }}
+          >
+            {DYNAMIC_NUMBERS[n]}
+          </button>
+        ))}
+      </div>
+      {variant === 'keypad' && (
+        <div
+          className={cx(
+            'flex h-8 bg-eerie-black-600 border-2 border-collapse border-eerie-black-300 dark:border-eerie-black-700 rounded-b-2xl',
+            // ? For some reason without this the edges is not aligned
+            'm-[-1]',
+          )}
         >
-          {DYNAMIC_NUMBERS[n]}
-        </button>
-      ))}
+          <button
+            type="button"
+            className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 scale-95"
+            onClick={onRest}
+          >
+            <BsArrowRepeat className="size-9/12" />
+          </button>
+          <div
+            aria-label="divider"
+            className="w-1 bg-eerie-black-300 dark:bg-eerie-black-700"
+          />
+          <button
+            type="button"
+            aria-label="erase"
+            className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 scale-95"
+            onClick={() => {
+              if (variant === 'keypad' && selectedCell) {
+                onKeypadClick({
+                  boxIndex: selectedCell.boxIndex,
+                  cellIndex: selectedCell.cellIndex,
+                  value: null,
+                })
+              }
+            }}
+          >
+            <BsEraser className="size-9/12" />
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -96,6 +96,7 @@ export function BabyCell({
           'bg-eerie-black/30': isValueHighlighted,
         },
       )}
+      role="textbox"
       onBlur={() => {
         onBlur()
       }}

@@ -14,14 +14,6 @@ import {
 
 export type SodukuNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-export interface SodukuCell {
-  value: Nullish<SodukuNumbers>
-  isGiven: boolean
-  isFalse: boolean
-  notes: SodukuNumbers[]
-}
-
-export type SodukuGrid = SodukuCell[][]
 type SodukuMatrix = Nullish<SodukuNumbers>[][]
 
 type Selected = {
@@ -32,7 +24,9 @@ type Selected = {
   boxIndex: number
 }
 interface SodukuContextType {
-  state: Record<'rowState' | 'colState' | 'gridState', SodukuMatrix>
+  state: Record<'rowState' | 'colState' | 'gridState', SodukuMatrix> & {
+    count: number
+  }
   onChange: (params: {
     boxIndex: number
     cellIndex: number
@@ -60,6 +54,7 @@ export default function SodukuProvider({
     rowState: [],
     colState: [],
     gridState: [],
+    count: 0,
   })
   const [selected, setSelections] = useState<SodukuContextType['selected']>()
 
@@ -90,7 +85,13 @@ export default function SodukuProvider({
       })
     })
 
-    setState({rowState: rowArr, colState: colArr, gridState: gridArr})
+    setState({
+      rowState: rowArr,
+      colState: colArr,
+      gridState: gridArr,
+      count: data.data.match(/[1-9]/g)?.length ?? 0,
+    })
+    setSelections(undefined)
   }, [data.data])
 
   useEffect(() => {
@@ -106,11 +107,20 @@ export default function SodukuProvider({
     const colIndex = getColIndex({boxIndex, cellIndex})
     const rowIndex = getRowIndex({boxIndex, cellIndex})
 
-    setSelections({boxIndex, cellIndex, colIndex, rowIndex, value})
+    setSelections({
+      boxIndex,
+      cellIndex,
+      colIndex,
+      rowIndex,
+      value,
+    })
+
     setState(prev => {
       prev.rowState[rowIndex][colIndex] = value
       prev.colState[colIndex][rowIndex] = value
       prev.gridState[boxIndex][cellIndex] = value
+      prev.count = value !== null ? prev.count - 1 : prev.count + 1
+
       return {...prev}
     })
   }
