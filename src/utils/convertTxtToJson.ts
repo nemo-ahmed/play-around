@@ -1,12 +1,19 @@
 import fs from 'fs'
 
-export function convertTxtToJson(txtData: string) {
+export function convertTxtDataToJsonData(txtData: string) {
   const arr = txtData
     .split('\n')
     .map(line => (line.startsWith('//') ? '' : line.split(/\s+/)))
     .sort(([, , a], [, , b]) => Number(a) - Number(b))
 
-  return arr.reduce((acc, line) => {
+  // ? ideally we want this form
+  // ? 1- create a file for each rank segment ie: 5.0 - 5.9
+  //  to make things faster
+  // this will hopefully lower the numbers of sodukus
+  // which will allow us to make an array for the solvable sodukus index and get a random one from them
+  // ? 2- {total: arr.length; data:{id:string; soduku: string; rank: number}[]}
+
+  const refactoredData = arr.reduce((acc, line) => {
     const lineArr = line
     if (lineArr.length <= 1) return acc
     return {
@@ -18,6 +25,7 @@ export function convertTxtToJson(txtData: string) {
       },
     }
   }, {})
+  return refactoredData
 }
 
 export async function readFile(filePathFromAppDown: string) {

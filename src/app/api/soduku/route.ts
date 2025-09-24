@@ -8,17 +8,6 @@ export async function GET(req: NextRequest) {
   const limit = params.get('limit') || '10'
   const rating = params.get('rating')
 
-  // ? I was too lazy to convert 100k+ lines so i did this 🐨
-  // console.log('reading')
-  // const res = await readFile('/src/data/evilsoduku.txt')
-  // console.log('converting')
-  // const object = convertTxtToJson(res)
-  // console.log('converting done, writing')
-  // await writeDataToFile({
-  //   name: 'evilsoduku',
-  //   data: JSON.stringify(object, null, 2),
-  // })
-
   // ? Ideally we want to chunk this file and send it in parts
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
@@ -47,6 +36,12 @@ export async function POST(req: NextRequest) {
     const data = await req.json()
 
     // ? Some logic will be added if I ever user the endpoint 😆
+
+    // ? On Successful Finish
+    // ? Add the index, id, and solution to a JSON file
+    // ? Then cross reference the random numbers with the solved soduku(s) index
+    // ? solved-{lvl}.json
+    // ? {indexes: number[],sodukus:{id: string,data: string,groupedBy:'grid'}[]}
 
     return new Response(JSON.stringify(data, null, 2), {
       status: 200,

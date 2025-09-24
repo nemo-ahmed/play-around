@@ -74,30 +74,24 @@ export default function SodukuProvider({
         ) {
           i += 3
         }
-        const [a, b, c] = row.match(/[0-9].{0,2}/gi) as ['', '', '']
-        acc[i] = [
-          ...acc[i],
-          a
-            .split('')
-            .map(x => (x === '0' ? null : (Number(x) as SodukuNumbers))),
-        ].flat() as Nullish<SodukuNumbers>[]
-        acc[i + 1] = [
-          ...acc[i + 1],
-          b
-            .split('')
-            .map(x => (x === '0' ? null : (Number(x) as SodukuNumbers))),
-        ].flat() as Nullish<SodukuNumbers>[]
-        acc[i + 2] = [
-          ...acc[i + 2],
-          c
-            .split('')
-            .map(x => (x === '0' ? null : (Number(x) as SodukuNumbers))),
-        ].flat() as Nullish<SodukuNumbers>[]
+        const array = row.match(/[0-9].{0,2}/gi) as ['', '', '']
+        // ? Assigning each row its place in grid
+        for (let index = 0; index < array.length; index++) {
+          const element = array[index]
+          acc[i + index] = [
+            ...acc[i + index],
+            element
+              .split('')
+              .map(x => (x === '0' ? null : (Number(x) as SodukuNumbers))),
+          ].flat() as Nullish<SodukuNumbers>[]
+        }
+
         return acc
       },
       [[], [], [], [], [], [], [], [], []] as Nullish<SodukuNumbers>[][],
     )
 
+    // ? we are keeping this instead of refactoring logic and UI to use the fetched Soduku
     const gridArr: SodukuMatrix = rowsToGrid.map((grid, gridIndex) => {
       return grid.map((cell, cellIndex) => {
         const value = isSodukuNumber(cell) ? null : (cell as SodukuNumbers)
