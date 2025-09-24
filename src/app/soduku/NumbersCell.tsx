@@ -1,7 +1,6 @@
 'use client'
 import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
 import {cx} from '@/other/exports'
-import {SodukuTypeReturn} from '@/types/soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 
@@ -9,27 +8,24 @@ export const NumbersCell = ({
   variant,
   onChange,
   selected,
-  data,
 }: {
   variant: 'note' | 'keypad'
   onChange?: (n: SodukuNumbers) => void
   selected?: SodukuNumbers[]
-  data: SodukuTypeReturn
 }) => {
-  const {onChange: onKeypadClick, selected: selectedCell, onRest} = useSoduku()
+  const {
+    onChange: onKeypadClick,
+    selected: selectedCell,
+    onRest,
+    givenRef,
+  } = useSoduku()
   const cellStyles: Record<typeof variant, string> = {
     keypad:
-      'size-full fill-eerie-black-500 dark:fill-eerie-black-700 hover:fill-eerie-black-400 hover:dark:fill-eerie-black-600 border-collapse border border-eerie-black-300 dark:border-eerie-black-700',
-    note: "size-full fill-transparent hover:fill-eerie-black-500 hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600",
+      'size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border-collapse border border-eerie-black-300 dark:border-eerie-black-700',
+    note: "size-full fill-transparent not-disabled:hover:fill-eerie-black-500 not-disabled:hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600",
   }
   return (
-    <div className="block">
-      {data && (
-        <div className="flex justify-between">
-          <h3 className="text-rich-black-100">Rating: {data.data[0].rating}</h3>
-          <h3 className="text-rich-black-100">Total: {data.total}</h3>
-        </div>
-      )}
+    <div>
       <div
         className={cx('grid grid-cols-3 grid-rows-3 content-center', {
           'size-[40dvh]': variant === 'keypad',
@@ -50,6 +46,10 @@ export const NumbersCell = ({
               }
               onChange?.(n)
             }}
+            disabled={
+              !selectedCell ||
+              givenRef[`${selectedCell.boxIndex}-${selectedCell.cellIndex}`]
+            }
           >
             {DYNAMIC_NUMBERS[n]}
           </button>
