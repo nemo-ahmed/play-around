@@ -61,13 +61,47 @@ export default function SodukuProvider({
   const initSoduku = useCallback(() => {
     const rowArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
     const colArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
+    // ? After testing one of the sodukus
+    // ? it Appears that we are not getting grids but maybe rows
     const dataArr = data.data.match(/[0-9].{0,8}/gi) ?? []
+    let i = 0
 
-    const gridArr: SodukuMatrix = dataArr.map((grid, gridIndex) => {
-      return grid.split('').map((cell, cellIndex) => {
-        const value = isSodukuNumber(cell)
-          ? null
-          : (Number(cell) as SodukuNumbers)
+    const rowsToGrid = dataArr.reduce(
+      (acc, row) => {
+        if (
+          (i === 0 && acc[0].length === 9) ||
+          (i === 3 && acc[3].length === 9)
+        ) {
+          i += 3
+        }
+        const [a, b, c] = row.match(/[0-9].{0,2}/gi) as ['', '', '']
+        acc[i] = [
+          ...acc[i],
+          a
+            .split('')
+            .map(x => (x === '0' ? null : (Number(x) as SodukuNumbers))),
+        ].flat() as Nullish<SodukuNumbers>[]
+        acc[i + 1] = [
+          ...acc[i + 1],
+          b
+            .split('')
+            .map(x => (x === '0' ? null : (Number(x) as SodukuNumbers))),
+        ].flat() as Nullish<SodukuNumbers>[]
+        acc[i + 2] = [
+          ...acc[i + 2],
+          c
+            .split('')
+            .map(x => (x === '0' ? null : (Number(x) as SodukuNumbers))),
+        ].flat() as Nullish<SodukuNumbers>[]
+        return acc
+      },
+      [[], [], [], [], [], [], [], [], []] as Nullish<SodukuNumbers>[][],
+    )
+
+    const gridArr: SodukuMatrix = rowsToGrid.map((grid, gridIndex) => {
+      return grid.map((cell, cellIndex) => {
+        const value = isSodukuNumber(cell) ? null : (cell as SodukuNumbers)
+        console.log(value)
         if (value) {
           givensRef.current[`${gridIndex}-${cellIndex}`] = true
         }

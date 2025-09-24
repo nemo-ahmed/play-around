@@ -10,16 +10,13 @@ async function Page() {
       console.error(err)
     })
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col justify-around">
       <Suspense>
-        {data?.map(
-          (puzzle, i) =>
-            i === 0 && (
-              <SodukuProvider data={puzzle} key={puzzle.id}>
-                <SodukuComp key={puzzle.id} />
-              </SodukuProvider>
-            ),
-        )}
+        {data?.map((puzzle, i) => (
+          <SodukuProvider data={puzzle} key={puzzle.id}>
+            <SodukuComp key={puzzle.id} />
+          </SodukuProvider>
+        ))}
       </Suspense>
     </div>
   )
