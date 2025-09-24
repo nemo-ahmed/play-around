@@ -6,8 +6,11 @@ export type SodukuGetParams = {
 
 export interface SodukuType {
   id: string
-  data: string
+  soduku: string
   rating: string
 }
 
-export type SodukuTypeReturn = SodukuType[]
+export interface SodukuTypeReturn {
+  total: number
+  data: SodukuType[]
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import {SodukuType} from '@/types/soduku'
+import {SodukuTypeReturn} from '@/types/soduku'
 import {getColIndex, getRowIndex, isSodukuNumber} from '@/utils/soduku'
 import {
   createContext,
@@ -47,7 +47,7 @@ export default function SodukuProvider({
   data,
 }: {
   children: ReactNode
-  data: SodukuType
+  data: SodukuTypeReturn
 }) {
   const givensRef = useRef<Record<string, boolean>>({})
   const [state, setState] = useState<SodukuContextType['state']>({
@@ -63,7 +63,7 @@ export default function SodukuProvider({
     const colArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
     // ? After testing one of the sodukus
     // ? it Appears that we are not getting grids but maybe rows
-    const dataArr = data.data.match(/[0-9].{0,8}/gi) ?? []
+    const dataArr = data.data[0].soduku.match(/[0-9].{0,8}/gi) ?? []
     let i = 0
 
     const rowsToGrid = dataArr.reduce(
@@ -117,7 +117,7 @@ export default function SodukuProvider({
       rowState: rowArr,
       colState: colArr,
       gridState: gridArr,
-      count: data.data.match(/[1-9]/g)?.length ?? 0,
+      count: data.data[0].soduku.match(/[1-9]/g)?.length ?? 0,
     })
     setSelections(undefined)
   }, [data.data])

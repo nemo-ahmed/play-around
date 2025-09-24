@@ -1,6 +1,7 @@
 'use client'
 import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
 import {cx} from '@/other/exports'
+import {SodukuTypeReturn} from '@/types/soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 
@@ -8,10 +9,12 @@ export const NumbersCell = ({
   variant,
   onChange,
   selected,
+  data,
 }: {
   variant: 'note' | 'keypad'
   onChange?: (n: SodukuNumbers) => void
   selected?: SodukuNumbers[]
+  data: SodukuTypeReturn
 }) => {
   const {onChange: onKeypadClick, selected: selectedCell, onRest} = useSoduku()
   const cellStyles: Record<typeof variant, string> = {
@@ -21,7 +24,17 @@ export const NumbersCell = ({
   }
   return (
     <div className="block">
-      <div className="grid grid-cols-3 grid-rows-3 content-center">
+      {data && (
+        <div className="flex justify-between">
+          <h3 className="text-rich-black-100">Rating: {data.data[0].rating}</h3>
+          <h3 className="text-rich-black-100">Total: {data.total}</h3>
+        </div>
+      )}
+      <div
+        className={cx('grid grid-cols-3 grid-rows-3 content-center', {
+          'size-[40dvh]': variant === 'keypad',
+        })}
+      >
         {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
           <button
             key={'note-numbers-' + n}

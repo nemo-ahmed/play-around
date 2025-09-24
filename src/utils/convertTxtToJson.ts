@@ -1,10 +1,53 @@
+import type {SodukuType} from '@/types/soduku'
 import fs from 'fs'
+import Readline from 'node:readline'
 
-export function convertTxtDataToJsonData(txtData: string) {
-  const arr = txtData
-    .split('\n')
-    .map(line => (line.startsWith('//') ? '' : line.split(/\s+/)))
-    .sort(([, , a], [, , b]) => Number(a) - Number(b))
+// ! look into this
+// import {createGzip} from 'node:zlib'
+
+export function convertTxtDataToJsonData(fileName: string) {
+  if (!fileName.includes('.txt')) {
+    throw new Error('invalid file type')
+  }
+  const rs = fs.createReadStream(
+    process.cwd() + `/src/data/${fileName}`,
+    'utf8',
+  )
+  // ? This is awesome for correctly reading lines
+  const rl = Readline.createInterface({input: rs})
+  ;(async () => {
+    const obj: Record<string, SodukuType[]> = {}
+    for await (const line of rl) {
+      // ? Ignoring comment lines
+      if (line.startsWith('//')) {
+        continue
+      } else {
+        const [id, soduku, rating] = (line as string).split(/\s+/) as [
+          '',
+          '',
+          '',
+        ]
+        const key = Math.floor(Number(rating)).toString()
+        if (key !== 'NaN') {
+          obj[key] = [...(obj[key] ?? []), {id, soduku, rating}]
+        }
+      }
+    }
+
+    for await (const name of Object.keys(obj)) {
+      const writeStream = fs.createWriteStream(
+        process.cwd() + `/src/data/soduku/${name}.json`,
+      )
+
+      writeStream.write(
+        JSON.stringify({
+          total: obj[name].length,
+          data: obj[name],
+        }),
+      )
+      writeStream.end()
+    }
+  })()
 
   // ? ideally we want this form
   // ? 1- create a file for each rank segment ie: 5.0 - 5.9
@@ -12,20 +55,6 @@ export function convertTxtDataToJsonData(txtData: string) {
   // this will hopefully lower the numbers of sodukus
   // which will allow us to make an array for the solvable sodukus index and get a random one from them
   // ? 2- {total: arr.length; data:{id:string; soduku: string; rank: number}[]}
-
-  const refactoredData = arr.reduce((acc, line) => {
-    const lineArr = line
-    if (lineArr.length <= 1) return acc
-    return {
-      ...acc,
-      [lineArr[0]]: {
-        id: lineArr[0],
-        data: lineArr[1],
-        rating: lineArr[2],
-      },
-    }
-  }, {})
-  return refactoredData
 }
 
 export async function readFile(filePathFromAppDown: string) {

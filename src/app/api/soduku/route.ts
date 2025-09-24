@@ -1,31 +1,36 @@
-import {SodukuType} from '@/types/soduku'
-import {readFile} from '@/utils/convertTxtToJson'
+import {SodukuType, SodukuTypeReturn} from '@/types/soduku'
+import {convertTxtDataToJsonData, readFile} from '@/utils/convertTxtToJson'
 import {NextRequest} from 'next/server'
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams
-  const offset = params.get('offset') || '0'
-  const limit = params.get('limit') || '10'
+  const offset = params.get('offset')
+  const limit = params.get('limit')
   const rating = params.get('rating')
+
+  // convertTxtDataToJsonData('evilsoduku.txt')
+
+  if (!rating) {
+    return new Response('You need to set a rating', {
+      status: 404,
+    })
+  } else if (!['5', '6', '7', '8', '9'].includes(rating)) {
+    return new Response(`No soduku's found for this rating ${rating}`, {
+      status: 404,
+    })
+  }
 
   // ? Ideally we want to chunk this file and send it in parts
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
-  const res = await readFile('/src/data/evilsoduku.json')
-  let arr = Object.values(JSON.parse(res)) as SodukuType[]
+  const res = await readFile(`/src/data/soduku/${rating}.json`)
+  const obj = JSON.parse(res) as SodukuTypeReturn
 
-  if (rating) {
-    arr = arr.filter(item => item.rating >= rating)
+  let data = obj.data
+  if (offset || limit) {
+    data = data.slice(Number(offset), Number(offset) + Number(limit))
   }
-
-  if (arr.length === 0) {
-    return new Response(
-      `No Data found that is equal or higher than the given rating.`,
-      {status: 204},
-    )
-  }
-  const data = arr.slice(Number(offset), Number(offset) + Number(limit))
-  return new Response(JSON.stringify(data, null, 2), {
+  return new Response(JSON.stringify({total: obj.total, data}, null, 2), {
     status: 200,
     headers: {'Content-Type': 'application/json'},
   })
@@ -41,7 +46,7 @@ export async function POST(req: NextRequest) {
     // ? Add the index, id, and solution to a JSON file
     // ? Then cross reference the random numbers with the solved soduku(s) index
     // ? solved-{lvl}.json
-    // ? {indexes: number[],sodukus:{id: string,data: string,groupedBy:'grid'}[]}
+    // ? {total: number[],data:{id: string,data: string,groupedBy:'grid'}[]}
 
     return new Response(JSON.stringify(data, null, 2), {
       status: 200,
