@@ -1,12 +1,10 @@
 import React, {Suspense} from 'react'
 import SodukuComp from './Cell'
-import {SodukuType, SodukuTypeReturn} from '@/types/soduku'
+import {SodukuTypeReturn} from '@/types/soduku'
 import SodukuProvider from '@/context/Soduku'
 
 async function Page() {
-  const data = await fetch(
-    'http://localhost:3000/api/soduku?rating=9&offset=0&limit=1',
-  )
+  const data = await fetch('http://localhost:3000/api/soduku/random')
     .then(async res => (await res.json()) as SodukuTypeReturn)
     .catch(err => {
       console.error(err)

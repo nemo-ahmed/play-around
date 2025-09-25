@@ -1,5 +1,5 @@
 import {SodukuType, SodukuTypeReturn} from '@/types/soduku'
-import {convertTxtDataToJsonData, readFile} from '@/utils/convertTxtToJson'
+import {convertTxtDataToJsonData, readLocalFile} from '@/utils/convertTxtToJson'
 import {NextRequest} from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   // ? Ideally we want to chunk this file and send it in parts
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
-  const res = await readFile(`/src/data/soduku/${rating}.json`)
+  const res = await readLocalFile(`/src/data/soduku/${rating}.json`)
   const obj = JSON.parse(res) as SodukuTypeReturn
 
   let data = obj.data

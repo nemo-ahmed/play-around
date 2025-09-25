@@ -57,7 +57,7 @@ export function convertTxtDataToJsonData(fileName: string) {
   // ? 2- {total: arr.length; data:{id:string; soduku: string; rank: number}[]}
 }
 
-export async function readFile(filePathFromAppDown: string) {
+export async function readLocalFile(filePathFromAppDown: string) {
   return await fs.promises
     .readFile(process.cwd() + filePathFromAppDown, 'utf8')
     .then(data => {

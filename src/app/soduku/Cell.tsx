@@ -21,7 +21,12 @@ function SodukuComp({data}: {data: SodukuTypeReturn}) {
           <Row key={`grid-${i}`} boxIndex={i} grid={grid} />
         ))}
       </section>
-      <div className="border-collapse p-1 rounded-2xl border-2 border-eerie-black-300 dark:border-eerie-black-700 bg-eerie-black-900">
+      <div
+        className={cx(
+          'border-collapse p-1 bg-platinum-400',
+          'rounded-2xl border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
+        )}
+      >
         {data && (
           <div className="flex justify-between px-2 pt-2 pb-1.5">
             <h3 className="text-rich-black-100">
@@ -30,7 +35,12 @@ function SodukuComp({data}: {data: SodukuTypeReturn}) {
             <h3 className="text-rich-black-100">Total: {data.total}</h3>
           </div>
         )}
-        <div className="bg-eerie-black-800 dark:bg-eerie-black-800 rounded-b-2xl border-2 border-eerie-black-300 dark:border-eerie-black-700">
+        <div
+          className={cx(
+            'bg-eerie-black-800 dark:bg-eerie-black-800',
+            'rounded-b-2xl border-2 border-eerie-black-300 dark:border-eerie-black-700',
+          )}
+        >
           <NumbersCell variant="keypad" />
         </div>
       </div>
