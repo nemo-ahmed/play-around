@@ -1,11 +1,13 @@
 import type {SodukuType} from '@/types/soduku'
 import fs from 'fs'
+import {uniqWith, isEqual} from '@/other/exports'
+import {createReadStream} from 'node:fs'
 import Readline from 'node:readline'
 
 // ! look into this
 // import {createGzip} from 'node:zlib'
 
-export function convertTxtDataToJsonData(fileName: string) {
+export function convertTxtToJsonFiles(fileName: string) {
   if (!fileName.includes('.txt')) {
     throw new Error('invalid file type')
   }
@@ -17,6 +19,7 @@ export function convertTxtDataToJsonData(fileName: string) {
   const rl = Readline.createInterface({input: rs})
   ;(async () => {
     const obj: Record<string, SodukuType[]> = {}
+    console.log('handling lines')
     for await (const line of rl) {
       // ? Ignoring comment lines
       if (line.startsWith('//')) {
@@ -34,20 +37,61 @@ export function convertTxtDataToJsonData(fileName: string) {
       }
     }
 
+    console.log('Started Writing/checking', Object.keys(obj).length)
+
     for await (const name of Object.keys(obj)) {
+      const readStream = fs.existsSync(
+        process.cwd() + `/src/data/soduku/${name}.json`,
+      )
+
+      let arr = obj[name]
+      if (readStream) {
+        console.log('File found', name)
+
+        const existingData: string[] = []
+        const ss = fs.createReadStream(
+          process.cwd() + `/src/data/soduku/${name}.json`,
+          {autoClose: true, encoding: 'utf-8'},
+        )
+
+        const rl = Readline.createInterface({input: ss})
+
+        for await (const line of rl) {
+          existingData.push(line)
+        }
+
+        rl.on('end', (...rgs) => {
+          console.log('ended File reading', rgs, name, existingData)
+          const foundData = JSON.parse(existingData.join('')) as {
+            total: number
+            data: SodukuType[]
+          }
+
+          arr = arr.concat(foundData.data)
+          arr = uniqWith(arr, isEqual)
+          console.log('Finishing analyzing data', name)
+        })
+      }
+      console.log('Writing start', name)
       const writeStream = fs.createWriteStream(
         process.cwd() + `/src/data/soduku/${name}.json`,
       )
 
       writeStream.write(
-        JSON.stringify({
-          total: obj[name].length,
-          data: obj[name],
-        }),
+        JSON.stringify(
+          {
+            total: arr.length,
+            data: arr,
+          },
+          null,
+          2,
+        ),
       )
       writeStream.end()
+      console.log('finished writing', name)
     }
   })()
+  console.log('all done')
 
   // ? ideally we want this form
   // ? 1- create a file for each rank segment ie: 5.0 - 5.9

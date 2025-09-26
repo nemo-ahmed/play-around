@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams
 
   // ? This is to keep things within user's decision
-  const rating = params.get('rating') || random(5, 9)
+  const rating = params.get('rating') || random(1, 9)
 
   // convertTxtDataToJsonData('evilsoduku.txt')
 
