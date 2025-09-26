@@ -2,9 +2,15 @@ import React, {Suspense} from 'react'
 import SodukuComp from './Cell'
 import {SodukuTypeReturn} from '@/types/soduku'
 import SodukuProvider from '@/context/Soduku'
+import {AppRoutes} from '../../../.next/types/routes'
 
-async function Page() {
-  const data = await fetch('http://localhost:3000/api/soduku/random')
+async function Page({searchParams}: PageProps<AppRoutes>) {
+  const rating = await searchParams
+    .then(value => value.rating)
+    .catch(() => undefined)
+  const data = await fetch(
+    `http://localhost:3000/api/soduku/random?rating=${rating}`,
+  )
     .then(async res => (await res.json()) as SodukuTypeReturn)
     .catch(err => {
       console.error(err)

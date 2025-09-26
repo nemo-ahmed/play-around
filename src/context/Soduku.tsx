@@ -131,7 +131,6 @@ export default function SodukuProvider({
     cellIndex,
     value,
   }: Parameters<SodukuContextType['onChange']>[0]) {
-    console.log({boxIndex, cellIndex, value})
     const colIndex = getColIndex({boxIndex, cellIndex})
     const rowIndex = getRowIndex({boxIndex, cellIndex})
 
@@ -147,7 +146,8 @@ export default function SodukuProvider({
       prev.rowState[rowIndex][colIndex] = value
       prev.colState[colIndex][rowIndex] = value
       prev.gridState[boxIndex][cellIndex] = value
-      prev.count = value !== null ? prev.count - 1 : prev.count + 1
+      // ? Its never going to be Null but ...
+      prev.count = prev.rowState.flat().join('').match(/[1-9]/g)?.length ?? -1
 
       return {...prev}
     })

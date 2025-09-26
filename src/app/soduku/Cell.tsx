@@ -5,9 +5,39 @@ import {Row} from './Row'
 import {NumbersCell} from './NumbersCell'
 import {cx} from '@/other/exports'
 import {SodukuTypeReturn} from '@/types/soduku'
+import {validateSodukuLine} from '@/utils/soduku'
+import {useCallback, useEffect} from 'react'
+
+const SODUKU_SOLVED_LENGTH = 81
 
 function SodukuComp({data}: {data: SodukuTypeReturn}) {
   const {state} = useSoduku()
+
+  const submitResult = useCallback(
+    async (solution: string) => {
+      console.log('submitting', solution)
+      await fetch('http://localhost:3000/api/soduku/submit', {
+        body: JSON.stringify({
+          id: data.data[0].id,
+          soduku: solution,
+          rating: data.data[0].rating,
+        }),
+        method: 'POST',
+      })
+    },
+    [data.data],
+  )
+
+  useEffect(() => {
+    if (state.count >= SODUKU_SOLVED_LENGTH) {
+      const submittableRow = state.rowState
+
+      const str = submittableRow
+      if (validateSodukuLine(str)) submitResult(str.flat().join(''))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.count, submitResult])
+
   return (
     <div className="h-[calc(100dvh-120px)] flex items-center justify-around flex-wrap">
       <section

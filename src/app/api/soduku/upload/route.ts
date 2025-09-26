@@ -2,7 +2,7 @@ import {type NextRequest} from 'next/server'
 
 export async function GET(req: NextRequest) {
   // ? to avoid any complex file upload tactics we are using this file to trigger the convert data fn
-  // convertTxtToJsonFiles('medium.txt')
+  // await convertTxtToJsonFiles('medium.txt')
 
   return new Response(JSON.stringify({data: 123}, null, 2), {
     status: 200,
