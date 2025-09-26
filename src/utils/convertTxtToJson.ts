@@ -1,7 +1,6 @@
 import type {SodukuType} from '@/types/soduku'
 import fs from 'fs'
 import {uniqWith, isEqual} from '@/other/exports'
-import {createReadStream} from 'node:fs'
 import Readline from 'node:readline'
 
 // ! look into this

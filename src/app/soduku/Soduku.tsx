@@ -30,10 +30,10 @@ function SodukuComp({data}: {data: SodukuTypeReturn}) {
 
   useEffect(() => {
     if (state.count >= SODUKU_SOLVED_LENGTH) {
-      const submittableRow = state.rowState
+      const submittableRow = JSON.parse(JSON.stringify(state.rowState))
 
-      const str = submittableRow
-      if (validateSodukuLine(str)) submitResult(str.flat().join(''))
+      if (validateSodukuLine(submittableRow))
+        submitResult(state.rowState.flat().join(''))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.count, submitResult])

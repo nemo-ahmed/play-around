@@ -1,5 +1,5 @@
 import React, {Suspense} from 'react'
-import SodukuComp from './Cell'
+import SodukuComp from './Soduku'
 import {SodukuTypeReturn} from '@/types/soduku'
 import SodukuProvider from '@/context/Soduku'
 import {AppRoutes} from '../../../.next/types/routes'
