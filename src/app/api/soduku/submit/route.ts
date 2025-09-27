@@ -1,5 +1,5 @@
 import type {SodukuType} from '@/types/soduku'
-import {appendOrCreateFile} from '@/utils/convertTxtToJson'
+import {appendOrCreateFile} from '@/utils/filesHandling/convertTxtToJson'
 import type {NextRequest} from 'next/server'
 
 export async function POST(req: NextRequest) {

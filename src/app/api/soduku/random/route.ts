@@ -1,4 +1,4 @@
-import {readLocalFile} from '@/utils/convertTxtToJson'
+import {readLocalFile} from '@/utils/filesHandling/convertTxtToJson'
 import {random} from 'lodash'
 import type {SodukuTypeReturn} from '@/types/soduku'
 import type {NextRequest} from 'next/server'
