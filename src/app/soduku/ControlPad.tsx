@@ -2,15 +2,17 @@
 import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
 import {cx} from '@/other/exports'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
-import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
+import {BsArrowRepeat, BsEraser, BsFeather, BsFeather2} from 'react-icons/bs'
 
 export const NumbersCell = ({
   variant,
   onChange,
+  rating,
   selected,
 }: {
   variant: 'note' | 'keypad'
   onChange?: (n: SodukuNumbers) => void
+  rating?: string
   selected?: SodukuNumbers[]
 }) => {
   const {
@@ -18,7 +20,9 @@ export const NumbersCell = ({
     selected: selectedCell,
     onRest,
     givenRef,
+    newGame,
   } = useSoduku()
+
   const cellStyles: Record<typeof variant, string> = {
     keypad:
       'size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border-collapse border border-eerie-black-300 dark:border-eerie-black-700',
@@ -66,7 +70,20 @@ export const NumbersCell = ({
           <button
             type="button"
             className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
+            onClick={() => newGame(rating)}
+            aria-label="new game"
+          >
+            <BsFeather className="size-9/12" />
+          </button>
+          <div
+            aria-label="divider"
+            className="w-1 bg-eerie-black-300 dark:bg-eerie-black-700"
+          />
+          <button
+            type="button"
+            className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
             onClick={onRest}
+            aria-label="reset game"
           >
             <BsArrowRepeat className="size-9/12" />
           </button>
@@ -76,7 +93,7 @@ export const NumbersCell = ({
           />
           <button
             type="button"
-            aria-label="erase"
+            aria-label="erase cell"
             className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
             onClick={() => {
               if (variant === 'keypad' && selectedCell) {

@@ -2,38 +2,21 @@
 import {useSoduku} from '@/context/Soduku'
 
 import {Row} from './Row'
-import {NumbersCell} from './NumbersCell'
+import {NumbersCell} from './ControlPad'
 import {cx} from '@/other/exports'
-import {SodukuTypeReturn} from '@/types/soduku'
 import {validateSodukuLine} from '@/utils/soduku'
-import {useCallback, useEffect} from 'react'
+import {useEffect} from 'react'
 
 const SODUKU_SOLVED_LENGTH = 81
 
-function SodukuComp({data}: {data: SodukuTypeReturn}) {
-  const {state} = useSoduku()
-
-  const submitResult = useCallback(
-    async (solution: string) => {
-      console.log('submitting', solution)
-      await fetch('http://localhost:3000/api/soduku/submit', {
-        body: JSON.stringify({
-          id: data.data[0].id,
-          soduku: solution,
-          rating: data.data[0].rating,
-        }),
-        method: 'POST',
-      })
-    },
-    [data.data],
-  )
+function SodukuComp({rating}: {rating?: string}) {
+  const {rawData: data, state, submitResult} = useSoduku()
 
   useEffect(() => {
     if (state.count >= SODUKU_SOLVED_LENGTH) {
       const submittableRow = JSON.parse(JSON.stringify(state.rowState))
 
-      if (validateSodukuLine(submittableRow))
-        submitResult(state.rowState.flat().join(''))
+      if (validateSodukuLine(submittableRow)) submitResult(rating)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.count, submitResult])
@@ -71,7 +54,7 @@ function SodukuComp({data}: {data: SodukuTypeReturn}) {
             'rounded-b-2xl border-2 border-eerie-black-300 dark:border-eerie-black-700',
           )}
         >
-          <NumbersCell variant="keypad" />
+          <NumbersCell variant="keypad" rating={rating} />
         </div>
       </div>
     </div>

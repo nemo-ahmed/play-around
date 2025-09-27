@@ -1,6 +1,7 @@
 'use client'
 
 import {SodukuTypeReturn} from '@/types/soduku'
+import {fetchSoduku} from '@/utils/fetchSoduku'
 import {getColIndex, getRowIndex, isSodukuNumber} from '@/utils/soduku'
 import {
   createContext,
@@ -36,6 +37,9 @@ interface SodukuContextType {
   givenRef: Record<string, boolean>
   selected?: Selected
   onSelectChange: (props?: Selected) => void
+  submitResult: (rating?: string) => void
+  newGame: (rating?: string) => void
+  rawData: SodukuTypeReturn
 }
 
 const Soduku = createContext<Partial<SodukuContextType>>({})
@@ -44,11 +48,12 @@ const emptyMatrixJSON = JSON.stringify(Array(9).fill(Array(9).fill(null)))
 
 export default function SodukuProvider({
   children,
-  data,
+  data: incomingData,
 }: {
   children: ReactNode
-  data: SodukuTypeReturn
+  data: SodukuContextType['rawData']
 }) {
+  const [data, setData] = useState(incomingData)
   const givensRef = useRef<Record<string, boolean>>({})
   const [state, setState] = useState<SodukuContextType['state']>({
     rowState: [],
@@ -59,6 +64,7 @@ export default function SodukuProvider({
   const [selected, setSelections] = useState<SodukuContextType['selected']>()
 
   const initSoduku = useCallback(() => {
+    givensRef.current = {}
     const rowArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
     const colArr: SodukuMatrix = JSON.parse(emptyMatrixJSON)
     // ? After testing one of the sodukus
@@ -113,6 +119,7 @@ export default function SodukuProvider({
       })
     })
 
+    // ? Cleaning States
     setState({
       rowState: rowArr,
       colState: colArr,
@@ -158,6 +165,38 @@ export default function SodukuProvider({
     initSoduku()
   }
 
+  const newGame: SodukuContextType['newGame'] = useCallback(
+    async rating => {
+      const newSoduku = await fetchSoduku(rating)
+
+      setData(newSoduku)
+      initSoduku()
+    },
+    [initSoduku],
+  )
+
+  const submitResult: SodukuContextType['submitResult'] = useCallback(
+    async rating => {
+      const solution = state.rowState.flat().join('')
+      console.log('submitting', solution)
+      const res = await fetch('http://localhost:3000/api/soduku/submit', {
+        body: JSON.stringify({
+          id: data.data[0].id,
+          soduku: solution,
+          rating: data.data[0].rating,
+        }),
+        method: 'POST',
+      })
+        .then(async res => (await res.text()) as 'success')
+        .catch(err => err)
+
+      if (res === 'success') {
+        newGame(rating)
+      }
+    },
+    [data.data, newGame, state.rowState],
+  )
+
   const value: SodukuContextType = {
     state,
     onChange,
@@ -165,6 +204,9 @@ export default function SodukuProvider({
     givenRef: givensRef.current,
     selected,
     onSelectChange: setSelections,
+    submitResult,
+    newGame,
+    rawData: data,
   }
   return <Soduku value={value}>{children}</Soduku>
 }

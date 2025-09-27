@@ -8,7 +8,7 @@ import {
   validateSodukuValue,
 } from '@/utils/soduku'
 import {useEffect, useState} from 'react'
-import {NumbersCell} from './NumbersCell'
+import {NumbersCell} from './ControlPad'
 import {cx} from '@/other/exports'
 
 export function BabyCell({
