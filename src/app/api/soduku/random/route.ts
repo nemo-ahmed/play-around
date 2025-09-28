@@ -9,12 +9,10 @@ export async function GET(req: NextRequest) {
   // ? This is to keep things within user's decision
   const rating = params.get('rating') || random(1, 9)
 
-  // convertTxtDataToJsonData('evilsoduku.txt')
-
   // ? Ideally we want to chunk this file and send it in parts
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
-  const res = await readLocalFile(`/src/data/soduku/${rating}.json`)
+  const res = await readLocalFile(`${rating}.json`)
   const obj = JSON.parse(res) as SodukuTypeReturn
 
   let data = obj.data

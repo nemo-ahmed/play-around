@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     })
   }
 
-  const res = await readLocalFile(`/src/data/soduku/${rating}.json`)
+  const res = await readLocalFile(`${rating}.json`)
   const obj = JSON.parse(res) as SodukuTypeReturn
 
   let data = obj.data

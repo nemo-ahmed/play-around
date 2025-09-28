@@ -2,6 +2,7 @@ import type {SodukuType} from '@/types/soduku'
 import fs from 'fs'
 import {uniqWith, isEqual} from '@/other/exports'
 import Readline from 'node:readline'
+import {getPath} from './getPath'
 
 // ! look into this
 // import {createGzip} from 'node:zlib'
@@ -10,10 +11,7 @@ export async function convertTxtToJsonFiles(fileName: string) {
   if (!fileName.includes('.txt')) {
     throw new Error('invalid file type')
   }
-  const rs = fs.createReadStream(
-    process.cwd() + `/src/data/${fileName}`,
-    'utf8',
-  )
+  const rs = fs.createReadStream(getPath(fileName), 'utf8')
   // ? This is awesome for correctly reading lines
   const rl = Readline.createInterface({input: rs})
   const obj: Record<string, SodukuType[]> = {}
@@ -36,20 +34,18 @@ export async function convertTxtToJsonFiles(fileName: string) {
 }
 
 export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
-  for await (const name of Object.keys(obj)) {
-    const readStream = fs.existsSync(
-      process.cwd() + `/src/data/soduku/${name}.json`,
-    )
+  for await (const filename of Object.keys(obj)) {
+    const readStream = fs.existsSync(getPath(filename + '.json'))
 
-    let arr = obj[name]
+    let arr = obj[filename]
     if (readStream) {
-      console.log('File found', name)
+      console.log('File found', filename)
 
       const existingData: string[] = []
-      const ss = fs.createReadStream(
-        process.cwd() + `/src/data/soduku/${name}.json`,
-        {autoClose: true, encoding: 'utf-8'},
-      )
+      const ss = fs.createReadStream(getPath(filename + '.json'), {
+        autoClose: true,
+        encoding: 'utf-8',
+      })
 
       const rl = Readline.createInterface({input: ss})
 
@@ -58,7 +54,7 @@ export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
       }
 
       rl.on('end', (...rgs) => {
-        console.log('ended File reading', rgs, name, existingData)
+        console.log('ended File reading', rgs, filename, existingData)
         const foundData = JSON.parse(existingData.join('')) as {
           total: number
           data: SodukuType[]
@@ -66,13 +62,14 @@ export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
 
         arr = arr.concat(foundData.data)
         arr = uniqWith(arr, isEqual)
-        console.log('Finishing analyzing data', name)
+        console.log('Finishing analyzing data', filename)
       })
     }
-    console.log('Writing start', name)
-    const writeStream = fs.createWriteStream(
-      process.cwd() + `/src/data/soduku/${name}.json`,
-    )
+    const writeStream = fs
+      .createWriteStream(getPath(filename + '.json'))
+      .on('ready', () => {
+        console.log('Writing start', filename)
+      })
 
     writeStream.write(
       JSON.stringify(
@@ -84,8 +81,9 @@ export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
         2,
       ),
     )
-    writeStream.end()
-    console.log('finished writing', name)
+    writeStream.end(() => {
+      console.log('finished writing', filename)
+    })
   }
 
   console.log('all done')
@@ -98,9 +96,9 @@ export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
   // ? 2- {total: arr.length; data:{id:string; soduku: string; rank: number}[]}
 }
 
-export async function readLocalFile(filePathFromAppDown: string) {
+export async function readLocalFile(filename: string) {
   return await fs.promises
-    .readFile(process.cwd() + filePathFromAppDown, 'utf8')
+    .readFile(getPath(filename), 'utf8')
     .then(data => {
       return data.toString()
     })
@@ -110,15 +108,11 @@ export async function readLocalFile(filePathFromAppDown: string) {
 // ? To Update a file you need first to read it
 // ? Merge its content with the new data then pass it as a string
 export async function writeDataToFile({
-  name,
+  filename,
   data,
 }: {
-  name: string
+  filename: string
   data: string
 }) {
-  return await fs.promises.writeFile(
-    process.cwd() + `/src/data/${name}.json`,
-    data,
-    'utf8',
-  )
+  return await fs.promises.writeFile(getPath(filename + '.json'), data, 'utf8')
 }

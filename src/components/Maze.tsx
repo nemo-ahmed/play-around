@@ -1,6 +1,10 @@
 'use client'
 
-import {gridValidation, getPath, REPLACING_NUMBER} from '@/utils/findMazePath'
+import {
+  gridValidation,
+  getMazePath,
+  REPLACING_NUMBER,
+} from '@/utils/findMazePath'
 import clsx from 'clsx'
 import {motion} from 'motion/react'
 import React, {useRef} from 'react'
@@ -24,7 +28,7 @@ function MazeComponent({grids}: {grids: number[][][]}) {
             key={`maze-${n}`}
             className="border-[0.5px] border-zinc-900 bg-amber-50 flex flex-col w-fit h-full my-4"
           >
-            {getPath(arr).map((row, i) => {
+            {getMazePath(arr).map((row, i) => {
               return (
                 <div key={`line-${i}`} className="flex">
                   {row.map((cell, x) => {
