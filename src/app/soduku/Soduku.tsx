@@ -15,8 +15,15 @@ function SodukuComp({rating}: {rating?: string}) {
   useEffect(() => {
     if (state.count >= SODUKU_SOLVED_LENGTH) {
       const submittableRow = JSON.parse(JSON.stringify(state.rowState))
+      const submittableCol = JSON.parse(JSON.stringify(state.colState))
+      const submittableGrid = JSON.parse(JSON.stringify(state.gridState))
 
-      if (validateSodukuLine(submittableRow)) submitResult(rating)
+      if (
+        validateSodukuLine(submittableRow) &&
+        validateSodukuLine(submittableCol) &&
+        validateSodukuLine(submittableGrid)
+      )
+        submitResult(rating)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.count, submitResult])
