@@ -4,6 +4,7 @@ import {uniqWith, isEqual} from '@/other/exports'
 import Readline from 'node:readline'
 import {getPath} from './getPath'
 import {checkIfFileExist} from './checkFile'
+import {zippingFile} from './zipping'
 
 // ! look into this
 // import {createGzip} from 'node:zlib'
@@ -64,8 +65,9 @@ export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
         console.log('Finishing analyzing data', filename)
       })
     }
+    const newFilename = filename + '.json'
     const writeStream = fs
-      .createWriteStream(getPath(filename + '.json'))
+      .createWriteStream(getPath(newFilename))
       .on('ready', () => {
         console.log('Writing start', filename)
       })
@@ -83,16 +85,10 @@ export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
     writeStream.end(() => {
       console.log('finished writing', filename)
     })
+    await zippingFile(newFilename, true)
   }
 
   console.log('all done')
-
-  // ? ideally we want this form
-  // ? 1- create a file for each rank segment ie: 5.0 - 5.9
-  //  to make things faster
-  // this will hopefully lower the numbers of sodukus
-  // which will allow us to make an array for the solvable sodukus index and get a random one from them
-  // ? 2- {total: arr.length; data:{id:string; soduku: string; rank: number}[]}
 }
 
 export async function readLocalFile(filename: string) {

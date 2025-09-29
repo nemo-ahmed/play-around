@@ -5,8 +5,9 @@ import {getPath} from './getPath'
 /**
  * To zip all file in the directory.
  * @param dir directory name
+ * @param keepOriginal Prevent deleting the original file
  */
-export async function zippingFile(filename: string) {
+export async function zippingFile(filename: string, keepOriginal?: boolean) {
   return new Promise((resolve, reject) => {
     const fileContents = fs.createReadStream(getPath(filename))
     const writeStream = fs.createWriteStream(getPath(`${filename}.gz`))
@@ -25,9 +26,10 @@ export async function zippingFile(filename: string) {
     .catch(err => console.log(err))
     .finally(() => {
       // ? Delete the file after zipping it
-      fs.rmSync(getPath(filename), {
-        force: true,
-      })
+      if (!keepOriginal)
+        fs.rmSync(getPath(filename), {
+          force: true,
+        })
     })
 }
 /**
