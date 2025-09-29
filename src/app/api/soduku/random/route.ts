@@ -2,13 +2,15 @@ import {readLocalFile} from '@/utils/filesHandling/convertTxtToJson'
 import {random} from 'lodash'
 import type {SodukuTypeReturn} from '@/types/soduku'
 import type {NextRequest} from 'next/server'
+import {handleFilesBeforeExecution} from '../util'
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams
 
   // ? This is to keep things within user's decision
-  const rating = params.get('rating') || random(1, 9)
+  const rating = params.get('rating') || random(1, 9).toString()
 
+  await handleFilesBeforeExecution(rating)
   // ? Ideally we want to chunk this file and send it in parts
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
@@ -20,9 +22,8 @@ export async function GET(req: NextRequest) {
   if (offset) {
     data = data.slice(Number(offset), offset + 1)
   }
-
-  return new Response(JSON.stringify({total: obj.total, data}, null, 2), {
-    status: 200,
-    headers: {'Content-Type': 'application/json'},
-  })
+  if (!Array.isArray(data) || data.length === 0) {
+    return new Response('No Soduku found', {status: 500})
+  }
+  return Response.json({total: obj.total, data})
 }

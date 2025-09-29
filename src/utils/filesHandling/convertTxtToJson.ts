@@ -3,6 +3,7 @@ import fs from 'fs'
 import {uniqWith, isEqual} from '@/other/exports'
 import Readline from 'node:readline'
 import {getPath} from './getPath'
+import {checkIfFileExist} from './checkFile'
 
 // ! look into this
 // import {createGzip} from 'node:zlib'
@@ -35,10 +36,8 @@ export async function convertTxtToJsonFiles(fileName: string) {
 
 export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
   for await (const filename of Object.keys(obj)) {
-    const readStream = fs.existsSync(getPath(filename + '.json'))
-
     let arr = obj[filename]
-    if (readStream) {
+    if (checkIfFileExist(filename + '.json')) {
       console.log('File found', filename)
 
       const existingData: string[] = []

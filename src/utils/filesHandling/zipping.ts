@@ -93,12 +93,14 @@ export async function unzippingFile(filename: string) {
   })
     .then(() => console.log('done'))
     .catch(err => console.log('error', err))
-    .finally(() => {
-      // ? Delete the file after zipping it
-      fs.rmSync(getPath(filename), {
-        force: true,
-      })
-    })
+
+  // ? For now we will use gz files as backup
+  // .finally(() => {
+  //   // ? Delete the file after zipping it
+  //   fs.rmSync(getPath(filename), {
+  //     force: true,
+  //   })
+  // })
 }
 
 /**
@@ -132,12 +134,14 @@ export async function unzippingFiles(dir: 'soduku') {
   )
     .then(() => console.log('done'))
     .catch(err => console.log('error', err))
-    .finally(() => {
-      // ? Delete the file after zipping it
-      directoryFiles.forEach(filename =>
-        fs.rmSync(getPath(`${dir}/${filename}`), {
-          force: true,
-        }),
-      )
-    })
+
+  // ? For now we will use gz files as backup
+  // .finally(() => {
+  //   // ? Delete the file after zipping it
+  //   directoryFiles.forEach(filename =>
+  //     fs.rmSync(getPath(`${dir}/${filename}`), {
+  //       force: true,
+  //     }),
+  //   )
+  // })
 }

@@ -42,3 +42,5 @@ next-env.d.ts
 
 # in-case things go wrong
 /src/data/keepSafe
+# No need to overload github with big files
+/src/data/soduku/*.json
