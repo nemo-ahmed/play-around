@@ -4,7 +4,7 @@ import {useSoduku} from '@/context/Soduku'
 import {Row} from './Row'
 import {NumbersCell} from './ControlPad'
 import {cx} from '@/other/exports'
-import {validateSodukuLine} from '@/utils/soduku'
+import {validateSodukuLines} from '@/utils/soduku'
 import {useEffect} from 'react'
 
 const SODUKU_SOLVED_LENGTH = 81
@@ -19,9 +19,9 @@ function SodukuComp({rating}: {rating?: string}) {
       const submittableGrid = JSON.parse(JSON.stringify(state.gridState))
 
       if (
-        validateSodukuLine(submittableRow) &&
-        validateSodukuLine(submittableCol) &&
-        validateSodukuLine(submittableGrid)
+        validateSodukuLines(submittableRow) &&
+        validateSodukuLines(submittableCol) &&
+        validateSodukuLines(submittableGrid)
       )
         submitResult(rating)
     }

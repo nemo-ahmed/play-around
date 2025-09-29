@@ -48,7 +48,7 @@ export function validateSodukuValue(
 export const isSodukuNumber = (n: SodukuNumbers | string | null) =>
   n && !/[1-9]/.test(n.toString())
 
-export const validateSodukuLine = (n: Nullish<SodukuNumbers>[][]) =>
+export const validateSodukuLines = (n: Nullish<SodukuNumbers>[][]) =>
   !n.flat().includes(null) &&
   /(123456789){8}/.test(
     (n as SodukuNumbers[][])
