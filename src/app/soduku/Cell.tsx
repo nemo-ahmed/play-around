@@ -1,4 +1,5 @@
 'use client'
+
 import {type SodukuNumbers, useSoduku} from '@/context/Soduku'
 import {
   DYNAMIC_NUMBERS,
@@ -8,20 +9,19 @@ import {
   validateSodukuValue,
 } from '@/utils/Soduku'
 import {useEffect, useState} from 'react'
-import {NumbersCell} from './ControlPad'
+import {NumbersCell} from './Controls'
 import {cx} from '@/other/exports'
 
-export function BabyCell({
+export function Cell({
   boxIndex,
   cellIndex,
-  value,
 }: {
   boxIndex: number
   cellIndex: number
-  value: Nullish<SodukuNumbers>
 }) {
   const {onChange, state, givenRef, selected, onSelectChange} = useSoduku()
 
+  const value = state.gridState[boxIndex][cellIndex]
   const [notes, setNotes] = useState<SodukuNumbers[]>([])
 
   const cellKey = `${boxIndex}-${cellIndex}`
@@ -36,7 +36,9 @@ export function BabyCell({
   })
 
   const hasFocus =
-    selected && selected.colIndex === colIndex && selected.rowIndex === rowIndex
+    selected &&
+    selected.boxIndex === boxIndex &&
+    selected.cellIndex === cellIndex
 
   function onBlur() {
     onSelectChange(undefined)
@@ -45,7 +47,8 @@ export function BabyCell({
   const isHighlightBG =
     selected &&
     (selected.colIndex === colIndex || selected.rowIndex === rowIndex)
-  const isValueHighlighted = selected?.value && selected.value === value
+  const isValueHighlighted =
+    hasFocus && selected?.value && selected.value === value
   const isGiven = givenRef?.[cellKey]
   const isFalse =
     value &&
@@ -65,6 +68,7 @@ export function BabyCell({
       onBlur()
     }
   }
+
   useEffect(() => {
     if (isGiven || !hasFocus) return
     window.addEventListener('keydown', onkeydown)
@@ -74,7 +78,7 @@ export function BabyCell({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasFocus])
 
-  const keyStyles = cx({
+  const commonStyles = cx({
     'absolute size-full fill-eerie-black-500 dark:fill-eerie-black-600':
       !isGiven && !isFalse,
     'absolute size-full fill-eerie-black-500/60 dark:fill-eerie-black-600/60':
@@ -98,9 +102,7 @@ export function BabyCell({
         },
       )}
       role="textbox"
-      onBlur={() => {
-        onBlur()
-      }}
+      onBlur={onBlur}
     >
       {!hasFocus && (
         // ? This is to prevent adding notes when focusing cell
@@ -114,15 +116,18 @@ export function BabyCell({
       )}
       <div
         data-visible={isSodukuNumber(value)}
-        className={cx('outline-0 data-[visible=true]:hidden', keyStyles)}
+        className={cx(
+          'outline-0 data-[visible=true]:hidden p-[5px]',
+          commonStyles,
+        )}
       >
         {value && DYNAMIC_NUMBERS[value]}
       </div>
       <div
         data-visible={isSodukuNumber(value)}
-        className={cx('outline-0 data-[visible=false]:hidden', keyStyles)}
+        className={cx('outline-0 data-[visible=false]:hidden', commonStyles)}
       >
-        {(hasFocus || notes.length > 0) && (
+        {!value && (hasFocus || notes.length > 0) && (
           <NumbersCell
             variant="note"
             onChange={n => {

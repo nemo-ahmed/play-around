@@ -2,7 +2,7 @@
 import {useSoduku} from '@/context/Soduku'
 
 import {Row} from './Row'
-import {NumbersCell} from './ControlPad'
+import {NumbersCell} from './Controls'
 import {cx} from '@/other/exports'
 import {validateSodukuLines} from '@/utils/Soduku'
 import {useEffect} from 'react'
@@ -37,8 +37,8 @@ function SodukuComp({rating}: {rating?: string}) {
           ' bg-eerie-black-800',
         )}
       >
-        {state.gridState.map((grid, i) => (
-          <Row key={`grid-${i}`} boxIndex={i} grid={grid} />
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((grid, i) => (
+          <Row key={`grid-${i}`} boxIndex={i} />
         ))}
       </section>
       <div

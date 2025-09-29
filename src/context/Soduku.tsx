@@ -24,10 +24,13 @@ type Selected = {
   cellIndex: number
   boxIndex: number
 }
+
+type State = Record<'rowState' | 'colState' | 'gridState', SodukuMatrix> & {
+  count: number
+}
 interface SodukuContextType {
-  state: Record<'rowState' | 'colState' | 'gridState', SodukuMatrix> & {
-    count: number
-  }
+  state: State
+  history: Record<'undo' | 'redo', State[]>
   onChange: (params: {
     boxIndex: number
     cellIndex: number
@@ -40,6 +43,8 @@ interface SodukuContextType {
   submitResult: (rating?: string) => void
   newGame: (rating?: string) => void
   rawData: SodukuTypeReturn
+  onUndo: VoidFunction
+  onRedo: VoidFunction
 }
 
 const Soduku = createContext<Partial<SodukuContextType>>({})
@@ -54,11 +59,16 @@ export default function SodukuProvider({
   data: SodukuContextType['rawData']
 }) {
   const [data, setData] = useState(incomingData)
+  const [history, setHistory] = useState<SodukuContextType['history']>({
+    undo: [],
+    redo: [],
+  })
   const givensRef = useRef<Record<string, boolean>>({})
   const [state, setState] = useState<SodukuContextType['state']>({
-    rowState: [],
-    colState: [],
-    gridState: [],
+    // ? Dealing with server error
+    rowState: JSON.parse(emptyMatrixJSON),
+    colState: JSON.parse(emptyMatrixJSON),
+    gridState: JSON.parse(emptyMatrixJSON),
     count: 0,
   })
   const [selected, setSelections] = useState<SodukuContextType['selected']>()
@@ -101,7 +111,6 @@ export default function SodukuProvider({
     const gridArr: SodukuMatrix = rowsToGrid.map((grid, gridIndex) => {
       return grid.map((cell, cellIndex) => {
         const value = isSodukuNumber(cell) ? null : (cell as SodukuNumbers)
-        console.log(value)
         if (value) {
           givensRef.current[`${gridIndex}-${cellIndex}`] = true
         }
@@ -119,14 +128,16 @@ export default function SodukuProvider({
       })
     })
 
-    // ? Cleaning States
-    setState({
+    const newState = {
       rowState: rowArr,
       colState: colArr,
       gridState: gridArr,
       count: data.data[0].soduku.match(/[1-9]/g)?.length ?? 0,
-    })
+    }
+    // ? Cleaning States
+    setState(newState)
     setSelections(undefined)
+    setHistory({redo: [], undo: []})
   }, [data.data])
 
   useEffect(() => {
@@ -148,7 +159,10 @@ export default function SodukuProvider({
       rowIndex,
       value,
     })
-
+    setHistory(prev => ({
+      redo: [],
+      undo: [...prev.undo, structuredClone(state)],
+    }))
     setState(prev => {
       prev.rowState[rowIndex][colIndex] = value
       prev.colState[colIndex][rowIndex] = value
@@ -160,9 +174,27 @@ export default function SodukuProvider({
     })
   }
 
-  // ? We need to add a button for this
   const onRest = () => {
     initSoduku()
+  }
+
+  const onUndo = () => {
+    if (history.undo.length === 0) return
+    const newHistory = structuredClone(history)
+    const newState = newHistory.undo.pop() as Required<typeof state>
+    newHistory.redo.push(structuredClone(state))
+    setState(newState)
+    setHistory(newHistory)
+  }
+
+  const onRedo = () => {
+    if (history.redo.length === 0) return
+
+    const newHistory = structuredClone(history)
+    const newState = newHistory.redo.pop() as Required<typeof state>
+    newHistory.undo.push(structuredClone(state))
+    setState(newState)
+    setHistory(newHistory)
   }
 
   const newGame: SodukuContextType['newGame'] = useCallback(
@@ -178,7 +210,7 @@ export default function SodukuProvider({
   const submitResult: SodukuContextType['submitResult'] = useCallback(
     async rating => {
       const solution = state.rowState.flat().join('')
-      console.log('submitting', solution)
+
       const res = await fetch('http://localhost:3000/api/soduku/submit', {
         body: JSON.stringify({
           id: data.data[0].id,
@@ -207,6 +239,9 @@ export default function SodukuProvider({
     submitResult,
     newGame,
     rawData: data,
+    history,
+    onRedo,
+    onUndo,
   }
   return <Soduku value={value}>{children}</Soduku>
 }

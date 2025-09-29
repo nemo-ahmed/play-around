@@ -1,4 +1,4 @@
-import {unzippingFiles, zippingFiles} from '@/utils/filesHandling/zipping'
+import {zippingFiles} from '@/utils/filesHandling/zipping'
 import {type NextRequest} from 'next/server'
 
 export async function GET(req: NextRequest) {

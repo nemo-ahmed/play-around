@@ -1,23 +1,12 @@
 'use client'
 import type {SodukuNumbers} from '@/context/Soduku'
-import {BabyCell} from './BabyCell'
+import {Cell} from './Cell'
 
-export function Row({
-  boxIndex,
-  grid,
-}: {
-  boxIndex: number
-  grid: Nullish<SodukuNumbers>[]
-}) {
+export function Row({boxIndex}: {boxIndex: number}) {
   return (
     <div className="border-collapse border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700 grid grid-cols-3 grid-rows-3">
-      {grid.map((value, i) => (
-        <BabyCell
-          key={`baby-cell-${i}`}
-          boxIndex={boxIndex}
-          cellIndex={i}
-          value={value}
-        />
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((value, i) => (
+        <Cell key={`baby-cell-${i}`} boxIndex={boxIndex} cellIndex={i} />
       ))}
     </div>
   )

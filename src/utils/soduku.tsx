@@ -56,7 +56,7 @@ export const validateSodukuLines = (n: Nullish<SodukuNumbers>[][]) =>
       .join(''),
   )
 
-const iconStyles = 'flex items-center justify-center size-full p-[5px]'
+const iconStyles = 'flex items-center justify-center size-full'
 export const DYNAMIC_NUMBERS = {
   1: <PiNumberOneBold size="100%" className={iconStyles} fill="inherit" />,
   2: <PiNumberTwoBold size="100%" className={iconStyles} fill="inherit" />,
