@@ -4,7 +4,7 @@ import {useSoduku} from '@/context/Soduku'
 import {Row} from './Row'
 import {NumbersCell} from './ControlPad'
 import {cx} from '@/other/exports'
-import {validateSodukuLines} from '@/utils/soduku'
+import {validateSodukuLines} from '@/utils/Soduku'
 import {useEffect} from 'react'
 
 const SODUKU_SOLVED_LENGTH = 81

@@ -2,7 +2,7 @@
 
 import {SodukuTypeReturn} from '@/types/soduku'
 import {fetchSoduku} from '@/utils/fetchSoduku'
-import {getColIndex, getRowIndex, isSodukuNumber} from '@/utils/soduku'
+import {getColIndex, getRowIndex, isSodukuNumber} from '@/utils/Soduku'
 import {
   createContext,
   type ReactNode,

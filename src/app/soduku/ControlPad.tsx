@@ -1,7 +1,7 @@
 'use client'
 import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
 import {cx} from '@/other/exports'
-import {DYNAMIC_NUMBERS} from '@/utils/soduku'
+import {DYNAMIC_NUMBERS} from '@/utils/Soduku'
 import {BsArrowRepeat, BsEraser, BsFeather, BsFeather2} from 'react-icons/bs'
 
 export const NumbersCell = ({

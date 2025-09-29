@@ -56,15 +56,15 @@ export const validateSodukuLines = (n: Nullish<SodukuNumbers>[][]) =>
       .join(''),
   )
 
-const iconStyle = 'flex items-center justify-center size-full'
+const iconStyles = 'flex items-center justify-center size-full p-[5px]'
 export const DYNAMIC_NUMBERS = {
-  1: <PiNumberOneBold size="100%" className={iconStyle} fill="inherit" />,
-  2: <PiNumberTwoBold size="100%" className={iconStyle} fill="inherit" />,
-  3: <PiNumberThreeBold size="100%" className={iconStyle} fill="inherit" />,
-  4: <PiNumberFourBold size="100%" className={iconStyle} fill="inherit" />,
-  5: <PiNumberFiveBold size="100%" className={iconStyle} fill="inherit" />,
-  6: <PiNumberSixBold size="100%" className={iconStyle} fill="inherit" />,
-  7: <PiNumberSevenBold size="100%" className={iconStyle} fill="inherit" />,
-  8: <PiNumberEightBold size="100%" className={iconStyle} fill="inherit" />,
-  9: <PiNumberNineBold size="100%" className={iconStyle} fill="inherit" />,
+  1: <PiNumberOneBold size="100%" className={iconStyles} fill="inherit" />,
+  2: <PiNumberTwoBold size="100%" className={iconStyles} fill="inherit" />,
+  3: <PiNumberThreeBold size="100%" className={iconStyles} fill="inherit" />,
+  4: <PiNumberFourBold size="100%" className={iconStyles} fill="inherit" />,
+  5: <PiNumberFiveBold size="100%" className={iconStyles} fill="inherit" />,
+  6: <PiNumberSixBold size="100%" className={iconStyles} fill="inherit" />,
+  7: <PiNumberSevenBold size="100%" className={iconStyles} fill="inherit" />,
+  8: <PiNumberEightBold size="100%" className={iconStyles} fill="inherit" />,
+  9: <PiNumberNineBold size="100%" className={iconStyles} fill="inherit" />,
 }

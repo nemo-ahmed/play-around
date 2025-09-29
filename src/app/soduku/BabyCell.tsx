@@ -6,7 +6,7 @@ import {
   getRowIndex,
   isSodukuNumber,
   validateSodukuValue,
-} from '@/utils/soduku'
+} from '@/utils/Soduku'
 import {useEffect, useState} from 'react'
 import {NumbersCell} from './ControlPad'
 import {cx} from '@/other/exports'
@@ -89,8 +89,9 @@ export function BabyCell({
       className={cx(
         'relative size-full group border-collapse border-[0.5px]',
         'border-eerie-black-300 dark:border-eerie-black-700',
-        'hover:bg-eerie-black/18 dark:hover:bg-eerie-black/18',
         {
+          'hover:bg-eerie-black/18 dark:hover:bg-eerie-black/18':
+            !isHighlightBG || !hasFocus || !isValueHighlighted,
           'bg-eerie-black/10': isHighlightBG,
           'bg-eerie-black/18': hasFocus,
           'bg-eerie-black/30': isValueHighlighted,
