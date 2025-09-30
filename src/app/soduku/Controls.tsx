@@ -1,4 +1,5 @@
 'use client'
+import IconButton from '@/components/IconButton'
 import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
 import {cx} from '@/other/exports'
 import {DYNAMIC_NUMBERS} from '@/utils/Soduku'
@@ -65,14 +66,14 @@ export const NumbersCell = ({
       </div>
       {variant === 'keypad' && (
         <div className="bg-eerie-black-600 border-2 border-collapse border-eerie-black-300 dark:border-eerie-black-700 rounded-b-2xl">
-          <button
+          <IconButton
             type="button"
             className="size-full h-8 w-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
             onClick={() => newGame(rating)}
             aria-label="new game"
           >
-            <VscDebugStart className="size-9/12" />
-          </button>
+            <VscDebugStart className="size-full" />
+          </IconButton>
           <div
             aria-label="divider"
             className="h-0.5 bg-eerie-black-300 dark:bg-eerie-black-700"
@@ -84,26 +85,26 @@ export const NumbersCell = ({
               'm-[-1]',
             )}
           >
-            <button
+            <IconButton
               type="button"
               className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
               onClick={onUndo}
-              aria-label="reset game"
+              aria-label="Undo"
             >
-              <IoArrowUndoOutline className="size-9/12" />
-            </button>
+              <IoArrowUndoOutline className="size-full" />
+            </IconButton>
             <div
               aria-label="divider"
               className="w-1 bg-eerie-black-300 dark:bg-eerie-black-700"
             />
-            <button
+            <IconButton
               type="button"
-              aria-label="erase cell"
+              aria-label="Redo"
               className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
               onClick={onRedo}
             >
-              <IoArrowRedoOutline className="size-9/12" />
-            </button>
+              <IoArrowRedoOutline className="size-full" />
+            </IconButton>
           </div>
           <div
             aria-label="divider"
@@ -116,22 +117,21 @@ export const NumbersCell = ({
               'm-[-1]',
             )}
           >
-            <button
+            <IconButton
               type="button"
               className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
               onClick={onRest}
               aria-label="reset game"
             >
-              <BsArrowRepeat className="size-9/12" />
-            </button>
+              <BsArrowRepeat className="size-full" />
+            </IconButton>
             <div
               aria-label="divider"
               className="w-1 bg-eerie-black-300 dark:bg-eerie-black-700"
             />
-            <button
+            <IconButton
               type="button"
               aria-label="erase cell"
-              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
               onClick={() => {
                 if (variant === 'keypad' && selectedCell) {
                   onKeypadClick({
@@ -142,8 +142,8 @@ export const NumbersCell = ({
                 }
               }}
             >
-              <BsEraser className="size-9/12" />
-            </button>
+              <BsEraser className="size-full" />
+            </IconButton>
           </div>
         </div>
       )}
