@@ -1,6 +1,6 @@
 import {cx} from '@/other/exports'
 import {motion} from 'motion/react'
-import {useRef, useState, type ButtonHTMLAttributes} from 'react'
+import {useState, type ButtonHTMLAttributes} from 'react'
 
 function IconButton({
   'aria-label': ariaLabel,
@@ -9,8 +9,6 @@ function IconButton({
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   const [y, setY] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
-  console.log(ref.current?.scrollHeight)
   return (
     <button
       type="button"
@@ -30,7 +28,6 @@ function IconButton({
     >
       <motion.div
         className="size-full text-center first:size-9/12 first:mx-auto first:my-1"
-        ref={ref}
         animate={{y}}
         transition={{type: 'spring'}}
       >
