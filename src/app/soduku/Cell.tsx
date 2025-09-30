@@ -47,8 +47,7 @@ export function Cell({
   const isHighlightBG =
     selected &&
     (selected.colIndex === colIndex || selected.rowIndex === rowIndex)
-  const isValueHighlighted =
-    hasFocus && selected?.value && selected.value === value
+  const isValueHighlighted = selected?.value && selected.value === value
   const isGiven = givenRef?.[cellKey]
   const isFalse =
     value &&
