@@ -86,9 +86,10 @@ export function Cell({
     [`${isGiven}`]:
       'absolute size-full fill-eerie-black-100 dark:fill-eerie-black-100',
     [`${!isGiven && isFalse}`]:
-      'absolute size-full fill-red-900 bg-red-900/15 border-red-900/10',
+      'absolute size-full fill-red-700 dark:fill-red-900 bg-red-700/15 dark:bg-red-900/15 border-red-700/10 dark:border-red-900/10',
   }
 
+  const ariaLabel = `grid ${boxIndex + 1} row ${rowIndex + 1}, col ${colIndex + 1}, value ${value ?? 'None'} `
   // ? This will be a good place to use <Active /> when its launched
   return (
     <div
@@ -96,13 +97,15 @@ export function Cell({
         'relative size-full group border-[0.5px]',
         'border-eerie-black-300 dark:border-eerie-black-700',
         {
-          'hover:bg-eerie-black/18 dark:hover:bg-eerie-black/18':
+          'hover:bg-blue-950/18 dark:hover:bg-blue-950/18':
             !isHighlightBG || !hasFocus || !isValueHighlighted,
-          'bg-eerie-black/8': isHighlightBG,
-          'bg-eerie-black/20': hasFocus,
-          'bg-eerie-black/30': isValueHighlighted,
+          'bg-blue-950/10 dark:bg-blue-950/10': isHighlightBG,
+          'bg-blue-950/20 dark:bg-blue-950/20': hasFocus,
+          'bg-blue-950/30 dark:bg-blue-950/30': isValueHighlighted,
         },
       )}
+      id={`grid-${boxIndex + 1}row-${rowIndex}_col-${colIndex}`}
+      aria-label={ariaLabel}
       role="textbox"
       onBlur={onBlur}
     >
@@ -111,6 +114,7 @@ export function Cell({
         <button
           className="size-full absolute bg-transparent z-10"
           type="button"
+          aria-label={ariaLabel}
           onClick={() => {
             onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
           }}

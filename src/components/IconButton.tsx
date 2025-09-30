@@ -6,15 +6,16 @@ function IconButton({
   'aria-label': ariaLabel,
   className,
   children,
+  label,
   ...rest
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & {label: string}) {
   const [y, setY] = useState(0)
   return (
     <button
       type="button"
       aria-label={ariaLabel}
       className={cx(
-        'size-full overflow-hidden flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18',
+        'size-full overflow-hidden flex items-center justify-center hover:dark:bg-rich-black-800/10 active:dark:bg-rich-black-800/18',
         className,
       )}
       {...rest}
@@ -33,7 +34,7 @@ function IconButton({
       >
         {children}
         <p className="size-9/12 mx-auto mt-[7px] capitalize text-nowrap">
-          {ariaLabel}
+          {label}
         </p>
       </motion.div>
     </button>

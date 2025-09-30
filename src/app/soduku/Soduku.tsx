@@ -29,12 +29,12 @@ function SodukuComp({rating}: {rating?: string}) {
   }, [state.count, submitResult])
 
   return (
-    <div className="h-[calc(100dvh-120px)] flex items-center justify-around flex-wrap">
+    <div className="h-[calc(100dvh-120px)] flex items-center justify-around flex-wrap overflow-auto">
       <section
         className={cx(
           'size-[60dvh] relative grid grid-cols-3 grid-rows-3',
           'border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700',
-          ' bg-eerie-black-800',
+          'bg-eerie-black-900 dark:bg-eerie-black-800',
         )}
       >
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((grid, i) => (
@@ -43,7 +43,7 @@ function SodukuComp({rating}: {rating?: string}) {
       </section>
       <div
         className={cx(
-          'p-1 bg-platinum-400',
+          'p-1 bg-eerie-black-900 dark:bg-eerie-black-800',
           'rounded border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
         )}
       >
