@@ -30,10 +30,14 @@ function IconButton({
       <motion.div
         className="size-full text-center first:size-9/12 first:mx-auto first:my-1"
         animate={{y}}
+        aria-hidden
         transition={{type: 'spring'}}
       >
         {children}
-        <p className="size-9/12 mx-auto mt-[7px] capitalize text-nowrap">
+        <p
+          aria-hidden
+          className="size-9/12 mx-auto mt-[7px] capitalize text-nowrap"
+        >
           {label}
         </p>
       </motion.div>

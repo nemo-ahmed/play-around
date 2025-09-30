@@ -100,7 +100,7 @@ export const NumbersCell = ({
             aria-label="Start a new game"
             label="new game"
           >
-            <VscDebugStart className="size-full" />
+            <VscDebugStart aria-hidden className="size-full" />
           </IconButton>
           <div
             aria-label="divider"
@@ -121,7 +121,7 @@ export const NumbersCell = ({
               aria-label="Undo last action"
               label="Undo"
             >
-              <IoArrowUndoOutline className="size-full" />
+              <IoArrowUndoOutline aria-hidden className="size-full" />
             </IconButton>
             <div
               aria-label="divider"
@@ -135,7 +135,7 @@ export const NumbersCell = ({
               onClick={onRedo}
               label="Redo"
             >
-              <IoArrowRedoOutline className="size-full" />
+              <IoArrowRedoOutline aria-hidden className="size-full" />
             </IconButton>
           </div>
           <div
@@ -157,7 +157,7 @@ export const NumbersCell = ({
               aria-label="reset game"
               label="Reset game"
             >
-              <BsArrowRepeat className="size-full" />
+              <BsArrowRepeat aria-hidden className="size-full" />
             </IconButton>
             <div
               aria-label="divider"
@@ -171,6 +171,7 @@ export const NumbersCell = ({
                   ? `grid-${selectedCell.boxIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
                   : 'none'
               }
+              aria-hidden
               aria-label={
                 selectedCell
                   ? `remove value of row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} inside of grid ${selectedCell.boxIndex + 1}`

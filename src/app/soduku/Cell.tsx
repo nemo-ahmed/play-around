@@ -57,29 +57,6 @@ export function Cell({
       validateSodukuValue(state.rowState[rowIndex], value) ||
       validateSodukuValue(state.gridState[boxIndex], value))
 
-  const onkeydown = (e: KeyboardEvent) => {
-    const nKey = Number(e.key)
-
-    if (nKey >= 1 && nKey <= 9) {
-      if (!isGiven)
-        onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
-    } else if (e.key === 'Backspace' || e.key === 'Delete') {
-      if (!isGiven) onChange({boxIndex, cellIndex, value: null})
-    } else if (e.key === 'Escape') {
-      console.log(e.key)
-      onBlur()
-    }
-  }
-
-  useEffect(() => {
-    if (!hasFocus) return
-    window.addEventListener('keydown', onkeydown)
-    return () => {
-      window.removeEventListener('keydown', onkeydown)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasFocus])
-
   const commonStyles = {
     [`${!isGiven && !isFalse}`]:
       'absolute size-full fill-eerie-black-300 dark:fill-rich-black-600',
@@ -105,23 +82,37 @@ export function Cell({
         },
       )}
       id={`grid-${boxIndex + 1}row-${rowIndex}_col-${colIndex}`}
+      tabIndex={0}
       aria-label={ariaLabel}
-      role="textbox"
+      role="button"
       onBlur={onBlur}
+      onFocus={() => {
+        onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
+
+        console.log(
+          'focused',
+          `grid-${boxIndex + 1}row-${rowIndex}_col-${colIndex}`,
+        )
+      }}
     >
       {!hasFocus && (
         // ? This is to prevent adding notes when focusing cell
         <button
           className="size-full absolute bg-transparent z-10"
           type="button"
-          aria-label={ariaLabel}
+          aria-hidden
+          tabIndex={-1}
           onClick={() => {
+            onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
+          }}
+          onKeyDown={() => {
             onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
           }}
         />
       )}
       <div
         data-visible={isSodukuNumber(value)}
+        aria-hidden
         className={cx(
           'outline-0 data-[visible=true]:hidden p-[5px]',
           commonStyles.true,
@@ -131,6 +122,7 @@ export function Cell({
       </div>
       <div
         data-visible={isSodukuNumber(value)}
+        aria-hidden
         className={cx(
           'outline-0 data-[visible=false]:hidden',
           commonStyles.true,

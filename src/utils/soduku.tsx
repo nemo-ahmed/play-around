@@ -12,16 +12,14 @@ import {
   PiNumberNineBold,
 } from 'react-icons/pi'
 
-export function getRowIndex({
+export const getRowIndex = ({
   boxIndex,
   cellIndex,
 }: {
   boxIndex: number
   cellIndex: number
-}) {
-  return (Math.floor(cellIndex / 3) +
-    Math.floor(boxIndex / 3) * 3) as SodukuNumbers
-}
+}) =>
+  (Math.floor(cellIndex / 3) + Math.floor(boxIndex / 3) * 3) as SodukuNumbers
 
 export function getColIndex({
   boxIndex,
@@ -38,15 +36,13 @@ export function getColIndex({
     1) as SodukuNumbers
 }
 
-export function validateSodukuValue(
+export const validateSodukuValue = (
   arr: Nullish<SodukuNumbers>[],
   value: Nullish<SodukuNumbers>,
-) {
-  return arr.filter(n => n === value).length > 1
-}
+) => arr.filter(n => n === value).length > 1
 
-export const isSodukuNumber = (n: SodukuNumbers | string | null) =>
-  n && !/[1-9]/.test(n.toString())
+export const isSodukuNumber = (n: SodukuNumbers | string | null): boolean =>
+  n !== null && !/[1-9]/.test(n.toString())
 
 export const validateSodukuLines = (n: Nullish<SodukuNumbers>[][]) =>
   !n.flat().includes(null) &&
@@ -58,13 +54,76 @@ export const validateSodukuLines = (n: Nullish<SodukuNumbers>[][]) =>
 
 const iconStyles = 'flex items-center justify-center size-full'
 export const DYNAMIC_NUMBERS = {
-  1: <PiNumberOneBold size="100%" className={iconStyles} fill="inherit" />,
-  2: <PiNumberTwoBold size="100%" className={iconStyles} fill="inherit" />,
-  3: <PiNumberThreeBold size="100%" className={iconStyles} fill="inherit" />,
-  4: <PiNumberFourBold size="100%" className={iconStyles} fill="inherit" />,
-  5: <PiNumberFiveBold size="100%" className={iconStyles} fill="inherit" />,
-  6: <PiNumberSixBold size="100%" className={iconStyles} fill="inherit" />,
-  7: <PiNumberSevenBold size="100%" className={iconStyles} fill="inherit" />,
-  8: <PiNumberEightBold size="100%" className={iconStyles} fill="inherit" />,
-  9: <PiNumberNineBold size="100%" className={iconStyles} fill="inherit" />,
+  1: (
+    <PiNumberOneBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  2: (
+    <PiNumberTwoBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  3: (
+    <PiNumberThreeBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  4: (
+    <PiNumberFourBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  5: (
+    <PiNumberFiveBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  6: (
+    <PiNumberSixBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  7: (
+    <PiNumberSevenBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  8: (
+    <PiNumberEightBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
+  9: (
+    <PiNumberNineBold
+      size="100%"
+      aria-hidden
+      className={iconStyles}
+      fill="inherit"
+    />
+  ),
 }
