@@ -1,7 +1,6 @@
 import {cx} from '@/other/exports'
 import {motion} from 'motion/react'
 import {useRef, useState, type ButtonHTMLAttributes} from 'react'
-import {BsEraser} from 'react-icons/bs'
 
 function IconButton({
   'aria-label': ariaLabel,
@@ -36,7 +35,7 @@ function IconButton({
         transition={{type: 'spring'}}
       >
         {children}
-        <p className="size-9/12 mx-auto mt-1.5 capitalize text-nowrap">
+        <p className="size-9/12 mx-auto mt-[7px] capitalize text-nowrap">
           {ariaLabel}
         </p>
       </motion.div>

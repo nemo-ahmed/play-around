@@ -30,20 +30,23 @@ export const NumbersCell = ({
 
   const cellStyles: Record<typeof variant, string> = {
     keypad:
-      'size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border-collapse border border-eerie-black-300 dark:border-eerie-black-700',
+      'size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border-2 border-eerie-black-300 dark:border-eerie-black-700',
     note: "size-full fill-transparent not-disabled:hover:fill-eerie-black-500 not-disabled:hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600",
   }
   return (
     <div>
       <div
-        className={cx('grid grid-cols-3 grid-rows-3 content-center', {
+        className={cx('grid grid-cols-3 grid-rows-3', {
           'size-[40dvh]': variant === 'keypad',
         })}
       >
         {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
           <button
             key={'note-numbers-' + n}
-            className={cx('p-2', cellStyles[variant])}
+            className={cx('p-4', cellStyles[variant], {
+              'rounded-tr': n === 3,
+              'rounded-tl': n === 1,
+            })}
             data-selected={selected?.includes(n)}
             onClick={() => {
               if (variant === 'keypad' && selectedCell) {
@@ -65,7 +68,7 @@ export const NumbersCell = ({
         ))}
       </div>
       {variant === 'keypad' && (
-        <div className="bg-eerie-black-600 border-2 border-collapse border-eerie-black-300 dark:border-eerie-black-700 rounded-b-2xl">
+        <div className="bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
           <IconButton
             type="button"
             className="size-full h-8 w-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
@@ -95,7 +98,7 @@ export const NumbersCell = ({
             </IconButton>
             <div
               aria-label="divider"
-              className="w-1 bg-eerie-black-300 dark:bg-eerie-black-700"
+              className="w-0.5 bg-eerie-black-300 dark:bg-eerie-black-700"
             />
             <IconButton
               type="button"
@@ -127,7 +130,7 @@ export const NumbersCell = ({
             </IconButton>
             <div
               aria-label="divider"
-              className="w-1 bg-eerie-black-300 dark:bg-eerie-black-700"
+              className="w-0.5 bg-eerie-black-300 dark:bg-eerie-black-700"
             />
             <IconButton
               type="button"

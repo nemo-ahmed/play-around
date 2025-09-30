@@ -58,20 +58,21 @@ export function Cell({
       validateSodukuValue(state.gridState[boxIndex], value))
 
   const onkeydown = (e: KeyboardEvent) => {
-    if (isGiven) return
     const nKey = Number(e.key)
 
     if (nKey >= 1 && nKey <= 9) {
-      onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
+      if (!isGiven)
+        onChange({boxIndex, cellIndex, value: nKey as SodukuNumbers})
     } else if (e.key === 'Backspace' || e.key === 'Delete') {
-      onChange({boxIndex, cellIndex, value: null})
+      if (!isGiven) onChange({boxIndex, cellIndex, value: null})
     } else if (e.key === 'Escape') {
+      console.log(e.key)
       onBlur()
     }
   }
 
   useEffect(() => {
-    if (isGiven || !hasFocus) return
+    if (!hasFocus) return
     window.addEventListener('keydown', onkeydown)
     return () => {
       window.removeEventListener('keydown', onkeydown)
@@ -79,26 +80,26 @@ export function Cell({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasFocus])
 
-  const commonStyles = cx({
-    'absolute size-full fill-eerie-black-500 dark:fill-eerie-black-600':
-      !isGiven && !isFalse,
-    'absolute size-full fill-eerie-black-500/60 dark:fill-eerie-black-600/60':
-      isGiven,
-    'absolute size-full fill-red-600/90 bg-red-600/20 border-red-600/90':
-      !isGiven && isFalse,
-  })
+  const commonStyles = {
+    [`${!isGiven && !isFalse}`]:
+      'absolute size-full fill-eerie-black-300 dark:fill-rich-black-600',
+    [`${isGiven}`]:
+      'absolute size-full fill-eerie-black-100 dark:fill-eerie-black-100',
+    [`${!isGiven && isFalse}`]:
+      'absolute size-full fill-red-900 bg-red-900/15 border-red-900/10',
+  }
 
   // ? This will be a good place to use <Active /> when its launched
   return (
     <div
       className={cx(
-        'relative size-full group border-collapse border-[0.5px]',
+        'relative size-full group border-[0.5px]',
         'border-eerie-black-300 dark:border-eerie-black-700',
         {
           'hover:bg-eerie-black/18 dark:hover:bg-eerie-black/18':
             !isHighlightBG || !hasFocus || !isValueHighlighted,
-          'bg-eerie-black/10': isHighlightBG,
-          'bg-eerie-black/18': hasFocus,
+          'bg-eerie-black/8': isHighlightBG,
+          'bg-eerie-black/20': hasFocus,
           'bg-eerie-black/30': isValueHighlighted,
         },
       )}
@@ -119,14 +120,17 @@ export function Cell({
         data-visible={isSodukuNumber(value)}
         className={cx(
           'outline-0 data-[visible=true]:hidden p-[5px]',
-          commonStyles,
+          commonStyles.true,
         )}
       >
         {value && DYNAMIC_NUMBERS[value]}
       </div>
       <div
         data-visible={isSodukuNumber(value)}
-        className={cx('outline-0 data-[visible=false]:hidden', commonStyles)}
+        className={cx(
+          'outline-0 data-[visible=false]:hidden',
+          commonStyles.true,
+        )}
       >
         {!value && (hasFocus || notes.length > 0) && (
           <NumbersCell
