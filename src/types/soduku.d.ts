@@ -38,6 +38,7 @@ export interface SodukuState {
     colIndex: number
     cellIndex: number
     gridIndex: number
+    isGiven: boolean
   }
   rawData: SodukuPromiseReturn
   count: number

@@ -5,7 +5,7 @@ import type {
   SodukuState,
 } from '@/types/soduku'
 import initSoduku, {getGivenKey} from '@/utils/soduku/init'
-import {cloneDeep, cloneDeepWith} from 'lodash'
+import {cloneDeep} from '@/other/exports'
 
 const emptyPuzzle: SodukuPuzzle = Array(9).fill(Array(9).fill(null))
 export const initialSodukuReducerState: SodukuState = {
@@ -125,10 +125,10 @@ export default function sodukuReducer(
               undo: [
                 ...state.history.undo,
                 cloneDeep({
-                  rowState: newState.rowState,
-                  colState: newState.colState,
-                  gridState: newState.gridState,
-                  count: newState.count,
+                  rowState: state.rowState,
+                  colState: state.colState,
+                  gridState: state.gridState,
+                  count: state.count,
                 }),
               ],
               redo: [],

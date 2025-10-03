@@ -24,6 +24,7 @@ export const Controls = ({
 }) => {
   const [{selected: selectedCell, given, rawData, history}, dispatch] =
     useSoduku()
+
   const {data, isLoading, refetch} = useRandomSoduku({
     rating,
   })
@@ -94,7 +95,6 @@ export const Controls = ({
         <div className="bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
           <IconButton
             type="button"
-            className="size-full h-8 w-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
             onClick={() => {
               if (data) dispatch({type: 'start', payload: data})
             }}
@@ -125,7 +125,6 @@ export const Controls = ({
           >
             <IconButton
               type="button"
-              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10"
               onClick={() => {
                 dispatch({
                   type: 'key',
@@ -146,7 +145,6 @@ export const Controls = ({
             <IconButton
               type="button"
               aria-label="Redo last removed action"
-              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10"
               onClick={() => {
                 dispatch({
                   type: 'key',
@@ -173,7 +171,6 @@ export const Controls = ({
           >
             <IconButton
               type="button"
-              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
               onClick={() => {
                 dispatch({
                   type: 'reset',
@@ -211,6 +208,7 @@ export const Controls = ({
                   })
                 }
               }}
+              disabled={selectedCell?.value === null || selectedCell?.isGiven}
             >
               <BsEraser className="size-full" />
             </IconButton>

@@ -11,7 +11,7 @@ async function Page({searchParams}: PageProps<'/soduku'>) {
 
   await queryClient.prefetchQuery({
     queryKey: ['soduku', rating],
-    queryFn: ({queryKey}) => fetchSoduku(queryKey[1]),
+    queryFn: () => fetchSoduku(rating),
   })
 
   return (

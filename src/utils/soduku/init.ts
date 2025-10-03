@@ -5,7 +5,6 @@ import type {
   SodukuState,
 } from '@/types/soduku'
 import {getColIndex, getRowIndex, isSodukuNumber} from '../Soduku'
-import {cloneDeep} from 'lodash'
 
 const emptyPuzzle = JSON.stringify(Array(9).fill(Array(9).fill(null)))
 
@@ -75,15 +74,11 @@ export default function initSoduku(
       return value
     })
   })
-  const newData = {
+  return {
     rowState: rowArr,
     colState: colArr,
     gridState: gridArr,
     count: data?.data?.[0]?.soduku?.match(/[1-9]/g)?.length ?? 0,
-  }
-  return {
-    ...newData,
     given,
-    history: {undo: [cloneDeep(newData)], redo: []},
   }
 }

@@ -4,7 +4,7 @@ import {useQuery} from '@tanstack/react-query'
 
 function useRandomSoduku({rating}: {rating?: string}) {
   return useQuery<SodukuPromiseReturn>({
-    queryFn: ({queryKey}) => fetchSoduku(queryKey[1] as typeof rating),
+    queryFn: () => fetchSoduku(rating),
     queryKey: ['soduku', rating],
   })
 }

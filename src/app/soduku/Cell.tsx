@@ -90,7 +90,7 @@ export function Cell({
       onFocus={() => {
         dispatch({
           type: 'select',
-          payload: {gridIndex, cellIndex, rowIndex, colIndex, value},
+          payload: {gridIndex, cellIndex, rowIndex, colIndex, value, isGiven},
         })
 
         console.log(
@@ -109,13 +109,14 @@ export function Cell({
           onClick={() => {
             dispatch({
               type: 'select',
-              payload: {gridIndex, cellIndex, rowIndex, colIndex, value},
-            })
-          }}
-          onKeyDown={() => {
-            dispatch({
-              type: 'select',
-              payload: {gridIndex, cellIndex, rowIndex, colIndex, value},
+              payload: {
+                gridIndex,
+                cellIndex,
+                rowIndex,
+                colIndex,
+                value,
+                isGiven,
+              },
             })
           }}
         />

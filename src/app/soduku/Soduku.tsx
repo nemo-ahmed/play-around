@@ -4,7 +4,7 @@ import {useSoduku} from '@/context/Soduku'
 import {Grid} from './Grid'
 import {Controls} from './Controls'
 import {cx} from '@/other/exports'
-import {useCallback, useEffect} from 'react'
+import {useEffect} from 'react'
 
 function SodukuComp({rating}: {rating?: string}) {
   const [{rawData}, dispatch] = useSoduku()

@@ -15,7 +15,7 @@ function IconButton({
       type="button"
       aria-label={ariaLabel}
       className={cx(
-        'size-full overflow-hidden flex items-center justify-center hover:dark:bg-rich-black-800/10 active:dark:bg-rich-black-800/18',
+        'size-full h-8 overflow-hidden flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10',
         className,
       )}
       {...rest}
