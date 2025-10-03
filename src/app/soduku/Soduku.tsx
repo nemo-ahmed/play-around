@@ -1,75 +1,35 @@
 'use client'
-import {SodukuNumbers, useSoduku} from '@/context/Soduku'
+import {useSoduku} from '@/context/Soduku'
 
-import {Row} from './Row'
-import {NumbersCell} from './Controls'
+import {Grid} from './Grid'
+import {Controls} from './Controls'
 import {cx} from '@/other/exports'
-import {validateSodukuLines} from '@/utils/Soduku'
-import {useCallback, useEffect, useState} from 'react'
-
-const SODUKU_SOLVED_LENGTH = 81
+import {useCallback, useEffect} from 'react'
 
 function SodukuComp({rating}: {rating?: string}) {
-  const {
-    rawData: data,
-    state,
-    submitResult,
-    onSelectChange,
-    selected,
-    onChange,
-    givenRef,
-  } = useSoduku()
+  const [{rawData}, dispatch] = useSoduku()
 
-  const [pressedKey, setPressedKey] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (state.count >= SODUKU_SOLVED_LENGTH) {
-      const submittableRow = JSON.parse(JSON.stringify(state.rowState))
-      const submittableCol = JSON.parse(JSON.stringify(state.colState))
-      const submittableGrid = JSON.parse(JSON.stringify(state.gridState))
-
-      if (
-        validateSodukuLines(submittableRow) &&
-        validateSodukuLines(submittableCol) &&
-        validateSodukuLines(submittableGrid)
-      )
-        submitResult(rating)
+  const onkeydown = (e: KeyboardEvent) => {
+    const nKey = Number(e.key)
+    // console.log(e, (e.ctrlKey || e.metaKey) && e.key === 'z')
+    if (nKey >= 1 && nKey <= 9) {
+      dispatch({type: 'key', payload: nKey})
+    } else if (e.key === 'Backspace' || e.key === 'Delete') {
+      dispatch({type: 'key', payload: null})
+    } else if (e.key === 'Escape') {
+      dispatch({type: 'select', payload: undefined})
+    } else if (
+      e.shiftKey &&
+      (e.ctrlKey || e.metaKey) &&
+      e.key.toLowerCase() === 'z'
+    ) {
+      console.log('redo')
+      dispatch({type: 'key', payload: 'redo'})
+    } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      console.log('undo')
+      dispatch({type: 'key', payload: 'undo'})
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.count, submitResult])
-
-  function onBlur() {
-    onSelectChange(undefined)
   }
-  console.log(selected)
-
-  useEffect(() => {
-    if (!selected) return
-
-    const {boxIndex, cellIndex} = selected
-    const cellKey = `${boxIndex}-${cellIndex}`
-    const isGiven = givenRef?.[cellKey]
-    if (isGiven) return
-    onChange({boxIndex, cellIndex, value: pressedKey as SodukuNumbers | null})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pressedKey])
-
-  const onkeydown = useCallback(
-    (e: KeyboardEvent) => {
-      const nKey = Number(e.key)
-
-      if (nKey >= 1 && nKey <= 9) {
-        console.log(nKey)
-        setPressedKey(nKey)
-      } else if (e.key === 'Backspace' || e.key === 'Delete') {
-        setPressedKey(null)
-      } else if (e.key === 'Escape') {
-        console.log(e.key)
-        onBlur()
-      }
-    },
-    [onBlur],
-  )
 
   useEffect(() => {
     window.addEventListener('keydown', onkeydown)
@@ -95,7 +55,7 @@ function SodukuComp({rating}: {rating?: string}) {
         aria-label="Soduku puzzle"
       >
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((grid, i) => (
-          <Row key={`grid-${i}`} boxIndex={i} />
+          <Grid key={`grid-${i}`} gridIndex={i} />
         ))}
       </section>
       <section
@@ -105,18 +65,18 @@ function SodukuComp({rating}: {rating?: string}) {
           'rounded border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
         )}
       >
-        {data && (
+        {rawData?.data?.length > 0 && (
           <div className="flex justify-between px-2 pt-2 pb-1.5">
             <h3 className="text-rich-black-100 font-extralight">
-              Rating: {data.data[0].rating}
+              Rating: {rawData.data[0].rating}
             </h3>
             <h3 className="text-rich-black-100 font-extralight">
-              Total: {data.total}
+              Total: {rawData.total}
             </h3>
           </div>
         )}
 
-        <NumbersCell variant="keypad" rating={rating} />
+        <Controls variant="keypad" rating={rating} />
       </section>
     </div>
   )

@@ -1,4 +1,4 @@
-import type {SodukuType} from '@/types/soduku'
+import type {SodukuPromiseData} from '@/types/soduku'
 import fs from 'fs'
 import {uniqWith, isEqual} from '@/other/exports'
 import Readline from 'node:readline'
@@ -16,7 +16,7 @@ export async function convertTxtToJsonFiles(fileName: string) {
   const rs = fs.createReadStream(getPath(fileName), 'utf8')
   // ? This is awesome for correctly reading lines
   const rl = Readline.createInterface({input: rs})
-  const obj: Record<string, SodukuType[]> = {}
+  const obj: Record<string, SodukuPromiseData[]> = {}
   console.log('handling lines')
   for await (const line of rl) {
     // ? Ignoring comment lines
@@ -35,7 +35,9 @@ export async function convertTxtToJsonFiles(fileName: string) {
   appendOrCreateFile(obj)
 }
 
-export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
+export async function appendOrCreateFile(
+  obj: Record<string, SodukuPromiseData[]>,
+) {
   for await (const filename of Object.keys(obj)) {
     let arr = obj[filename]
     if (checkIfFileExist(filename + '.json')) {
@@ -57,7 +59,7 @@ export async function appendOrCreateFile(obj: Record<string, SodukuType[]>) {
         console.log('ended File reading', rgs, filename, existingData)
         const foundData = JSON.parse(existingData.join('')) as {
           total: number
-          data: SodukuType[]
+          data: SodukuPromiseData[]
         }
 
         arr = arr.concat(foundData.data)

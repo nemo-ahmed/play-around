@@ -1,5 +1,5 @@
 import {readLocalFile} from '@/utils/filesHandling/convertTxtToJson'
-import type {SodukuTypeReturn} from '@/types/soduku'
+import type {SodukuPromiseReturn} from '@/types/soduku'
 import type {NextRequest} from 'next/server'
 import {random} from '@/other/exports'
 import {handleFilesBeforeExecution} from './util'
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   await handleFilesBeforeExecution(rating)
 
   const res = await readLocalFile(`${rating}.json`)
-  const obj = JSON.parse(res) as SodukuTypeReturn
+  const obj = JSON.parse(res) as SodukuPromiseReturn
 
   let data = obj.data
   if (offset || limit) {

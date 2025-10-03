@@ -1,6 +1,6 @@
 import {readLocalFile} from '@/utils/filesHandling/convertTxtToJson'
 import {random} from 'lodash'
-import type {SodukuTypeReturn} from '@/types/soduku'
+import type {SodukuPromiseReturn} from '@/types/soduku'
 import type {NextRequest} from 'next/server'
 import {handleFilesBeforeExecution} from '../util'
 
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
   const res = await readLocalFile(`${rating}.json`)
-  const obj = JSON.parse(res) as SodukuTypeReturn
+  const obj = JSON.parse(res) as SodukuPromiseReturn
 
   let data = obj.data
   const offset = random(0, obj.total - 1)

@@ -1,5 +1,5 @@
 'use client'
-import {SodukuNumbers} from '@/context/Soduku'
+import {SodukuNumbers} from '@/types/soduku'
 import {
   PiNumberOneBold,
   PiNumberTwoBold,
@@ -13,27 +13,28 @@ import {
 } from 'react-icons/pi'
 
 export const getRowIndex = ({
-  boxIndex,
+  gridIndex,
   cellIndex,
 }: {
-  boxIndex: number
+  gridIndex: number
   cellIndex: number
-}) =>
-  (Math.floor(cellIndex / 3) + Math.floor(boxIndex / 3) * 3) as SodukuNumbers
+}) => Math.floor(cellIndex / 3) + Math.floor(gridIndex / 3) * 3
 
 export function getColIndex({
-  boxIndex,
+  gridIndex,
   cellIndex,
 }: {
-  boxIndex: number
+  gridIndex: number
   cellIndex: number
 }) {
-  const res = Math.ceil((((boxIndex + 1) % 3) * 3) / 3)
+  const res = Math.ceil((((gridIndex + 1) % 3) * 3) / 3)
   const resCell = Math.floor((cellIndex + 1) % 3)
-  return (3 * (res === 0 ? 3 : res) -
+  return (
+    3 * (res === 0 ? 3 : res) -
     (resCell % 3 === 0 ? resCell : Math.abs(resCell - 3)) -
     // ? to bring the value back to the array index
-    1) as SodukuNumbers
+    1
+  )
 }
 
 export const validateSodukuValue = (

@@ -177,6 +177,10 @@
   }
 }
 
+html {
+  @apply max-h-screen max-w-screen overflow-hidden;
+}
+
 body {
   @apply bg-eerie-black-900 dark:bg-eerie-black-200 h-screen;
 

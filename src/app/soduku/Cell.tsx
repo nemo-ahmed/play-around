@@ -1,61 +1,62 @@
 'use client'
 
-import {type SodukuNumbers, useSoduku} from '@/context/Soduku'
+import {useSoduku} from '@/context/Soduku'
 import {
   DYNAMIC_NUMBERS,
   getColIndex,
   getRowIndex,
-  isSodukuNumber,
   validateSodukuValue,
 } from '@/utils/Soduku'
-import {useEffect, useState} from 'react'
-import {NumbersCell} from './Controls'
+import {useState} from 'react'
+import {Controls} from './Controls'
 import {cx} from '@/other/exports'
+import {SodukuNumbers} from '@/types/soduku'
 
 export function Cell({
-  boxIndex,
+  gridIndex,
   cellIndex,
 }: {
-  boxIndex: number
+  gridIndex: number
   cellIndex: number
 }) {
-  const {onChange, state, givenRef, selected, onSelectChange} = useSoduku()
+  const [{given, selected, gridState, colState, rowState}, dispatch] =
+    useSoduku()
 
-  const value = state.gridState[boxIndex][cellIndex]
+  const value = gridState[gridIndex][cellIndex]
   const [notes, setNotes] = useState<SodukuNumbers[]>([])
 
-  const cellKey = `${boxIndex}-${cellIndex}`
+  const cellKey = `${gridIndex}-${cellIndex}`
   // ? This will be use to Validation. Should be quicker than before
   const colIndex = getColIndex({
-    boxIndex,
+    gridIndex,
     cellIndex,
   })
   const rowIndex = getRowIndex({
-    boxIndex,
+    gridIndex,
     cellIndex,
   })
 
   const hasFocus =
     selected &&
-    selected.boxIndex === boxIndex &&
+    selected.gridIndex === gridIndex &&
     selected.cellIndex === cellIndex
 
   function onBlur() {
-    onSelectChange(undefined)
+    dispatch({type: 'select', payload: undefined})
   }
 
   const isHighlightBG =
     selected &&
     (selected.colIndex === colIndex ||
       selected.rowIndex === rowIndex ||
-      selected.boxIndex === boxIndex)
+      selected.gridIndex === gridIndex)
   const isValueHighlighted = selected?.value && selected.value === value
-  const isGiven = givenRef?.[cellKey]
+  const isGiven = given?.[cellKey]
   const isFalse =
     value &&
-    (validateSodukuValue(state.colState[colIndex], value) ||
-      validateSodukuValue(state.rowState[rowIndex], value) ||
-      validateSodukuValue(state.gridState[boxIndex], value))
+    (validateSodukuValue(colState[colIndex], value) ||
+      validateSodukuValue(rowState[rowIndex], value) ||
+      validateSodukuValue(gridState[gridIndex], value))
 
   const commonStyles = {
     [`${!isGiven && !isFalse}`]:
@@ -66,7 +67,7 @@ export function Cell({
       'absolute size-full fill-red-700 dark:fill-red-900 bg-red-700/15 dark:bg-red-900/15 border-red-700/10 dark:border-red-900/10',
   }
 
-  const ariaLabel = `grid ${boxIndex + 1} row ${rowIndex + 1}, col ${colIndex + 1}, value ${value ?? 'None'} `
+  const ariaLabel = `grid ${gridIndex + 1} row ${rowIndex + 1}, col ${colIndex + 1}, value ${value ?? 'None'} `
   // ? This will be a good place to use <Active /> when its launched
   return (
     <div
@@ -81,17 +82,20 @@ export function Cell({
           'bg-blue-950/30 dark:bg-blue-950/30': isValueHighlighted,
         },
       )}
-      id={`grid-${boxIndex + 1}row-${rowIndex}_col-${colIndex}`}
+      id={`grid-${gridIndex + 1}row-${rowIndex}_col-${colIndex}`}
       tabIndex={0}
       aria-label={ariaLabel}
       role="button"
       onBlur={onBlur}
       onFocus={() => {
-        onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
+        dispatch({
+          type: 'select',
+          payload: {gridIndex, cellIndex, rowIndex, colIndex, value},
+        })
 
         console.log(
           'focused',
-          `grid-${boxIndex + 1}row-${rowIndex}_col-${colIndex}`,
+          `grid-${gridIndex + 1}row-${rowIndex}_col-${colIndex}`,
         )
       }}
     >
@@ -103,33 +107,33 @@ export function Cell({
           aria-hidden
           tabIndex={-1}
           onClick={() => {
-            onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
+            dispatch({
+              type: 'select',
+              payload: {gridIndex, cellIndex, rowIndex, colIndex, value},
+            })
           }}
           onKeyDown={() => {
-            onSelectChange({boxIndex, cellIndex, rowIndex, colIndex, value})
+            dispatch({
+              type: 'select',
+              payload: {gridIndex, cellIndex, rowIndex, colIndex, value},
+            })
           }}
         />
       )}
-      <div
-        data-visible={isSodukuNumber(value)}
-        aria-hidden
-        className={cx(
-          'outline-0 data-[visible=true]:hidden p-[5px]',
-          commonStyles.true,
-        )}
-      >
-        {value && DYNAMIC_NUMBERS[value]}
-      </div>
-      <div
-        data-visible={isSodukuNumber(value)}
-        aria-hidden
-        className={cx(
-          'outline-0 data-[visible=false]:hidden',
-          commonStyles.true,
-        )}
-      >
-        {!value && (hasFocus || notes.length > 0) && (
-          <NumbersCell
+      {value && (
+        <div aria-hidden className={cx('outline-0 p-[5px]', commonStyles.true)}>
+          {DYNAMIC_NUMBERS[value]}
+        </div>
+      )}
+      {!value && (hasFocus || notes.length > 0) && (
+        <div
+          aria-hidden
+          className={cx(
+            'outline-0 data-[visible=false]:hidden',
+            commonStyles.true,
+          )}
+        >
+          <Controls
             variant="note"
             onChange={n => {
               if (hasFocus)
@@ -142,8 +146,8 @@ export function Cell({
             }}
             selected={notes}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

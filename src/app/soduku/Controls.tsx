@@ -1,14 +1,17 @@
 'use client'
 import IconButton from '@/components/IconButton'
-import {useSoduku, type SodukuNumbers} from '@/context/Soduku'
+import {useSoduku} from '@/context/Soduku'
+import useRandomSoduku from '@/hooks/useRandomSoduku'
 import {cx} from '@/other/exports'
+import {queryClient} from '@/other/queryclient'
+import type {SodukuNumbers} from '@/types/soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/Soduku'
 import {useEffect, useState} from 'react'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 import {IoArrowRedoOutline, IoArrowUndoOutline} from 'react-icons/io5'
 import {VscDebugStart} from 'react-icons/vsc'
 
-export const NumbersCell = ({
+export const Controls = ({
   variant,
   onChange,
   rating,
@@ -19,16 +22,13 @@ export const NumbersCell = ({
   rating?: string
   selected?: SodukuNumbers[]
 }) => {
+  const [{selected: selectedCell, given, rawData, history}, dispatch] =
+    useSoduku()
+  const {data, isLoading, refetch} = useRandomSoduku({
+    rating,
+  })
+
   const [shouldDisplayKeypad, setShouldDisplayKeypad] = useState(false)
-  const {
-    onChange: onKeypadClick,
-    selected: selectedCell,
-    onRest,
-    givenRef,
-    newGame,
-    onRedo,
-    onUndo,
-  } = useSoduku()
 
   const cellStyles: Record<typeof variant, string> = {
     keypad:
@@ -62,28 +62,27 @@ export const NumbersCell = ({
               })}
               aria-describedby={
                 selectedCell
-                  ? `grid-${selectedCell.boxIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
+                  ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
                   : 'none'
               }
               aria-label={
                 selectedCell
-                  ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.boxIndex + 1}`
+                  ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.gridIndex + 1}`
                   : `select a cell`
               }
               data-selected={selected?.includes(n)}
               onClick={() => {
                 if (variant === 'keypad' && selectedCell) {
-                  onKeypadClick({
-                    boxIndex: selectedCell.boxIndex,
-                    cellIndex: selectedCell.cellIndex,
-                    value: n,
+                  dispatch({
+                    type: 'key',
+                    payload: n,
                   })
                 }
                 onChange?.(n)
               }}
               disabled={
                 !selectedCell ||
-                givenRef[`${selectedCell.boxIndex}-${selectedCell.cellIndex}`]
+                given[`${selectedCell.gridIndex}-${selectedCell.cellIndex}`]
               }
             >
               {DYNAMIC_NUMBERS[n]}
@@ -96,9 +95,19 @@ export const NumbersCell = ({
           <IconButton
             type="button"
             className="size-full h-8 w-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
-            onClick={() => newGame(rating)}
+            onClick={() => {
+              if (data) dispatch({type: 'start', payload: data})
+            }}
+            onMouseEnter={() => {
+              console.log('object')
+              if (data && rawData.data.at(0) !== data?.data?.at(0)) {
+                queryClient.invalidateQueries({queryKey: ['soduku']})
+                refetch()
+              }
+            }}
             aria-label="Start a new game"
             label="new game"
+            disabled={isLoading}
           >
             <VscDebugStart aria-hidden className="size-full" />
           </IconButton>
@@ -116,10 +125,16 @@ export const NumbersCell = ({
           >
             <IconButton
               type="button"
-              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
-              onClick={onUndo}
+              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10"
+              onClick={() => {
+                dispatch({
+                  type: 'key',
+                  payload: 'undo',
+                })
+              }}
               aria-label="Undo last action"
               label="Undo"
+              disabled={history.undo.length < 1}
             >
               <IoArrowUndoOutline aria-hidden className="size-full" />
             </IconButton>
@@ -131,9 +146,15 @@ export const NumbersCell = ({
             <IconButton
               type="button"
               aria-label="Redo last removed action"
-              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
-              onClick={onRedo}
+              className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10"
+              onClick={() => {
+                dispatch({
+                  type: 'key',
+                  payload: 'redo',
+                })
+              }}
               label="Redo"
+              disabled={history.redo.length < 1}
             >
               <IoArrowRedoOutline aria-hidden className="size-full" />
             </IconButton>
@@ -153,7 +174,11 @@ export const NumbersCell = ({
             <IconButton
               type="button"
               className="size-full flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18"
-              onClick={onRest}
+              onClick={() => {
+                dispatch({
+                  type: 'reset',
+                })
+              }}
               aria-label="reset game"
               label="Reset game"
             >
@@ -168,22 +193,21 @@ export const NumbersCell = ({
               type="button"
               aria-describedby={
                 selectedCell
-                  ? `grid-${selectedCell.boxIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
+                  ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
                   : 'none'
               }
               aria-hidden
               aria-label={
                 selectedCell
-                  ? `remove value of row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} inside of grid ${selectedCell.boxIndex + 1}`
+                  ? `remove value of row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} inside of grid ${selectedCell.gridIndex + 1}`
                   : `select a cell`
               }
               label="erase"
               onClick={() => {
                 if (variant === 'keypad' && selectedCell) {
-                  onKeypadClick({
-                    boxIndex: selectedCell.boxIndex,
-                    cellIndex: selectedCell.cellIndex,
-                    value: null,
+                  dispatch({
+                    type: 'key',
+                    payload: null,
                   })
                 }
               }}

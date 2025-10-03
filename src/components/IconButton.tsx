@@ -19,12 +19,14 @@ function IconButton({
         className,
       )}
       {...rest}
-      onMouseEnter={() => {
+      onMouseEnter={e => {
         setY(-32)
+        rest?.onMouseEnter?.(e)
         console.log(true)
       }}
-      onMouseLeave={() => {
+      onMouseLeave={e => {
         setY(0)
+        rest?.onMouseEnter?.(e)
       }}
     >
       <motion.div
