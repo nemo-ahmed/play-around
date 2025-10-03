@@ -1,5 +1,3 @@
-import type {SodukuPromiseReturn} from '@/types/soduku'
-
 export async function fetchSoduku(rating?: string | string[]) {
   const url = new URL(`http://localhost:3000/api/soduku/random`)
   if (typeof rating === 'string') {

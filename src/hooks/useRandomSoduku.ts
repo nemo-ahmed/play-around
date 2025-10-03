@@ -6,6 +6,10 @@ function useRandomSoduku({rating}: {rating?: string}) {
   return useQuery<SodukuPromiseReturn>({
     queryFn: () => fetchSoduku(rating),
     queryKey: ['soduku', rating],
+    // ? We only want to refetch on mount and on new game
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
   })
 }
 
