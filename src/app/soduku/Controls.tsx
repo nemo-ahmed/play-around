@@ -22,8 +22,10 @@ export const Controls = ({
   rating?: string
   selected?: SodukuNumbers[]
 }) => {
-  const [{selected: selectedCell, given, rawData, history}, dispatch] =
-    useSoduku()
+  const [
+    {selected: selectedCell, given, rawData, history, isPlaying},
+    dispatch,
+  ] = useSoduku()
 
   const {data, isLoading, refetch} = useRandomSoduku({
     rating,
@@ -139,7 +141,7 @@ export const Controls = ({
               }}
               aria-label="Undo last action"
               label="Undo"
-              disabled={history.undo.length < 1}
+              disabled={!isPlaying || history.undo.length < 1}
             >
               <IoArrowUndoOutline aria-hidden className="size-full" />
             </IconButton>
@@ -158,7 +160,7 @@ export const Controls = ({
                 })
               }}
               label="Redo"
-              disabled={history.redo.length < 1}
+              disabled={!isPlaying || history.redo.length < 1}
             >
               <IoArrowRedoOutline aria-hidden className="size-full" />
             </IconButton>
@@ -184,6 +186,7 @@ export const Controls = ({
               }}
               aria-label="reset game"
               label="Reset game"
+              disabled={!isPlaying}
             >
               <BsArrowRepeat aria-hidden className="size-full" />
             </IconButton>
@@ -214,7 +217,11 @@ export const Controls = ({
                   })
                 }
               }}
-              disabled={selectedCell?.value === null || selectedCell?.isGiven}
+              disabled={
+                !isPlaying ||
+                selectedCell?.value === null ||
+                selectedCell?.isGiven
+              }
             >
               <BsEraser className="size-full" />
             </IconButton>

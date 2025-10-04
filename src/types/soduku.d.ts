@@ -46,4 +46,5 @@ export interface SodukuState {
   colState: SodukuPuzzle
   gridState: SodukuPuzzle
   autoHints: boolean
+  isPlaying: boolean
 }

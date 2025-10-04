@@ -20,8 +20,10 @@ export const initialSodukuReducerState: SodukuState = {
   colState: cloneDeep(emptyPuzzle),
   gridState: cloneDeep(emptyPuzzle),
   autoHints: false,
+  isPlaying: false,
 }
 
+// ToDo: Handle game complete
 export type TypeAndPayload =
   | {type: 'key'; payload: number | 'undo' | 'redo' | 'delete' | null}
   | {type: 'select'; payload?: SodukuState['selected']}
@@ -39,6 +41,7 @@ export default function sodukuReducer(
         ...state,
         ...initSoduku(payload),
         rawData: payload,
+        isPlaying: true,
       }
     case 'select':
       return {...state, selected: payload}
