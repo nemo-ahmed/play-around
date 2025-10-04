@@ -6,8 +6,8 @@ import {
   getColIndex,
   getRowIndex,
   validateSodukuValue,
-} from '@/utils/Soduku'
-import {useState} from 'react'
+} from '@/utils/soduku'
+import {useEffect, useState} from 'react'
 import {Controls} from './Controls'
 import {cx} from '@/other/exports'
 import {SodukuNumbers} from '@/types/soduku'
@@ -19,8 +19,10 @@ export function Cell({
   gridIndex: number
   cellIndex: number
 }) {
-  const [{given, selected, gridState, colState, rowState}, dispatch] =
-    useSoduku()
+  const [
+    {given, selected, gridState, colState, rowState, autoHints},
+    dispatch,
+  ] = useSoduku()
 
   const value = gridState[gridIndex][cellIndex]
   const [notes, setNotes] = useState<SodukuNumbers[]>([])
@@ -67,7 +69,31 @@ export function Cell({
       'absolute size-full fill-red-700 dark:fill-red-900 bg-red-700/15 dark:bg-red-900/15 border-red-700/10 dark:border-red-900/10',
   }
 
+  useEffect(() => {
+    if (!autoHints || isGiven || typeof value === 'number') return
+
+    const hints = ([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).filter(n => {
+      return (
+        !gridState[gridIndex].includes(n) &&
+        !colState[colIndex].includes(n) &&
+        !rowState[rowIndex].includes(n)
+      )
+    })
+    setNotes(hints)
+  }, [
+    autoHints,
+    colIndex,
+    colState,
+    gridIndex,
+    gridState,
+    isGiven,
+    rowIndex,
+    rowState,
+    value,
+  ])
+
   const ariaLabel = `grid ${gridIndex + 1} row ${rowIndex + 1}, col ${colIndex + 1}, value ${value ?? 'None'} `
+
   // ? This will be a good place to use <Active /> when its launched
   return (
     <div
@@ -99,7 +125,7 @@ export function Cell({
         )
       }}
     >
-      {!hasFocus && (
+      {!hasFocus && !value && (
         // ? This is to prevent adding notes when focusing cell
         <button
           className="size-full absolute bg-transparent z-10"
@@ -121,9 +147,9 @@ export function Cell({
           }}
         />
       )}
-      {value && (
+      {typeof value === 'number' && (
         <div aria-hidden className={cx('outline-0 p-[5px]', commonStyles.true)}>
-          {DYNAMIC_NUMBERS[value]}
+          {DYNAMIC_NUMBERS[value as NonNullable<SodukuNumbers>]}
         </div>
       )}
       {!value && (hasFocus || notes.length > 0) && (

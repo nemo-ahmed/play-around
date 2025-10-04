@@ -4,7 +4,7 @@ import type {
   SodukuPuzzle,
   SodukuState,
 } from '@/types/soduku'
-import initSoduku, {getGivenKey} from '@/utils/soduku/init'
+import {initSoduku, getGivenKey} from '@/utils/soduku'
 import {cloneDeep} from '@/other/exports'
 
 const emptyPuzzle: SodukuPuzzle = Array(9).fill(Array(9).fill(null))
@@ -19,7 +19,7 @@ export const initialSodukuReducerState: SodukuState = {
   rowState: cloneDeep(emptyPuzzle),
   colState: cloneDeep(emptyPuzzle),
   gridState: cloneDeep(emptyPuzzle),
-  isPlaying: false,
+  autoHints: false,
 }
 
 export type TypeAndPayload =
@@ -27,20 +27,18 @@ export type TypeAndPayload =
   | {type: 'select'; payload?: SodukuState['selected']}
   | {type: 'start'; payload: SodukuPromiseReturn}
   | {type: 'reset'; payload?: undefined}
+  | {type: 'toggle-auto-hints'; payload?: undefined}
 
 export default function sodukuReducer(
   state = initialSodukuReducerState,
   {type, payload}: TypeAndPayload,
 ): SodukuState {
-  console.log(state.history, type)
   switch (type) {
     case 'start':
-      console.log({payload})
       return {
         ...state,
         ...initSoduku(payload),
         rawData: payload,
-        isPlaying: true,
       }
     case 'select':
       return {...state, selected: payload}
@@ -69,7 +67,6 @@ export default function sodukuReducer(
           if (state.history.undo.length < 1) return state
           const {history, colState, gridState, count, rowState, ...rest} = state
           const currentState = cloneDeep({colState, gridState, rowState, count})
-          console.log(history, 'onUndo')
           const undo = cloneDeep(history.undo)
           const prevState = undo.splice(-1)[0] as typeof currentState
 
@@ -136,6 +133,11 @@ export default function sodukuReducer(
           }
       }
 
+    case 'toggle-auto-hints':
+      return {
+        ...state,
+        autoHints: !state.autoHints,
+      }
     case 'reset':
       return {
         ...initialSodukuReducerState,

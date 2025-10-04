@@ -42,8 +42,8 @@ export const validateSodukuValue = (
   value: Nullish<SodukuNumbers>,
 ) => arr.filter(n => n === value).length > 1
 
-export const isSodukuNumber = (n: SodukuNumbers | string | null): boolean =>
-  n !== null && !/[1-9]/.test(n.toString())
+export const isSodukuNumber = (n: number | string | null): boolean =>
+  n !== null && /[1-9]/.test(`${n}`)
 
 export const validateSodukuLines = (n: Nullish<SodukuNumbers>[][]) =>
   !n.flat().includes(null) &&

@@ -4,7 +4,7 @@ import type {
   SodukuPuzzle,
   SodukuState,
 } from '@/types/soduku'
-import {getColIndex, getRowIndex, isSodukuNumber} from '../Soduku'
+import {getColIndex, getRowIndex, isSodukuNumber} from './Utils'
 
 const emptyPuzzle = JSON.stringify(Array(9).fill(Array(9).fill(null)))
 
@@ -16,9 +16,7 @@ export const getGivenKey = ({
   cellIndex: number
 }) => `${gridIndex}-${cellIndex}`
 
-export default function initSoduku(
-  data: SodukuPromiseReturn,
-): Partial<SodukuState> {
+export function initSoduku(data: SodukuPromiseReturn): Partial<SodukuState> {
   const given: Record<string, boolean> = {}
   const rowArr = JSON.parse(emptyPuzzle) as SodukuPuzzle
   const colArr = JSON.parse(emptyPuzzle) as SodukuPuzzle
@@ -45,7 +43,7 @@ export default function initSoduku(
           element
             .split('')
             .map(x =>
-              isSodukuNumber(x) ? null : (Number(x) as SodukuNumbers),
+              !isSodukuNumber(x) ? null : (Number(x) as SodukuNumbers),
             ),
         ].flat() as Nullish<SodukuNumbers>[]
       }
@@ -62,11 +60,11 @@ export default function initSoduku(
         given[getGivenKey({gridIndex, cellIndex})] = true
       }
       const colIndex = getColIndex({
-        gridIndex: gridIndex,
+        gridIndex,
         cellIndex,
       })
       const rowIndex = getRowIndex({
-        gridIndex: gridIndex,
+        gridIndex,
         cellIndex,
       })
       rowArr[rowIndex][colIndex] = value

@@ -1,7 +1,7 @@
 import React, {Suspense} from 'react'
 import SodukuComp from './Soduku'
 import SodukuProvider from '@/context/Soduku'
-import {fetchSoduku} from '@/utils/soduku/fetchSoduku'
+import {fetchSoduku} from '@/utils/soduku'
 import {queryClient} from '@/other/queryclient'
 
 async function Page({searchParams}: PageProps<'/soduku'>) {

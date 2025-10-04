@@ -5,7 +5,7 @@ import useRandomSoduku from '@/hooks/useRandomSoduku'
 import {cx} from '@/other/exports'
 import {queryClient} from '@/other/queryclient'
 import type {SodukuNumbers} from '@/types/soduku'
-import {DYNAMIC_NUMBERS} from '@/utils/Soduku'
+import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 import {useEffect, useState} from 'react'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 import {IoArrowRedoOutline, IoArrowUndoOutline} from 'react-icons/io5'
@@ -33,7 +33,7 @@ export const Controls = ({
 
   const cellStyles: Record<typeof variant, string> = {
     keypad:
-      'size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border-2 border-eerie-black-300 dark:border-eerie-black-700',
+      'p-4 size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border-2 border-eerie-black-300 dark:border-eerie-black-700',
     note: "size-full fill-transparent not-disabled:hover:fill-eerie-black-500 not-disabled:hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600",
   }
 
@@ -47,17 +47,23 @@ export const Controls = ({
   }, [])
 
   return (
-    <div className="w-[40dvh]">
-      {shouldDisplayKeypad && (
+    <div
+      className={cx({
+        'w-[40dvh]': variant === 'keypad',
+        'size-full': variant === 'note',
+      })}
+    >
+      {(variant === 'note' || shouldDisplayKeypad) && (
         <div
           className={cx('grid grid-cols-3 grid-rows-3', {
             'size-[40dvh]': variant === 'keypad',
+            'size-full': variant === 'note',
           })}
         >
           {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
             <button
               key={'note-numbers-' + n}
-              className={cx('p-4', cellStyles[variant], {
+              className={cx(cellStyles[variant], {
                 'rounded-tr': n === 3,
                 'rounded-tl': n === 1,
               })}
@@ -100,7 +106,7 @@ export const Controls = ({
             }}
             onMouseEnter={() => {
               console.log('object')
-              if (data && rawData.data.at(0) !== data?.data?.at(0)) {
+              if (data && rawData.data.at(0) === data.data.at(0)) {
                 queryClient.invalidateQueries({queryKey: ['soduku']})
                 refetch()
               }

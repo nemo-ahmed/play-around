@@ -1,4 +1,4 @@
-export async function fetchSoduku(rating?: string | string[]) {
+async function fetchSoduku(rating?: string | string[]) {
   const url = new URL(`http://localhost:3000/api/soduku/random`)
   if (typeof rating === 'string') {
     url.searchParams.append('rating', rating)
@@ -11,3 +11,5 @@ export async function fetchSoduku(rating?: string | string[]) {
 
   Promise.reject(res.text())
 }
+
+export default fetchSoduku

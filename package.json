@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "formate": "prettier --write .",
-    "ts": "next typegen"
+    "ts": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.12",
