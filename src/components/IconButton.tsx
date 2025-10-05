@@ -74,19 +74,22 @@ function IconButton({
     </button>
   )
 }
+
 function IconButtonWithActive({
   isActive,
   ...rest
 }: Omit<IconButtonProps, 'y' | 'setY'>) {
   const [y, setY] = useState(transitionVal(isActive))
+  const color = '#9ae600'
+  // const color = '#155dfc'
 
   if (!isActive) return <IconButton {...rest} y={y} setY={setY} />
   return (
     <div className="w-full h-8 flex items-center transition-all justify-center isolate relative overflow-hidden">
       <div
         style={{
-          backgroundImage: `conic-gradient(from 45deg, #6b728250, #155dfc50 , #155dfc, #6b728250, #6b728250, #155dfc50, #155dfc, #6b728250)`,
-          animation: 'borderanimation 4s linear infinite',
+          backgroundImage: `conic-gradient(from 45deg, ${color}40, ${color}50 , ${color}, ${color}40, ${color}40, ${color}50, ${color}, ${color}40, ${color}40)`,
+          animation: 'borderanimation 2.5s linear infinite',
         }}
         className="flex size-[1000%] transition-all items-center justify-center isolate absolute z-10"
       />
