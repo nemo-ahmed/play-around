@@ -25,9 +25,11 @@ function IconButton({
   isActive,
   setY,
   y,
+  style,
+  onMouseEnter,
+  onMouseLeave,
   ...rest
 }: IconButtonProps) {
-  const [isMouseInside, setIsMouseInside] = useState(false)
   return (
     <button
       type="button"
@@ -42,22 +44,18 @@ function IconButton({
       )}
       style={{
         height: isActive ? `calc(2rem - ${BORDER}px)` : undefined,
+        ...(style ?? {}),
       }}
-      {...rest}
       onMouseEnter={e => {
-        setIsMouseInside(true)
-        if (isMouseInside) return
         setY(-transitionVal(isActive) - (isActive ? 3 : 1))
-        rest?.onMouseEnter?.(e)
+        onMouseEnter?.(e)
         console.log(true)
       }}
       onMouseLeave={e => {
-        setIsMouseInside(false)
-        if (isMouseInside) return
-
         setY(transitionVal(isActive))
-        rest?.onMouseEnter?.(e)
+        onMouseLeave?.(e)
       }}
+      {...rest}
     >
       <motion.div
         className="size-full flex items-center justify-center flex-col gap-[7px] text-center first:size-9/12 first:mx-auto first:my-1"
@@ -81,11 +79,14 @@ function IconButtonWithActive({
 }: Omit<IconButtonProps, 'y' | 'setY'>) {
   const [y, setY] = useState(transitionVal(isActive))
   const color = '#9ae600'
-  // const color = '#155dfc'
 
   if (!isActive) return <IconButton {...rest} y={y} setY={setY} />
   return (
-    <div className="w-full h-8 flex items-center transition-all justify-center isolate relative overflow-hidden">
+    <div
+      className="w-full h-8 flex items-center transition-all justify-center isolate relative overflow-hidden"
+      role="button"
+      tabIndex={0}
+    >
       <div
         style={{
           backgroundImage: `conic-gradient(from 45deg, ${color}40, ${color}50 , ${color}, ${color}40, ${color}40, ${color}50, ${color}, ${color}40, ${color}40)`,

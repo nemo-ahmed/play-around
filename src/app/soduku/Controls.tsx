@@ -108,10 +108,9 @@ export const Controls = ({
               if (data) dispatch({type: 'start', payload: data})
             }}
             onMouseEnter={() => {
-              console.log('object')
               if (data && rawData.data.at(0) === data.data.at(0)) {
                 queryClient.invalidateQueries({queryKey: ['soduku']})
-                refetch()
+                refetch({cancelRefetch: false})
               }
             }}
             aria-label="Start a new game"
