@@ -9,6 +9,7 @@ import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 import {useEffect, useState} from 'react'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 import {IoArrowRedoOutline, IoArrowUndoOutline} from 'react-icons/io5'
+import {LiaLightbulb} from 'react-icons/lia'
 import {VscDebugStart} from 'react-icons/vsc'
 
 export const Controls = ({
@@ -23,7 +24,7 @@ export const Controls = ({
   selected?: SodukuNumbers[]
 }) => {
   const [
-    {selected: selectedCell, given, rawData, history, isPlaying},
+    {selected: selectedCell, given, rawData, history, isPlaying, autoHints},
     dispatch,
   ] = useSoduku()
 
@@ -100,7 +101,7 @@ export const Controls = ({
         </div>
       )}
       {variant === 'keypad' && (
-        <div className="bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
+        <div className="flex flex-col bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
           <IconButton
             type="button"
             onClick={() => {
@@ -118,6 +119,23 @@ export const Controls = ({
             disabled={isLoading}
           >
             <VscDebugStart aria-hidden className="size-full" />
+          </IconButton>
+          <div
+            aria-label="divider"
+            aria-hidden
+            className="h-0.5 bg-eerie-black-300 dark:bg-eerie-black-700"
+          />
+          <IconButton
+            type="button"
+            onClick={() => {
+              dispatch({type: 'toggle-auto-hints'})
+            }}
+            aria-hidden
+            isActive={autoHints}
+            label={`${autoHints ? 'Disable' : 'Enable'} auto notes`}
+            disabled={!isPlaying}
+          >
+            <LiaLightbulb aria-hidden className="size-full" />
           </IconButton>
           <div
             aria-label="divider"

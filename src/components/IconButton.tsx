@@ -1,50 +1,108 @@
 import {cx} from '@/other/exports'
+import {
+  type Dispatch,
+  type SetStateAction,
+  useState,
+  type ButtonHTMLAttributes,
+} from 'react'
 import {motion} from 'motion/react'
-import {useState, type ButtonHTMLAttributes} from 'react'
+
+type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  label: string
+  isActive?: boolean
+  y: number
+  setY: Dispatch<SetStateAction<number>>
+}
+
+const BORDER = 6
+const transitionVal = (isActive?: boolean) => (isActive ? 13 : 15)
 
 function IconButton({
   'aria-label': ariaLabel,
   className,
   children,
   label,
+  isActive,
+  setY,
+  y,
   ...rest
-}: ButtonHTMLAttributes<HTMLButtonElement> & {label: string}) {
-  const [y, setY] = useState(0)
+}: IconButtonProps) {
+  const [isMouseInside, setIsMouseInside] = useState(false)
   return (
     <button
       type="button"
       aria-label={ariaLabel}
       className={cx(
-        'size-full h-8 overflow-hidden flex items-center justify-center hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10',
+        'size-full active:scroll-auto flex items-center justify-center overflow-hidden hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10',
         className,
+        'transition-all',
+        {
+          'h-8': !isActive,
+        },
       )}
+      style={{
+        height: isActive ? `calc(2rem - ${BORDER}px)` : undefined,
+      }}
       {...rest}
       onMouseEnter={e => {
-        setY(-32)
+        setIsMouseInside(true)
+        if (isMouseInside) return
+        setY(-transitionVal(isActive) - (isActive ? 3 : 1))
         rest?.onMouseEnter?.(e)
         console.log(true)
       }}
       onMouseLeave={e => {
-        setY(0)
+        setIsMouseInside(false)
+        if (isMouseInside) return
+
+        setY(transitionVal(isActive))
         rest?.onMouseEnter?.(e)
       }}
     >
       <motion.div
-        className="size-full text-center first:size-9/12 first:mx-auto first:my-1"
+        className="size-full flex items-center justify-center flex-col gap-[7px] text-center first:size-9/12 first:mx-auto first:my-1"
         animate={{y}}
+        initial={{y}}
         aria-hidden
         transition={{type: 'spring'}}
       >
-        {children}
-        <p
-          aria-hidden
-          className="size-9/12 mx-auto mt-[7px] capitalize text-nowrap"
-        >
+        <div className="size-full">{children}</div>
+        <p aria-hidden className="size-full mx-auto capitalize text-nowrap">
           {label}
         </p>
       </motion.div>
     </button>
   )
 }
+function IconButtonWithActive({
+  isActive,
+  ...rest
+}: Omit<IconButtonProps, 'y' | 'setY'>) {
+  const [y, setY] = useState(transitionVal(isActive))
 
-export default IconButton
+  if (!isActive) return <IconButton {...rest} y={y} setY={setY} />
+  return (
+    <div className="w-full h-8 flex items-center transition-all justify-center isolate relative overflow-hidden">
+      <div
+        style={{
+          backgroundImage: `conic-gradient(from 45deg, #6b728250, #155dfc50 , #155dfc, #6b728250, #6b728250, #155dfc50, #155dfc, #6b728250)`,
+          animation: 'borderanimation 4s linear infinite',
+        }}
+        className="flex size-[1000%] transition-all items-center justify-center isolate absolute z-10"
+      />
+      <div
+        style={{
+          width: `calc(100% - ${BORDER}px)`,
+        }}
+        className={cx(
+          'z-20 absolute transition-all',
+          'w-full bg-outer-space-800 dark:bg-eerie-black-600',
+        )}
+      >
+        <IconButton {...rest} isActive={isActive} y={y} setY={setY} />
+      </div>
+    </div>
+  )
+}
+
+export default IconButtonWithActive

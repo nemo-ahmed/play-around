@@ -70,7 +70,10 @@ export function Cell({
   }
 
   useEffect(() => {
-    if (!autoHints || isGiven || typeof value === 'number') return
+    if (!autoHints || isGiven || typeof value === 'number') {
+      setNotes([])
+      return
+    }
 
     const hints = ([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).filter(n => {
       return (
