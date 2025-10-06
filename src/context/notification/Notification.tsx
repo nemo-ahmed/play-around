@@ -1,27 +1,22 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useSyncExternalStore,
-} from 'react'
-import {todosStore} from './some'
+import React, {createContext, ReactNode, useSyncExternalStore} from 'react'
+import {todosStore as notificationsStore} from './some'
 import {createPortal} from 'react-dom'
 
 const Context = createContext({})
 function NotificationProvider({children}: {children: ReactNode}) {
-  const todos = useSyncExternalStore(
-    todosStore.subscribe,
-    todosStore.getSnapshot,
-    todosStore.getServerSnapshot,
+  const notifications = useSyncExternalStore(
+    notificationsStore.subscribe,
+    notificationsStore.getSnapshot,
+    notificationsStore.getServerSnapshot,
   )
   return (
-    <Context value={{todos}}>
+    <Context value={{notifications}}>
       {children}
       {createPortal(
         <ul className="fixed bottom-0 right-0 z-[9999909999]">
-          {todos.map(todo => (
-            <li key={todo.id} className="m-4">
-              {todo.ele}
+          {notifications.map(notification => (
+            <li key={notification.id} className="m-4">
+              {notification.ele}
             </li>
           ))}
         </ul>,
@@ -32,6 +27,6 @@ function NotificationProvider({children}: {children: ReactNode}) {
 }
 
 export const notify = (props: Record<'title' | 'icon' | 'message', string>) =>
-  todosStore.addTodo(props)
+  notificationsStore.addNotification(props)
 
 export default NotificationProvider

@@ -33,7 +33,7 @@ export const Controls = ({
   const {data, isLoading, refetch} = useRandomSoduku({
     rating,
   })
-  const {mutate, isPending, isSuccess, isError} = useSubmitSoduku()
+  const {mutate, isPending} = useSubmitSoduku()
 
   const [shouldDisplayKeypad, setShouldDisplayKeypad] = useState(false)
 

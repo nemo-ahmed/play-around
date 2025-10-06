@@ -68,7 +68,7 @@ let todos = [
 let listeners: Array<() => unknown> = []
 
 export const todosStore = {
-  addTodo({
+  addNotification({
     title = 'Todo #' + todos.length,
     icon = '🐨',
     message = 'testing',
