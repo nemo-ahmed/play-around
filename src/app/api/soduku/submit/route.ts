@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     .catch(err => `failed ${JSON.stringify(err)}`)
 
   return new Response(res, {
-    status: 200,
+    status: res.includes('failed') ? 204 : 200,
     headers: {'Content-Type': 'application/json'},
   })
   // console.log(error)
