@@ -1,37 +1,55 @@
 'use client'
 import {cx} from '@/other/exports'
-import React, {createRef} from 'react'
+import {motion} from 'motion/react'
+import React from 'react'
 import {IoClose} from 'react-icons/io5'
 
 export const NotificationComponent = ({
   title,
   message,
   icon,
+  id,
 }: {
   title: string
+  id: string
   message: string
   icon: string
 }) => {
-  const ref = createRef<HTMLDivElement>()
   const containerStyles =
-    'flex gap-2 items-center px-3 py-2.5 text-eerie-black-400 dark:text-eerie-black-800'
+    'flex gap-2 items-center pl-3 pr-1 py-2.5 text-eerie-black-400 dark:text-eerie-black-800'
+
+  const timer = setTimeout(() => {
+    notificationsStore.removeNotification(id)
+    clearTimeout(timer)
+  }, 2000)
 
   return (
-    <div
-      ref={ref}
+    <motion.div
       className="w-3xs bg-eerie-black-900 dark:bg-eerie-black-300 rounded-md shadow shadow-eerie-black"
+      initial={{
+        x: 256,
+      }}
+      animate={{x: 0}}
+      transition={{type: 'spring'}}
+      exit={{x: 256}}
+      onEnded={() => {
+        console.log('done')
+      }}
+      onAnimationEnd={() => {
+        console.log('done')
+      }}
     >
       <div
         className={cx(
-          'border-b border-eerie-black-600 justify-between',
           containerStyles,
+          'border-b border-eerie-black-600 justify-between pb-1',
         )}
       >
         <h1>{title}</h1>
         <button
           type="button"
           onClick={() => {
-            ref.current?.remove()
+            notificationsStore.removeNotification(id)
           }}
           className="h-6"
         >
@@ -39,12 +57,12 @@ export const NotificationComponent = ({
         </button>
       </div>
       {(icon || message) && (
-        <div className={containerStyles}>
+        <div className={cx(containerStyles, 'pt-1')}>
           {icon && icon}
           {message && <p>{message}</p>}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }
 
@@ -54,12 +72,12 @@ export const NotificationComponent = ({
 // If your app is fully built with React,
 // we recommend using React state instead.
 
-let nextId = 0
-let todos = [
+let notifications = [
   {
-    id: nextId++,
+    id: '1',
     ele: NotificationComponent({
-      title: 'Todo #' + nextId,
+      id: '1',
+      title: 'Todo #1',
       icon: '🐨',
       message: 'testing',
     }),
@@ -67,24 +85,33 @@ let todos = [
 ]
 let listeners: Array<() => unknown> = []
 
-export const todosStore = {
+const MAX_STACK = 5
+
+export const notificationsStore = {
   addNotification({
-    title = 'Todo #' + todos.length,
+    id,
+    title,
     icon = '🐨',
     message = 'testing',
-  }: Record<'title' | 'icon' | 'message', string>) {
-    nextId++
-    todos = [
-      ...todos,
+  }: Record<'title' | 'icon' | 'message' | 'id', string>) {
+    console.log(id)
+    notifications = [
+      ...notifications,
       {
-        id: nextId,
+        id,
         ele: NotificationComponent({
-          title,
+          id,
+          title: (title ?? 'Notify') + ` #${id}`,
           icon,
           message,
         }),
       },
-    ]
+    ].slice(-MAX_STACK)
+
+    emitChange()
+  },
+  removeNotification(id: string) {
+    notifications = notifications.filter(el => el.id !== id)
 
     emitChange()
   },
@@ -95,10 +122,10 @@ export const todosStore = {
     }
   },
   getSnapshot() {
-    return todos
+    return notifications
   },
   getServerSnapshot() {
-    return todos
+    return notifications
   },
 }
 
