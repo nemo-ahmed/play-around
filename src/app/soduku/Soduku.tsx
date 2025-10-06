@@ -4,43 +4,49 @@ import {useSoduku} from '@/context/Soduku'
 import {Grid} from './Grid'
 import {Controls} from './Controls'
 import {cx} from '@/other/exports'
-import {useEffect} from 'react'
+import {useCallback, useSyncExternalStore} from 'react'
+import {CiWarning} from 'react-icons/ci'
 
 function SodukuComp({rating}: {rating?: string}) {
   const [{rawData}, dispatch] = useSoduku()
 
-  const onkeydown = (e: KeyboardEvent) => {
-    const nKey = Number(e.key)
-    // console.log(e, (e.ctrlKey || e.metaKey) && e.key === 'z')
-    if (nKey >= 1 && nKey <= 9) {
-      dispatch({type: 'key', payload: nKey})
-    } else if (e.key === 'Backspace' || e.key === 'Delete') {
-      dispatch({type: 'key', payload: null})
-    } else if (e.key === 'Escape') {
-      dispatch({type: 'select', payload: undefined})
-    } else if (
-      e.shiftKey &&
-      (e.ctrlKey || e.metaKey) &&
-      e.key.toLowerCase() === 'z'
-    ) {
-      console.log('redo')
-      dispatch({type: 'key', payload: 'redo'})
-    } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-      console.log('undo')
-      dispatch({type: 'key', payload: 'undo'})
-    }
-  }
+  const onkeydown = useCallback(
+    (e: KeyboardEvent) => {
+      const nKey = Number(e.key)
+      // console.log(e, (e.ctrlKey || e.metaKey) && e.key === 'z')
+      if (nKey >= 1 && nKey <= 9) {
+        dispatch({type: 'key', payload: nKey})
+      } else if (e.key === 'Backspace' || e.key === 'Delete') {
+        dispatch({type: 'key', payload: null})
+      } else if (e.key === 'Escape') {
+        dispatch({type: 'select', payload: undefined})
+      } else if (
+        e.shiftKey &&
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === 'z'
+      ) {
+        console.log('redo')
+        dispatch({type: 'key', payload: 'redo'})
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        console.log('undo')
+        dispatch({type: 'key', payload: 'undo'})
+      }
+    },
+    [dispatch],
+  )
 
-  useEffect(() => {
+  const subscribe = useCallback(() => {
     window.addEventListener('keydown', onkeydown)
-    console.log('added')
+    console.log('added keyboard listener')
     return () => {
-      console.log('removed')
+      console.log('removed keyboard listener')
       window.removeEventListener('keydown', onkeydown)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [onkeydown])
 
+  const isOnline = useSyncExternalStore(subscribe, () => {
+    return navigator.onLine
+  })
   return (
     <div
       className="h-[calc(100dvh-120px)] flex items-center justify-around flex-wrap overflow-auto"
@@ -61,10 +67,17 @@ function SodukuComp({rating}: {rating?: string}) {
       <section
         aria-label="soduku controls"
         className={cx(
-          'p-1 bg-eerie-black-900 dark:bg-eerie-black-800',
+          'p-1 bg-eerie-black-900 dark:bg-eerie-black-800 relative',
           'rounded border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
         )}
       >
+        {isOnline && (
+          <div className="absolute -top-7 right-0 w-full h-5 flex items-center gap-1 capitalize">
+            <CiWarning className="text-amber-500" size={22} />
+            keyboard listener is not working
+          </div>
+        )}
+
         {rawData?.data?.length > 0 && (
           <div className="flex justify-between px-2 pt-2 pb-1.5">
             <h3 className="text-rich-black-100 font-extralight">
