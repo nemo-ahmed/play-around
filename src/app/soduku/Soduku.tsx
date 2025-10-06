@@ -71,7 +71,7 @@ function SodukuComp({rating}: {rating?: string}) {
           'rounded border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
         )}
       >
-        {isOnline && (
+        {!isOnline && (
           <div className="absolute -top-7 right-0 w-full h-5 flex items-center gap-1 capitalize">
             <CiWarning className="text-amber-500" size={22} />
             keyboard listener is not working
