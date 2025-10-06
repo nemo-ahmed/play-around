@@ -1,13 +1,16 @@
 'use client'
 import IconButton from '@/components/IconButton'
+import {notify} from '@/context'
 import {useSoduku} from '@/context/Soduku'
-import useRandomSoduku from '@/hooks/useRandomSoduku'
+import useRandomSoduku from '@/hooks/soduku/useRandomSoduku'
+import useSubmitSoduku from '@/hooks/soduku/useSubmitSoduku'
 import {cx} from '@/other/exports'
 import {queryClient} from '@/other/queryclient'
 import type {SodukuNumbers} from '@/types/soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 import {useEffect, useState} from 'react'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
+import {CgSpinnerTwo} from 'react-icons/cg'
 import {IoArrowRedoOutline, IoArrowUndoOutline} from 'react-icons/io5'
 import {LiaLightbulb} from 'react-icons/lia'
 import {VscDebugStart} from 'react-icons/vsc'
@@ -27,10 +30,10 @@ export const Controls = ({
     {selected: selectedCell, given, rawData, history, isPlaying, autoHints},
     dispatch,
   ] = useSoduku()
-
   const {data, isLoading, refetch} = useRandomSoduku({
     rating,
   })
+  const {mutate, isPending, isSuccess, isError} = useSubmitSoduku()
 
   const [shouldDisplayKeypad, setShouldDisplayKeypad] = useState(false)
 
@@ -49,6 +52,7 @@ export const Controls = ({
     )
   }, [])
 
+  const loading = isLoading || isPending
   return (
     <div
       className={cx({
@@ -105,7 +109,7 @@ export const Controls = ({
           <IconButton
             type="button"
             onClick={() => {
-              if (data) dispatch({type: 'start', payload: data})
+              if (data) dispatch({type: 'start', payload: {data, mutate}})
             }}
             onMouseEnter={() => {
               if (data && rawData.data.at(0) === data.data.at(0)) {
@@ -113,11 +117,18 @@ export const Controls = ({
                 refetch({cancelRefetch: false})
               }
             }}
-            aria-label="Start a new game"
-            label="new game"
-            disabled={isLoading}
+            aria-label={isPending ? 'Submitting Soduku' : 'Start a new game'}
+            label={isPending ? 'Submitting Soduku' : 'new game'}
+            disabled={loading}
           >
-            <VscDebugStart aria-hidden className="size-full" />
+            {loading ? (
+              <CgSpinnerTwo
+                aria-hidden
+                className="size-full animate-spin text-blue-400"
+              />
+            ) : (
+              <VscDebugStart aria-hidden className="size-full" />
+            )}
           </IconButton>
           <div
             aria-label="divider"
@@ -133,6 +144,21 @@ export const Controls = ({
             isActive={autoHints}
             label={`${autoHints ? 'Disable' : 'Enable'} auto notes`}
             disabled={!isPlaying}
+          >
+            <LiaLightbulb aria-hidden className="size-full" />
+          </IconButton>
+          <IconButton
+            type="button"
+            onClick={() => {
+              notify({
+                title: 'testing',
+                icon: '🐨',
+                message: 'testing',
+              })
+            }}
+            aria-hidden
+            isActive
+            label={`${autoHints ? 'Disable' : 'Enable'} auto notes`}
           >
             <LiaLightbulb aria-hidden className="size-full" />
           </IconButton>

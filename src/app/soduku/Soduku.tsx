@@ -44,9 +44,15 @@ function SodukuComp({rating}: {rating?: string}) {
     }
   }, [onkeydown])
 
-  const isOnline = useSyncExternalStore(subscribe, () => {
-    return navigator.onLine
-  })
+  const isOnline = useSyncExternalStore(
+    subscribe,
+    () => {
+      return navigator.onLine
+    },
+    () => {
+      return false
+    },
+  )
   return (
     <div
       className="h-[calc(100dvh-120px)] flex items-center justify-around flex-wrap overflow-auto"

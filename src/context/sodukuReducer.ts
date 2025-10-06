@@ -1,11 +1,14 @@
 import type {
   SodukuNumbers,
+  SodukuPromiseData,
   SodukuPromiseReturn,
   SodukuPuzzle,
   SodukuState,
 } from '@/types/soduku'
-import {initSoduku, getGivenKey} from '@/utils/soduku'
+import {initSoduku, getGivenKey, validateSodukuLines} from '@/utils/soduku'
 import {cloneDeep} from '@/other/exports'
+import type {UseMutateFunction} from '@tanstack/react-query'
+import {notify} from './notification/Notification'
 
 const emptyPuzzle: SodukuPuzzle = Array(9).fill(Array(9).fill(null))
 export const initialSodukuReducerState: SodukuState = {
@@ -21,13 +24,20 @@ export const initialSodukuReducerState: SodukuState = {
   gridState: cloneDeep(emptyPuzzle),
   autoHints: false,
   isPlaying: false,
+  submitSoduku: args => {},
 }
 
 // ToDo: Handle game complete
 export type TypeAndPayload =
   | {type: 'key'; payload: number | 'undo' | 'redo' | 'delete' | null}
   | {type: 'select'; payload?: SodukuState['selected']}
-  | {type: 'start'; payload: SodukuPromiseReturn}
+  | {
+      type: 'start'
+      payload: {
+        data: SodukuPromiseReturn
+        mutate: UseMutateFunction<Response, Error, SodukuPromiseData, unknown>
+      }
+    }
   | {type: 'reset'; payload?: undefined}
   | {type: 'toggle-auto-hints'; payload?: undefined}
 
@@ -39,8 +49,9 @@ export default function sodukuReducer(
     case 'start':
       return {
         ...state,
-        ...initSoduku(payload),
-        rawData: payload,
+        ...initSoduku(payload.data),
+        rawData: payload.data,
+        submitSoduku: payload.mutate,
         isPlaying: true,
       }
     case 'select':
@@ -114,9 +125,34 @@ export default function sodukuReducer(
           newState.rowState[rowIndex][colIndex] = value
           newState.colState[colIndex][rowIndex] = value
           newState.gridState[gridIndex][cellIndex] = value
+          const newCount =
+            newState.rowState.flat().join('').match(/[1-9]/g)?.length ?? -1
           // ? Its never going to be Null but ...
           newState.count =
             newState.rowState.flat().join('').match(/[1-9]/g)?.length ?? -1
+          if (
+            newCount === 81 &&
+            validateSodukuLines(newState.colState) &&
+            validateSodukuLines(newState.gridState) &&
+            validateSodukuLines(newState.rowState)
+          ) {
+            console.log('Submitting', state)
+            state.submitSoduku(
+              {
+                ...state.rawData.data[0],
+                soduku: newState.rowState.flat().join(''),
+              },
+              {
+                onSuccess(data, variables, context) {
+                  notify({
+                    title: 'Woohoo!',
+                    icon: '🥳',
+                    message: 'Soduku successfully saved',
+                  })
+                },
+              },
+            )
+          }
 
           return {
             ...state,

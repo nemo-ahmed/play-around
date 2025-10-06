@@ -1,3 +1,5 @@
+import {UseMutateFunction} from '@tanstack/react-query'
+
 export type SodukuNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
 export type SodukuGetParams = {
@@ -47,4 +49,5 @@ export interface SodukuState {
   gridState: SodukuPuzzle
   autoHints: boolean
   isPlaying: boolean
+  submitSoduku: UseMutateFunction<Response, Error, SodukuPromiseData, unknown>
 }
