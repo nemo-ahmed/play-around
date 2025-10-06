@@ -48,7 +48,7 @@ export const isSodukuNumber = (n: number | string | null): boolean =>
 export const validateSodukuLines = (n: Nullish<SodukuNumbers>[][]) =>
   !n.flat().includes(null) &&
   /(123456789){8}/.test(
-    (n as SodukuNumbers[][])
+    structuredClone(n as SodukuNumbers[][])
       .map(x => x.sort((a, b) => a - b).join(''))
       .join(''),
   )
