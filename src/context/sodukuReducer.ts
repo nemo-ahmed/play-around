@@ -8,7 +8,6 @@ import type {
 import {initSoduku, getGivenKey, validateSodukuLines} from '@/utils/soduku'
 import {cloneDeep} from '@/other/exports'
 import type {UseMutateFunction} from '@tanstack/react-query'
-import {notify} from './notification/Notification'
 
 const emptyPuzzle: SodukuPuzzle = Array(9).fill(Array(9).fill(null))
 export const initialSodukuReducerState: SodukuState = {
@@ -24,7 +23,7 @@ export const initialSodukuReducerState: SodukuState = {
   gridState: cloneDeep(emptyPuzzle),
   autoHints: false,
   isPlaying: false,
-  submitSoduku: args => {},
+  submitSoduku: () => {},
 }
 
 // ToDo: Handle game complete
@@ -136,22 +135,10 @@ export default function sodukuReducer(
             validateSodukuLines(newState.gridState) &&
             validateSodukuLines(newState.rowState)
           ) {
-            console.log('Submitting', state)
-            state.submitSoduku(
-              {
-                ...state.rawData.data[0],
-                soduku: newState.rowState.flat().join(''),
-              },
-              {
-                onSuccess(data, variables, context) {
-                  notify({
-                    title: 'Woohoo!',
-                    icon: '🥳',
-                    message: 'Soduku successfully saved',
-                  })
-                },
-              },
-            )
+            state.submitSoduku({
+              ...state.rawData.data[0],
+              soduku: newState.rowState.flat().join(''),
+            })
           }
 
           return {
