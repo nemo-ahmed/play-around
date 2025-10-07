@@ -125,10 +125,12 @@ export default function sodukuReducer(
           newState.colState[colIndex][rowIndex] = value
           newState.gridState[gridIndex][cellIndex] = value
           const newCount =
+            // ? Its never going to be Null but ...
             newState.rowState.flat().join('').match(/[1-9]/g)?.length ?? -1
-          // ? Its never going to be Null but ...
-          newState.count =
-            newState.rowState.flat().join('').match(/[1-9]/g)?.length ?? -1
+
+          newState.count = newCount
+          // ? This is to keep highlight in sync with cell value change
+          state.selected.value = value
           if (
             newCount === 81 &&
             validateSodukuLines(newState.colState) &&

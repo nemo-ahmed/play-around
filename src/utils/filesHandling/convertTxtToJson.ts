@@ -38,12 +38,13 @@ export async function convertTxtToJsonFiles(fileName: string) {
 export async function appendOrCreateFile(
   obj: Record<string, SodukuPromiseData[]>,
 ) {
+  // ! File didnt append the new Solution
   for await (const filename of Object.keys(obj)) {
     let arr = obj[filename]
+    const existingData: string[] = []
     if (checkIfFileExist(filename + '.json')) {
       console.log('File found', filename)
 
-      const existingData: string[] = []
       const ss = fs.createReadStream(getPath(filename + '.json'), {
         autoClose: true,
         encoding: 'utf-8',
@@ -55,17 +56,15 @@ export async function appendOrCreateFile(
         existingData.push(line)
       }
 
-      rl.on('end', (...rgs) => {
-        console.log('ended File reading', rgs, filename, existingData)
-        const foundData = JSON.parse(existingData.join('')) as {
-          total: number
-          data: SodukuPromiseData[]
-        }
-
-        arr = arr.concat(foundData.data)
-        arr = uniqWith(arr, isEqual)
-        console.log('Finishing analyzing data', filename)
-      })
+      arr.push(
+        ...(
+          JSON.parse(existingData.join('')) as {
+            total: number
+            data: SodukuPromiseData[]
+          }
+        ).data,
+      )
+      arr = uniqWith(arr, isEqual)
     }
     const newFilename = filename + '.json'
     const writeStream = fs

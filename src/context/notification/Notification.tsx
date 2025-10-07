@@ -4,7 +4,7 @@ import {notificationsStore} from './some'
 import {uniqueId} from 'lodash'
 import dynamic from 'next/dynamic'
 
-const NotificationPortal = dynamic(() => import('./portal'), {
+const NotificationPortal = dynamic(() => import('./Portal'), {
   ssr: false,
 })
 
