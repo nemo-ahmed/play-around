@@ -11,6 +11,7 @@ import {useEffect, useState} from 'react'
 import {Controls} from './Controls'
 import {cx} from '@/other/exports'
 import {SodukuNumbers} from '@/types/soduku'
+import {notify} from '@/context'
 
 export function Cell({
   gridIndex,
@@ -120,6 +121,10 @@ export function Cell({
         dispatch({
           type: 'select',
           payload: {gridIndex, cellIndex, rowIndex, colIndex, value, isGiven},
+        })
+
+        notify({
+          title: 'selected',
         })
 
         console.log(

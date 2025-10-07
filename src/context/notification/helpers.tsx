@@ -4,19 +4,21 @@ import {motion} from 'motion/react'
 import React from 'react'
 import {IoClose} from 'react-icons/io5'
 
-export const NotificationComponent = ({
-  title,
-  message,
-  icon,
-  id,
-}: {
+export interface Props {
   title: string
   id: string
-  message: string
-  icon: string
-}) => {
-  const containerStyles =
-    'flex gap-2 items-center pl-3 pr-1 py-2.5 text-eerie-black-400 dark:text-eerie-black-800'
+  message?: string
+  icon?: string
+}
+
+export const NotificationComponent = ({title, message, icon, id}: Props) => {
+  const containerStyles = cx(
+    'flex gap-2 items-center text-eerie-black-400 dark:text-eerie-black-800',
+    {
+      'pl-3 pr-1 py-2.5': message || icon,
+      'px-3 py-2.5': !message && !icon,
+    },
+  )
 
   const timer = setTimeout(() => {
     notificationsStore.removeNotification(id)
@@ -32,20 +34,13 @@ export const NotificationComponent = ({
       animate={{x: 0}}
       transition={{type: 'spring'}}
       exit={{x: 256}}
-      onEnded={() => {
-        console.log('done')
-      }}
-      onAnimationEnd={() => {
-        console.log('done')
-      }}
     >
       <div
-        className={cx(
-          containerStyles,
-          'border-b border-eerie-black-600 justify-between pb-1',
-        )}
+        className={cx(containerStyles, 'justify-between', {
+          'border-b border-eerie-black-600 pb-1': message || icon,
+        })}
       >
-        <h1>{title}</h1>
+        <h1 className="capitalize text-xl">{title}</h1>
         <button
           type="button"
           onClick={() => {
@@ -88,12 +83,7 @@ let listeners: Array<() => unknown> = []
 const MAX_STACK = 5
 
 export const notificationsStore = {
-  addNotification({
-    id,
-    title,
-    icon = '🐨',
-    message = 'testing',
-  }: Record<'title' | 'icon' | 'message' | 'id', string>) {
+  addNotification({id, title, icon, message}: Props) {
     console.log(id)
     notifications = [
       ...notifications,
@@ -101,7 +91,7 @@ export const notificationsStore = {
         id,
         ele: NotificationComponent({
           id,
-          title: (title ?? 'Notify') + ` #${id}`,
+          title,
           icon,
           message,
         }),

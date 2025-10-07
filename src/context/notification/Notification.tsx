@@ -1,6 +1,6 @@
 'use client'
 import React, {createContext, ReactNode, useSyncExternalStore} from 'react'
-import {notificationsStore} from './some'
+import {notificationsStore, Props} from './helpers'
 import {uniqueId} from 'lodash'
 import dynamic from 'next/dynamic'
 
@@ -24,9 +24,8 @@ function NotificationProvider({children}: {children: ReactNode}) {
   )
 }
 
-export const notify = (props: Record<'title' | 'icon' | 'message', string>) => {
+export const notify = (props: Omit<Props, 'id'>) => {
   const id = uniqueId()
-  console.log(id)
   notificationsStore.addNotification({...props, id})
 }
 
