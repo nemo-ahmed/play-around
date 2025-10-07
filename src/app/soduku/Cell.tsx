@@ -1,17 +1,18 @@
 'use client'
 
-import {useSoduku} from '@/context/Soduku'
+import {useSoduku} from '@/context/soduku/Soduku'
 import {
   DYNAMIC_NUMBERS,
   getColIndex,
+  getGivenKey,
   getRowIndex,
+  isSodukuNumber,
   validateSodukuValue,
 } from '@/utils/soduku'
 import {useEffect, useState} from 'react'
 import {Controls} from './Controls'
 import {cx} from '@/other/exports'
 import {SodukuNumbers} from '@/types/soduku'
-import {notify} from '@/context'
 
 export function Cell({
   gridIndex,
@@ -28,7 +29,7 @@ export function Cell({
   const value = gridState[gridIndex][cellIndex]
   const [notes, setNotes] = useState<SodukuNumbers[]>([])
 
-  const cellKey = `${gridIndex}-${cellIndex}`
+  const cellKey = getGivenKey({gridIndex, cellIndex})
   // ? This will be use to Validation. Should be quicker than before
   const colIndex = getColIndex({
     gridIndex,
@@ -71,7 +72,7 @@ export function Cell({
   }
 
   useEffect(() => {
-    if (!autoHints || isGiven || typeof value === 'number') {
+    if (!autoHints || isGiven || isSodukuNumber(value)) {
       setNotes([])
       return
     }
@@ -117,23 +118,8 @@ export function Cell({
       aria-label={ariaLabel}
       role="button"
       onBlur={onBlur}
-      onFocus={() => {
-        dispatch({
-          type: 'select',
-          payload: {gridIndex, cellIndex, rowIndex, colIndex, value, isGiven},
-        })
-
-        notify({
-          title: 'selected',
-        })
-
-        console.log(
-          'focused',
-          `grid-${gridIndex + 1}row-${rowIndex}_col-${colIndex}`,
-        )
-      }}
     >
-      {!hasFocus && !value && (
+      {!hasFocus && (
         // ? This is to prevent adding notes when focusing cell
         <button
           className="size-full absolute bg-transparent z-10"

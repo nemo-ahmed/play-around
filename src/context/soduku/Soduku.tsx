@@ -7,12 +7,14 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useReducer,
 } from 'react'
 import sodukuReducer, {
   initialSodukuReducerState,
   type TypeAndPayload,
 } from './sodukuReducer'
+import {validateSodukuLines} from '@/utils/soduku'
 
 const Soduku = createContext<
   [SodukuState, Partial<ActionDispatch<[TypeAndPayload]>>]
@@ -23,6 +25,22 @@ export default function SodukuProvider({children}: {children: ReactNode}) {
     sodukuReducer,
     initialSodukuReducerState,
   )
+
+  useEffect(() => {
+    if (state.count < 81) return
+    if (
+      validateSodukuLines(state.colState) &&
+      validateSodukuLines(state.gridState) &&
+      validateSodukuLines(state.rowState)
+    ) {
+      state.submitSoduku({
+        ...state.rawData.data[0],
+        soduku: state.rowState.flat().join(''),
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.count])
+
   const dispatch = useCallback(unsafeDispatch, [unsafeDispatch])
   const value = [state, dispatch] as [
     SodukuState,

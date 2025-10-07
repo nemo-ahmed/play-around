@@ -5,7 +5,7 @@ import type {
   SodukuPuzzle,
   SodukuState,
 } from '@/types/soduku'
-import {initSoduku, getGivenKey, validateSodukuLines} from '@/utils/soduku'
+import {initSoduku, getGivenKey} from '@/utils/soduku'
 import {cloneDeep} from '@/other/exports'
 import type {UseMutateFunction} from '@tanstack/react-query'
 
@@ -107,10 +107,9 @@ export default function sodukuReducer(
           ) {
             return state
           }
-          const value =
-            payload === 'delete'
-              ? null
-              : (Number(payload) as Nullish<SodukuNumbers>)
+          const value = (
+            payload === 'delete' ? null : Number(payload)
+          ) as Nullish<SodukuNumbers>
 
           const newState = cloneDeep({
             rowState: state.rowState,
@@ -131,17 +130,6 @@ export default function sodukuReducer(
           newState.count = newCount
           // ? This is to keep highlight in sync with cell value change
           state.selected.value = value
-          if (
-            newCount === 81 &&
-            validateSodukuLines(newState.colState) &&
-            validateSodukuLines(newState.gridState) &&
-            validateSodukuLines(newState.rowState)
-          ) {
-            state.submitSoduku({
-              ...state.rawData.data[0],
-              soduku: newState.rowState.flat().join(''),
-            })
-          }
 
           return {
             ...state,
@@ -166,6 +154,7 @@ export default function sodukuReducer(
         ...state,
         autoHints: !state.autoHints,
       }
+
     case 'reset':
       return {
         ...initialSodukuReducerState,

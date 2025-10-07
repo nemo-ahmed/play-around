@@ -1,5 +1,5 @@
 'use client'
-import {useSoduku} from '@/context/Soduku'
+import {useSoduku} from '@/context/soduku/Soduku'
 
 import {Grid} from './Grid'
 import {Controls} from './Controls'
@@ -13,7 +13,6 @@ function SodukuComp({rating}: {rating?: string}) {
   const onkeydown = useCallback(
     (e: KeyboardEvent) => {
       const nKey = Number(e.key)
-      // console.log(e, (e.ctrlKey || e.metaKey) && e.key === 'z')
       if (nKey >= 1 && nKey <= 9) {
         dispatch({type: 'key', payload: nKey})
       } else if (e.key === 'Backspace' || e.key === 'Delete') {
@@ -25,10 +24,8 @@ function SodukuComp({rating}: {rating?: string}) {
         (e.ctrlKey || e.metaKey) &&
         e.key.toLowerCase() === 'z'
       ) {
-        console.log('redo')
         dispatch({type: 'key', payload: 'redo'})
       } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-        console.log('undo')
         dispatch({type: 'key', payload: 'undo'})
       }
     },

@@ -1,7 +1,6 @@
 'use client'
 import IconButton from '@/components/IconButton'
-import {notify} from '@/context'
-import {useSoduku} from '@/context/Soduku'
+import {useSoduku} from '@/context/soduku/Soduku'
 import useRandomSoduku from '@/hooks/soduku/useRandomSoduku'
 import useSubmitSoduku from '@/hooks/soduku/useSubmitSoduku'
 import {cx} from '@/other/exports'
@@ -109,6 +108,10 @@ export const Controls = ({
           <IconButton
             type="button"
             onClick={() => {
+              if (data && rawData.data.at(0) === data.data.at(0)) {
+                queryClient.invalidateQueries({queryKey: ['soduku']})
+                refetch({cancelRefetch: false})
+              }
               if (data) dispatch({type: 'start', payload: {data, mutate}})
             }}
             onMouseEnter={() => {
@@ -147,21 +150,7 @@ export const Controls = ({
           >
             <LiaLightbulb aria-hidden className="size-full" />
           </IconButton>
-          <IconButton
-            type="button"
-            onClick={() => {
-              notify({
-                title: 'testing',
-                icon: '🐨',
-                message: 'testing',
-              })
-            }}
-            aria-hidden
-            isActive
-            label={`${autoHints ? 'Disable' : 'Enable'} auto notes`}
-          >
-            <LiaLightbulb aria-hidden className="size-full" />
-          </IconButton>
+
           <div
             aria-label="divider"
             aria-hidden

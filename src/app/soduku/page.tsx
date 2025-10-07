@@ -1,6 +1,6 @@
 import React, {Suspense} from 'react'
 import SodukuComp from './Soduku'
-import SodukuProvider from '@/context/Soduku'
+import SodukuProvider from '@/context/soduku/Soduku'
 import {fetchSoduku} from '@/utils/soduku'
 import {queryClient} from '@/other/queryclient'
 
