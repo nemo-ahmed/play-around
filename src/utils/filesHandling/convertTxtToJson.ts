@@ -56,7 +56,7 @@ export async function appendOrCreateFile(
         existingData.push(line)
       }
 
-      arr.push(
+      arr.unshift(
         ...(
           JSON.parse(existingData.join('')) as {
             total: number
