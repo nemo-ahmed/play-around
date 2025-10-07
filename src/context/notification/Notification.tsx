@@ -1,11 +1,16 @@
 'use client'
 import React, {createContext, ReactNode, useSyncExternalStore} from 'react'
 import {notificationsStore} from './some'
-import {createPortal} from 'react-dom'
 import {uniqueId} from 'lodash'
+import dynamic from 'next/dynamic'
+
+const NotificationPortal = dynamic(() => import('./portal'), {
+  ssr: false,
+})
 
 const Context = createContext({})
 function NotificationProvider({children}: {children: ReactNode}) {
+  'use client'
   const notifications = useSyncExternalStore(
     notificationsStore.subscribe,
     notificationsStore.getSnapshot,
@@ -14,14 +19,7 @@ function NotificationProvider({children}: {children: ReactNode}) {
   return (
     <Context value={{notifications}}>
       {children}
-      {createPortal(
-        <ul className="fixed bottom-4 right-5 z-[9999909999] flex gap-4 justify-end flex-col">
-          {notifications.map(notification => (
-            <li key={notification.id}>{notification.ele}</li>
-          ))}
-        </ul>,
-        document.body,
-      )}
+      <NotificationPortal notifications={notifications} />
     </Context>
   )
 }
