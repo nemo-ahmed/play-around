@@ -16,7 +16,7 @@ export async function convertTxtToJsonFiles(fileName: string) {
   const rs = fs.createReadStream(getPath(fileName), 'utf8')
   // ? This is awesome for correctly reading lines
   const rl = Readline.createInterface({input: rs})
-  const obj: Record<string, SodukuPromiseData[]> = {}
+  const obj: Record<string, unknown[]> = {}
   console.log('handling lines')
   for await (const line of rl) {
     // ? Ignoring comment lines
@@ -35,9 +35,7 @@ export async function convertTxtToJsonFiles(fileName: string) {
   appendOrCreateFile(obj)
 }
 
-export async function appendOrCreateFile(
-  obj: Record<string, SodukuPromiseData[]>,
-) {
+export async function appendOrCreateFile(obj: Record<string, unknown[]>) {
   // ! File didnt append the new Solution
   for await (const filename of Object.keys(obj)) {
     let arr = obj[filename]

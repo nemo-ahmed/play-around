@@ -100,13 +100,10 @@ function SodukuComp() {
           </div>
         </Active>
 
-        <Active isVisible={rawData?.data?.length > 0}>
+        <Active isVisible={!!rawData?.difficulty}>
           <div className="flex justify-between px-2 pt-2 pb-1.5">
             <h3 className="text-rich-black-100 font-extralight">
-              Rating: {rawData?.data?.[0]?.rating}
-            </h3>
-            <h3 className="text-rich-black-100 font-extralight">
-              Total: {rawData?.total}
+              Rating: {rawData?.difficulty}
             </h3>
           </div>
         </Active>

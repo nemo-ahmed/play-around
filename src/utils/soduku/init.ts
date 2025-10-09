@@ -22,7 +22,7 @@ export function initSoduku(data: SodukuPromiseReturn): Partial<SodukuState> {
   const colArr = JSON.parse(emptyPuzzle) as SodukuPuzzle
   let rowsToGrid = JSON.parse(emptyPuzzle) as SodukuPuzzle
 
-  const dataArr = data?.data?.[0]?.soduku?.match(/[0-9].{0,8}/gi) ?? []
+  const dataArr = data?.puzzleBoard?.match(/[0-9].{0,8}/gi) ?? []
   let i = 0
 
   rowsToGrid = dataArr.reduce(
@@ -75,7 +75,7 @@ export function initSoduku(data: SodukuPromiseReturn): Partial<SodukuState> {
     rowState: rowArr,
     colState: colArr,
     gridState: gridArr,
-    count: data?.data?.[0]?.soduku?.match(/[1-9]/g)?.length ?? 0,
+    count: data?.puzzleBoard?.match(/[1-9]/g)?.length ?? 0,
     given,
   }
 }

@@ -9,14 +9,17 @@ export type SodukuGetParams = {
 }
 
 export interface SodukuPromiseData {
+  puzzleBoard: string
+  solvedBoard: string
+  difficulty: string
   id: string
-  soduku: string
-  rating: string
 }
 
 export interface SodukuPromiseReturn {
-  total: number
-  data: SodukuPromiseData[]
+  puzzleBoard: string
+  solvedBoard: string
+  difficulty: string
+  id: string
 }
 
 export type SodukuPuzzle = Nullish<SodukuNumbers>[][]

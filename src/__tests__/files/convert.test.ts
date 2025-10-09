@@ -1,4 +1,3 @@
-import {SodukuPromiseReturn} from '@/types/soduku'
 import {
   checkIfFileExist,
   appendOrCreateFile,
@@ -48,7 +47,7 @@ suite('TeSting File', () => {
 
   test('read file and confirm data', async () => {
     const res = await readLocalFile(FILENAME + '.json')
-    const data = JSON.parse(res) as SodukuPromiseReturn
+    const data = JSON.parse(res)
     expect(data.total).toEqual(1)
     expect(data.data).toHaveLength(1)
     expect(data.data[0].id).toEqual(FILE_DATA[0].id)
@@ -63,7 +62,7 @@ suite('TeSting File', () => {
 
     const res = await readLocalFile(FILENAME + '.json')
 
-    const data = JSON.parse(res) as SodukuPromiseReturn
+    const data = JSON.parse(res)
     expect(data.total).toEqual(2)
     expect(data.data).toHaveLength(2)
 
@@ -82,7 +81,7 @@ suite('TeSting File', () => {
         interval: 20, // default is 50
       },
     )
-    const data = JSON.parse(res) as SodukuPromiseReturn
+    const data = JSON.parse(res)
     expect(data.data[1].id).toEqual(newData.id)
     expect(data.data[1].rating).toEqual(newData.rating)
     expect(data.data[1].soduku).toEqual(newData.soduku)

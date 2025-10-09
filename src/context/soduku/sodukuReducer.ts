@@ -14,8 +14,10 @@ export const initialSodukuReducerState: SodukuState = {
   history: {redo: [], undo: []},
   given: {},
   rawData: {
-    total: 0,
-    data: [],
+    id: '',
+    difficulty: '',
+    puzzleBoard: '',
+    solvedBoard: '',
   },
   count: 0,
   rowState: cloneDeep(emptyPuzzle),

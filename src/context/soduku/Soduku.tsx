@@ -57,15 +57,15 @@ export default function SodukuProvider({
       validateSodukuLines(state.rowState)
     ) {
       state.submitSoduku({
-        ...state.rawData.data[0],
-        soduku: state.rowState.flat().join(''),
+        ...state.rawData,
+        puzzleBoard: state.rowState.flat().join(''),
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.count])
 
   const onStart = () => {
-    if (!data?.data) return
+    if (!data?.puzzleBoard) return
     dispatch({type: 'start', payload: {data, mutate}})
     refetch({cancelRefetch: false})
   }

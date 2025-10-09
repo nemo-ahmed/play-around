@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   await handleFilesBeforeExecution(rating)
 
   const res = await readLocalFile(`${rating}.json`)
-  const obj = JSON.parse(res) as SodukuPromiseReturn
+  const obj = JSON.parse(res)
 
   let data = obj.data
   if (offset || limit) {
