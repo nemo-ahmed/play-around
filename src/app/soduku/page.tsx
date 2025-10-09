@@ -6,19 +6,19 @@ import {queryClient} from '@/other/queryclient'
 
 async function Page({searchParams}: PageProps<'/soduku'>) {
   const rating = await searchParams
-    .then(value => value.rating)
+    .then(value => value.rating as string)
     .catch(() => undefined)
 
   await queryClient.prefetchQuery({
-    queryKey: ['soduku', rating],
+    queryKey: ['soduku', rating ?? '1'],
     queryFn: () => fetchSoduku(rating),
   })
 
   return (
     <div className="flex flex-col justify-around">
-      <SodukuProvider>
+      <SodukuProvider rating={rating}>
         <Suspense>
-          <SodukuComp rating={rating as string} />
+          <SodukuComp />
         </Suspense>
       </SodukuProvider>
     </div>

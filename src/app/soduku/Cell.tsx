@@ -13,6 +13,7 @@ import {useEffect, useState} from 'react'
 import {Controls} from './Controls'
 import {cx} from '@/other/exports'
 import {SodukuNumbers} from '@/types/soduku'
+import Active from '@/components/ClientActivity'
 
 export function Cell({
   gridIndex,
@@ -28,6 +29,7 @@ export function Cell({
 
   const value = gridState[gridIndex][cellIndex]
   const [notes, setNotes] = useState<SodukuNumbers[]>([])
+  const [isMouseInside, setIsMouseInside] = useState(false)
 
   const cellKey = getGivenKey({gridIndex, cellIndex})
   // ? This will be use to Validation. Should be quicker than before
@@ -46,6 +48,7 @@ export function Cell({
     selected.cellIndex === cellIndex
 
   function onBlur() {
+    if (isMouseInside) return
     dispatch({type: 'select', payload: undefined})
   }
 
@@ -118,9 +121,14 @@ export function Cell({
       aria-label={ariaLabel}
       role="button"
       onBlur={onBlur}
+      onMouseEnter={() => {
+        setIsMouseInside(true)
+      }}
+      onMouseLeave={() => {
+        setIsMouseInside(false)
+      }}
     >
-      {!hasFocus && (
-        // ? This is to prevent adding notes when focusing cell
+      <Active isVisible={!hasFocus}>
         <button
           className="size-full absolute bg-transparent z-10"
           type="button"
@@ -140,13 +148,13 @@ export function Cell({
             })
           }}
         />
-      )}
-      {typeof value === 'number' && (
+      </Active>
+      <Active isVisible={typeof value === 'number'}>
         <div aria-hidden className={cx('outline-0 p-[5px]', commonStyles.true)}>
           {DYNAMIC_NUMBERS[value as NonNullable<SodukuNumbers>]}
         </div>
-      )}
-      {!value && (hasFocus || notes.length > 0) && (
+      </Active>
+      <Active isVisible={(hasFocus && value === null) || notes.length > 0}>
         <div
           aria-hidden
           className={cx(
@@ -168,7 +176,7 @@ export function Cell({
             selected={notes}
           />
         </div>
-      )}
+      </Active>
     </div>
   )
 }

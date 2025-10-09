@@ -15,16 +15,39 @@ import sodukuReducer, {
   type TypeAndPayload,
 } from './sodukuReducer'
 import {validateSodukuLines} from '@/utils/soduku'
+import useRandomSoduku from '@/hooks/soduku/useRandomSoduku'
+import useSubmitSoduku from '@/hooks/soduku/useSubmitSoduku'
 
-const Soduku = createContext<
-  [SodukuState, Partial<ActionDispatch<[TypeAndPayload]>>]
->([initialSodukuReducerState, () => {}])
+type ContextType = [
+  SodukuState & {
+    onStart: VoidFunction
+    isPending?: boolean
+    isLoading?: boolean
+  },
+  ActionDispatch<[TypeAndPayload]>,
+]
 
-export default function SodukuProvider({children}: {children: ReactNode}) {
+const Soduku = createContext<ContextType>([
+  {...initialSodukuReducerState, onStart: () => {}},
+  () => {},
+])
+
+export default function SodukuProvider({
+  rating,
+  children,
+}: {
+  rating?: string
+  children: ReactNode
+}) {
   const [state, unsafeDispatch] = useReducer(
     sodukuReducer,
     initialSodukuReducerState,
   )
+
+  const {data, refetch, isLoading} = useRandomSoduku({
+    rating,
+  })
+  const {mutate, isPending} = useSubmitSoduku()
 
   useEffect(() => {
     if (state.count < 81) return
@@ -41,11 +64,17 @@ export default function SodukuProvider({children}: {children: ReactNode}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.count])
 
+  const onStart = () => {
+    if (!data?.data) return
+    dispatch({type: 'start', payload: {data, mutate}})
+    refetch({cancelRefetch: false})
+  }
+
   const dispatch = useCallback(unsafeDispatch, [unsafeDispatch])
-  const value = [state, dispatch] as [
-    SodukuState,
-    Partial<ActionDispatch<[TypeAndPayload]>>,
-  ]
+  const value = [
+    {...state, onStart, isPending, isLoading},
+    dispatch,
+  ] as ContextType
   return <Soduku value={value}>{children}</Soduku>
 }
 
@@ -54,5 +83,5 @@ export function useSoduku() {
   if (!context?.[0] || !context?.[1]) {
     throw new Error('useSoduku need to be used inside Soduku`s Provider')
   }
-  return context as [SodukuState, ActionDispatch<[TypeAndPayload]>]
+  return context as ContextType
 }

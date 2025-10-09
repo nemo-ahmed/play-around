@@ -1,10 +1,8 @@
 'use client'
+import Active from '@/components/ClientActivity'
 import IconButton from '@/components/IconButton'
 import {useSoduku} from '@/context/soduku/Soduku'
-import useRandomSoduku from '@/hooks/soduku/useRandomSoduku'
-import useSubmitSoduku from '@/hooks/soduku/useSubmitSoduku'
 import {cx} from '@/other/exports'
-import {queryClient} from '@/other/queryclient'
 import type {SodukuNumbers} from '@/types/soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 import {useEffect, useState} from 'react'
@@ -14,25 +12,28 @@ import {IoArrowRedoOutline, IoArrowUndoOutline} from 'react-icons/io5'
 import {LiaLightbulb} from 'react-icons/lia'
 import {VscDebugStart} from 'react-icons/vsc'
 
-export const Controls = ({
+export function Controls({
   variant,
   onChange,
-  rating,
   selected,
 }: {
   variant: 'note' | 'keypad'
   onChange?: (n: SodukuNumbers) => void
-  rating?: string
   selected?: SodukuNumbers[]
-}) => {
+}) {
   const [
-    {selected: selectedCell, given, rawData, history, isPlaying, autoHints},
+    {
+      selected: selectedCell,
+      given,
+      history,
+      isPlaying,
+      autoHints,
+      onStart,
+      isPending,
+      isLoading,
+    },
     dispatch,
   ] = useSoduku()
-  const {data, isLoading, refetch} = useRandomSoduku({
-    rating,
-  })
-  const {mutate, isPending} = useSubmitSoduku()
 
   const [shouldDisplayKeypad, setShouldDisplayKeypad] = useState(false)
 
@@ -59,7 +60,7 @@ export const Controls = ({
         'size-full': variant === 'note',
       })}
     >
-      {(variant === 'note' || shouldDisplayKeypad) && (
+      <Active isVisible={variant === 'note' || shouldDisplayKeypad}>
         <div
           className={cx('grid grid-cols-3 grid-rows-3', {
             'size-[40dvh]': variant === 'keypad',
@@ -102,35 +103,25 @@ export const Controls = ({
             </button>
           ))}
         </div>
-      )}
-      {variant === 'keypad' && (
+      </Active>
+      <Active isVisible={variant === 'keypad'}>
         <div className="flex flex-col bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
           <IconButton
             type="button"
-            onClick={() => {
-              if (data && rawData.data.at(0) === data.data.at(0)) {
-                queryClient.invalidateQueries({queryKey: ['soduku']})
-                refetch({cancelRefetch: false})
-              }
-              if (data) dispatch({type: 'start', payload: {data, mutate}})
-            }}
-            onMouseEnter={() => {
-              if (data && rawData.data.at(0) === data.data.at(0)) {
-                queryClient.invalidateQueries({queryKey: ['soduku']})
-                refetch({cancelRefetch: false})
-              }
-            }}
+            onClick={onStart}
             aria-label={isPending ? 'Submitting Soduku' : 'Start a new game'}
             label={isPending ? 'Submitting Soduku' : 'new game'}
             disabled={loading}
+            className="h-8"
           >
             {loading ? (
               <CgSpinnerTwo
                 aria-hidden
-                className="size-full animate-spin text-blue-400"
+                size={24}
+                className="animate-spin text-blue-400"
               />
             ) : (
-              <VscDebugStart aria-hidden className="size-full" />
+              <VscDebugStart aria-hidden className="mx-auto" size={24} />
             )}
           </IconButton>
           <div
@@ -144,11 +135,12 @@ export const Controls = ({
               dispatch({type: 'toggle-auto-hints'})
             }}
             aria-hidden
+            className="h-8"
             isActive={autoHints}
             label={`${autoHints ? 'Disable' : 'Enable'} auto notes`}
             disabled={!isPlaying}
           >
-            <LiaLightbulb aria-hidden className="size-full" />
+            <LiaLightbulb aria-hidden className="mx-auto" size={24} />
           </IconButton>
 
           <div
@@ -175,7 +167,7 @@ export const Controls = ({
               label="Undo"
               disabled={!isPlaying || history.undo.length < 1}
             >
-              <IoArrowUndoOutline aria-hidden className="size-full" />
+              <IoArrowUndoOutline aria-hidden className="mx-auto" size={24} />
             </IconButton>
             <div
               aria-label="divider"
@@ -194,7 +186,7 @@ export const Controls = ({
               label="Redo"
               disabled={!isPlaying || history.redo.length < 1}
             >
-              <IoArrowRedoOutline aria-hidden className="size-full" />
+              <IoArrowRedoOutline aria-hidden className="mx-auto" size={24} />
             </IconButton>
           </div>
           <div
@@ -220,7 +212,7 @@ export const Controls = ({
               label="Reset game"
               disabled={!isPlaying}
             >
-              <BsArrowRepeat aria-hidden className="size-full" />
+              <BsArrowRepeat aria-hidden className="mx-auto" size={24} />
             </IconButton>
             <div
               aria-label="divider"
@@ -256,11 +248,11 @@ export const Controls = ({
                 selectedCell?.isGiven
               }
             >
-              <BsEraser className="size-full" />
+              <BsEraser size={24} aria-hidden />
             </IconButton>
           </div>
         </div>
-      )}
+      </Active>
     </div>
   )
 }
