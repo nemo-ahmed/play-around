@@ -24,7 +24,6 @@ export function initSoduku(data: SodukuPromiseReturn): Partial<SodukuState> {
 
   const dataArr = data?.data?.[0]?.soduku?.match(/[0-9].{0,8}/gi) ?? []
   let i = 0
-  console.log(rowArr, colArr, dataArr)
 
   rowsToGrid = dataArr.reduce(
     (acc: Nullish<SodukuNumbers>[][], row) => {

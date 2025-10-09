@@ -48,7 +48,6 @@ suite('TeSting File', () => {
 
   test('read file and confirm data', async () => {
     const res = await readLocalFile(FILENAME + '.json')
-    console.log(res)
     const data = JSON.parse(res) as SodukuPromiseReturn
     expect(data.total).toEqual(1)
     expect(data.data).toHaveLength(1)
@@ -64,7 +63,6 @@ suite('TeSting File', () => {
 
     const res = await readLocalFile(FILENAME + '.json')
 
-    console.log(res)
     const data = JSON.parse(res) as SodukuPromiseReturn
     expect(data.total).toEqual(2)
     expect(data.data).toHaveLength(2)
@@ -84,7 +82,6 @@ suite('TeSting File', () => {
         interval: 20, // default is 50
       },
     )
-    console.log(res)
     const data = JSON.parse(res) as SodukuPromiseReturn
     expect(data.data[1].id).toEqual(newData.id)
     expect(data.data[1].rating).toEqual(newData.rating)

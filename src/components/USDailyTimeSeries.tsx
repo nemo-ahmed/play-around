@@ -29,7 +29,6 @@ function USDailyTimeSeries() {
       [],
     [data?.data],
   )
-  console.log(chartData)
   return (
     <div className="rounded-md bg-slate-400 h-fit w-[500px]">
       <Chart

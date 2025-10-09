@@ -71,7 +71,6 @@ const MAX_STACK = 5
 
 export const notificationsStore = {
   addNotification({id, title, icon, message}: Props) {
-    console.log(id)
     notifications = [
       ...notifications,
       {

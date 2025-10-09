@@ -7,6 +7,7 @@ function Page() {
   const [range, setRange] = useState(0.5)
   const [height, setHeight] = useState(200)
   const [width, setWidth] = useState(200)
+  const [border, setBorder] = useState(8)
   return (
     <div className="flex flex-col overflow-auto items-center gap-4">
       <input
@@ -77,7 +78,19 @@ function Page() {
           </div>
         </div>
       </div>
-      <Spinner height={height} width={width} />
+      <input
+        type="range"
+        name="border"
+        id="border"
+        aria-label="border"
+        className="accent-outer-space-400 dark:accent-outer-space-600 "
+        step={1}
+        min={0}
+        value={border}
+        max={width}
+        onChange={e => setBorder(e.currentTarget.valueAsNumber)}
+      />
+      <Spinner height={height} width={width} borderWidth={border} />
     </div>
   )
 }

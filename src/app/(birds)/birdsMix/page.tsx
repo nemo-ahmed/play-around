@@ -7,16 +7,13 @@ const getBirds = async () => await fetch(process.env.URL + '/api/birds/')
 
 const Table = lazy(() =>
   getBirds().then(() => {
-    console.log('data loaded')
     return import('@/components/Table')
   }),
 )
 
 export default async function BirdsMix() {
   const res = await getBirds()
-  console.log(res)
   const data = (await res.json()) as BirdsWatchResponse
-  console.log(data)
   const commonStyles = 'card'
 
   return (

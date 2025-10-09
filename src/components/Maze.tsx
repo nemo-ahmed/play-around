@@ -33,7 +33,6 @@ function MazeComponent({grids}: {grids: number[][][]}) {
                 <div key={`line-${i}`} className="flex">
                   {row.map((cell, x) => {
                     const delay = (1 * (x + i + 1)) / 10
-                    console.log(delay)
                     const xxx = {
                       [`${isValid && cell === 0}`]: 'var(--color-zinc-400)',
                       [`${isValid && cell === 1}`]: 'var(--color-zinc-600)',

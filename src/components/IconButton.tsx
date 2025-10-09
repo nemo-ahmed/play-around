@@ -49,7 +49,6 @@ function IconButton({
       onMouseEnter={e => {
         setY(-transitionVal(isActive) - (isActive ? 3 : 1))
         onMouseEnter?.(e)
-        console.log(true)
       }}
       onMouseLeave={e => {
         setY(transitionVal(isActive))

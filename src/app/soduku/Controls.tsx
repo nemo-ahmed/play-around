@@ -250,10 +250,10 @@ export const Controls = ({
                 }
               }}
               disabled={
-                isPlaying &&
-                (!selectedCell ||
-                  selectedCell?.value === null ||
-                  selectedCell?.isGiven)
+                !isPlaying ||
+                !selectedCell ||
+                selectedCell?.value === null ||
+                selectedCell?.isGiven
               }
             >
               <BsEraser className="size-full" />

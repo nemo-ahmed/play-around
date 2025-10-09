@@ -43,7 +43,6 @@ function Nav() {
               e.preventDefault()
               const find = options.find(x => x.name === e.currentTarget.value)
               if (find) onVoiceChange?.(find)
-              console.log(e.currentTarget.value, find, onVoiceChange)
             }}
           >
             {options?.map(voice => (

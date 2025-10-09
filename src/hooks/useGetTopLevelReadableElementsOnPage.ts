@@ -18,7 +18,6 @@ export function useGetTopLevelReadableElementsOnPage(): Ele[] {
     // ? This is for consistence. as react-query devtool replaces the content
     while (eles.length > 0) {
       const element = eles[0]
-      console.log('aaa', elements, eles)
       if (element.childNodes.length === 1) {
         if (CONTAINER_LIST.includes(element.nodeName)) {
           if (READABLE_LIST.includes(element.childNodes[0].nodeName)) {
