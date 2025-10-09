@@ -1,9 +1,23 @@
-# ToDo
+# Soduku
 
-- [ ] Add style for highlight number
-- [ ] Add animation on Row, Grid, and Column complete
-- [ ] Add Audio
-  1. [ ] Wrong enter
-  2. [ ] entry of any key outside of the handled keys
-  3. [ ] On correct Row, Grid, or Column
-  4. [ ] on Finish
+## BE
+
+Read and Write using json Files (zipped)
+
+- Submit
+- Random
+  - Params: rating
+- root
+  - Params: rating, offset, and limit.
+- Upload
+  - Not implemented
+
+## FE
+
+### Features
+
+- New game: Random or chosen rating (using Params)
+- Reset Game
+- Auto Hints
+- State History (Redo and Undo)
+- Keypad (only for Phones/Tables)
