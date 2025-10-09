@@ -16,7 +16,7 @@ function SodukuComp({rating}: {rating?: string}) {
       if (nKey >= 1 && nKey <= 9) {
         dispatch({type: 'key', payload: nKey})
       } else if (e.key === 'Backspace' || e.key === 'Delete') {
-        dispatch({type: 'key', payload: null})
+        dispatch({type: 'key', payload: 'delete'})
       } else if (e.key === 'Escape') {
         dispatch({type: 'select', payload: undefined})
       } else if (

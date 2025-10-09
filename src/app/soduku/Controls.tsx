@@ -245,14 +245,15 @@ export const Controls = ({
                 if (variant === 'keypad' && selectedCell) {
                   dispatch({
                     type: 'key',
-                    payload: null,
+                    payload: 'delete',
                   })
                 }
               }}
               disabled={
-                !isPlaying ||
-                selectedCell?.value === null ||
-                selectedCell?.isGiven
+                isPlaying &&
+                (!selectedCell ||
+                  selectedCell?.value === null ||
+                  selectedCell?.isGiven)
               }
             >
               <BsEraser className="size-full" />

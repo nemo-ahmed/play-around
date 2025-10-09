@@ -160,6 +160,7 @@ export default function sodukuReducer(
         ...initialSodukuReducerState,
         ...initSoduku(state.rawData),
         rawData: state.rawData,
+        isPlaying: true,
       }
 
     default:
