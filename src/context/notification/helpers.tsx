@@ -1,7 +1,7 @@
 'use client'
 import {cx} from '@/other/exports'
 import {motion} from 'motion/react'
-import React from 'react'
+import React, {JSX} from 'react'
 import {IoClose} from 'react-icons/io5'
 
 export interface Props {
@@ -61,23 +61,10 @@ export const NotificationComponent = ({title, message, icon, id}: Props) => {
   )
 }
 
-// This is an example of a third-party store
-// that you might need to integrate with React.
-
-// If your app is fully built with React,
-// we recommend using React state instead.
-
-let notifications = [
-  {
-    id: '1',
-    ele: NotificationComponent({
-      id: '1',
-      title: 'Todo #1',
-      icon: '🐨',
-      message: 'testing',
-    }),
-  },
-]
+let notifications: {
+  id: string
+  ele: JSX.Element
+}[] = []
 let listeners: Array<() => unknown> = []
 
 const MAX_STACK = 5
