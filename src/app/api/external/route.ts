@@ -1,7 +1,5 @@
-import {NextRequest} from 'next/server'
-
 // ? proxy example from nextJS
-export async function GET(request: NextRequest) {
+export async function GET() {
   const response = await fetch(process.env.URL + 'api/data', {
     // Optional: forward some headers, add auth tokens, etc.
     headers: {Authorization: `Bearer ${process.env.API_TOKEN}`},

@@ -11,7 +11,7 @@ export const gridValidation = (
     return [...validation, isRowValid]
   }, []).length === matrix.length
 
-export function getPath(matrix: number[][]) {
+export function getMazePath(matrix: number[][]) {
   // ? to Prevent overriding the original
   const solution: number[][] = JSON.parse(JSON.stringify(matrix))
   const obj: Record<number, number[]> = {}

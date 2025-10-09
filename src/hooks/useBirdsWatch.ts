@@ -1,5 +1,4 @@
 import genericFetch from '@/utils/fetch'
-import {BIRDS_URL} from '@/utils/urls'
 import {BirdsWatchResponse} from '@/types/useBirds'
 import {useQuery} from '@tanstack/react-query'
 import useInfiniteData from './useInfiniteData'

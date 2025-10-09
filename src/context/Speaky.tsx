@@ -21,7 +21,7 @@ export default function SpeakyProvider({children}: {children: ReactNode}) {
   }
 
   const value = useMemo(() => ({onVoiceChange, voice}), [voice])
-  return <Speaky.Provider value={value}>{children}</Speaky.Provider>
+  return <Speaky value={value}>{children}</Speaky>
 }
 
 export function useSpeaky() {
