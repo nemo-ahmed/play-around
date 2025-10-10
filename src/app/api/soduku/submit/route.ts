@@ -3,7 +3,7 @@ import {appendOrCreateFile} from '@/utils/filesHandling/convertTxtToJson'
 import type {NextRequest} from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const data = await req.json() // ! as SodukuPromiseData
+  const data = (await req.json()) as SodukuPromiseData
   console.log(data)
   // ? Some logic will be added if I ever user the endpoint 😆
 
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   // ? {total: number[],data:{id: string,data: string,groupedBy:'grid'}[]}
 
   const res = await appendOrCreateFile({
-    [`solved-${Math.floor(Number(data.rating))}`]: [data],
+    [`solved-${Math.floor(Number(data.difficulty))}`]: [data],
   })
     .then(() => 'success')
     .catch(err => `failed ${JSON.stringify(err)}`)

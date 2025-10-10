@@ -41,21 +41,14 @@ export function Cell({
     gridIndex,
     cellIndex,
   })
-  console.log(
-    rawData.solvedBoard.match(/[1-9].{0,8}/gi),
-    (
-      rawData.solvedBoard.match(
-        /[1-9].{0,8}/gi,
-      ) as NonNullable<RegExpMatchArray>
-    )[rowIndex][colIndex],
-  )
-  value = (Number(
-    (
-      rawData.solvedBoard.match(
-        /[1-9].{0,8}/gi,
-      ) as NonNullable<RegExpMatchArray>
-    )[rowIndex][colIndex],
-  ) || null) as Nullish<SodukuNumbers>
+
+  // value = (Number(
+  //   (
+  //     rawData.solvedBoard.match(
+  //       /[1-9].{0,8}/gi,
+  //     ) as NonNullable<RegExpMatchArray>
+  //   )[rowIndex][colIndex],
+  // ) || null) as Nullish<SodukuNumbers>
   const hasFocus =
     selected &&
     selected.gridIndex === gridIndex &&

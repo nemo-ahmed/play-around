@@ -11,7 +11,9 @@ export async function GET(req: NextRequest) {
   const rating = params.get('rating') || random(1, 9).toString()
 
   // convertTxtDataToJsonData('evilsoduku.txt')
-
+  return new Response('No implementation', {
+    status: 404,
+  })
   if (!rating) {
     return new Response('You need to set a rating', {
       status: 404,

@@ -43,7 +43,7 @@ export default function SodukuProvider({
     sodukuReducer,
     initialSodukuReducerState,
   )
-
+  console.log(state)
   const {data, refetch, isLoading} = useRandomSoduku({
     rating,
   })
@@ -65,6 +65,7 @@ export default function SodukuProvider({
   }, [state.count])
 
   const onStart = () => {
+    console.log(data)
     if (!data?.puzzleBoard) return
     dispatch({type: 'start', payload: {data, mutate}})
     refetch({cancelRefetch: false})

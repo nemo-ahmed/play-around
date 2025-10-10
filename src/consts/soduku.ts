@@ -1,1 +1,1 @@
-export const SODUKU_DIFFICULTIES = ['easy', 'medium', 'hard', 'expert']
+export const SODUKU_DIFFICULTIES = ['easy', 'medium', 'hard', 'expert', 'evil']
