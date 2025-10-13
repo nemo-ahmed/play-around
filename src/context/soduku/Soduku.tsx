@@ -1,22 +1,23 @@
 'use client'
 
-import type {SodukuState} from '@/types/soduku'
 import {
-  type ActionDispatch,
   createContext,
-  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useReducer,
+  type ActionDispatch,
+  type ReactNode,
 } from 'react'
 import sodukuReducer, {
   initialSodukuReducerState,
   type TypeAndPayload,
 } from './sodukuReducer'
 import {validateSodukuLines} from '@/utils/soduku'
-import useRandomSoduku from '@/hooks/soduku/useRandomSoduku'
-import useSubmitSoduku from '@/hooks/soduku/useSubmitSoduku'
+import {useSubmitSoduku} from '@/hooks/soduku/useSubmitSoduku'
+
+import type {SodukuDifficulties, SodukuState} from '@/types/soduku'
+import {useRandomSoduku} from '@/hooks/soduku/useRandomSoduku'
 
 type ContextType = [
   SodukuState & {
@@ -33,20 +34,17 @@ const Soduku = createContext<ContextType>([
 ])
 
 export default function SodukuProvider({
-  rating,
+  difficulty,
   children,
 }: {
-  rating?: string
+  difficulty?: SodukuDifficulties
   children: ReactNode
 }) {
   const [state, unsafeDispatch] = useReducer(
     sodukuReducer,
     initialSodukuReducerState,
   )
-  console.log(state)
-  const {data, refetch, isLoading} = useRandomSoduku({
-    rating,
-  })
+  const {data, isLoading, refetch, isRefetching} = useRandomSoduku({difficulty})
   const {mutate, isPending} = useSubmitSoduku()
 
   useEffect(() => {
@@ -64,16 +62,19 @@ export default function SodukuProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.count])
 
-  const onStart = () => {
-    console.log(data)
-    if (!data?.puzzleBoard) return
+  useEffect(() => {
+    if (!data) return
     dispatch({type: 'start', payload: {data, mutate}})
-    refetch({cancelRefetch: false})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+
+  const onStart: ContextType['0']['onStart'] = () => {
+    refetch()
   }
 
   const dispatch = useCallback(unsafeDispatch, [unsafeDispatch])
   const value = [
-    {...state, onStart, isPending, isLoading},
+    {...state, onStart, isPending, isLoading: isLoading || isRefetching},
     dispatch,
   ] as ContextType
   return <Soduku value={value}>{children}</Soduku>

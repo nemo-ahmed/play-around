@@ -8,25 +8,25 @@ export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams
   const offset = params.get('offset')
   const limit = params.get('limit')
-  const rating = params.get('rating') || random(1, 9).toString()
+  const difficulty = params.get('difficulty') || random(1, 9).toString()
 
   // convertTxtDataToJsonData('evilsoduku.txt')
   return new Response('No implementation', {
     status: 404,
   })
-  if (!rating) {
-    return new Response('You need to set a rating', {
+  if (!difficulty) {
+    return new Response('You need to set a difficulty', {
       status: 404,
     })
-  } else if (rating && Number(rating) <= 9 && Number(rating) >= 1) {
-    return new Response(`No soduku's found for this rating ${rating}`, {
+  } else if (difficulty && Number(difficulty) <= 9 && Number(difficulty) >= 1) {
+    return new Response(`No soduku's found for this difficulty ${difficulty}`, {
       status: 404,
     })
   }
 
-  await handleFilesBeforeExecution(rating)
+  await handleFilesBeforeExecution(difficulty)
 
-  const res = await readLocalFile(`${rating}.json`)
+  const res = await readLocalFile(`${difficulty}.json`)
   const obj = JSON.parse(res)
 
   let data = obj.data

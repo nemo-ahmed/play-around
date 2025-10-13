@@ -5,7 +5,7 @@
   "scripts": {
     "dev-t": "next dev --turbopack",
     "dev-n": "next dev",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint .",
     "formate": "prettier --write .",

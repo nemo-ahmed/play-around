@@ -55,4 +55,5 @@ export interface SodukuState {
   autoHints: boolean
   isPlaying: boolean
   submitSoduku: UseMutateFunction<Response, Error, SodukuPromiseData, unknown>
+  difficulty?: SodukuDifficulties
 }

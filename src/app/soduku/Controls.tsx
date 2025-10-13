@@ -52,7 +52,7 @@ export function Controls({
     )
   }, [])
 
-  const loading = isLoading || isPending
+  const loading = isLoading || isPending || false
   return (
     <div
       className={cx({
@@ -108,7 +108,7 @@ export function Controls({
         <div className="flex flex-col bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
           <IconButton
             type="button"
-            onClick={onStart}
+            onClick={() => onStart()}
             aria-label={isPending ? 'Submitting Soduku' : 'Start a new game'}
             label={isPending ? 'Submitting Soduku' : 'new game'}
             disabled={loading}
@@ -245,7 +245,8 @@ export function Controls({
                 !isPlaying ||
                 !selectedCell ||
                 selectedCell?.value === null ||
-                selectedCell?.isGiven
+                selectedCell?.isGiven ||
+                false
               }
             >
               <BsEraser size={24} aria-hidden />

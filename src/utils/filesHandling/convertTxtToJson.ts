@@ -23,10 +23,14 @@ export async function convertTxtToJsonFiles(fileName: string) {
     if (line.startsWith('//')) {
       continue
     } else {
-      const [id, soduku, rating] = (line as string).split(/\s+/) as ['', '', '']
-      const key = Math.floor(Number(rating)).toString()
+      const [id, soduku, difficulty] = (line as string).split(/\s+/) as [
+        '',
+        '',
+        '',
+      ]
+      const key = Math.floor(Number(difficulty)).toString()
       if (key !== 'NaN') {
-        obj[key] = [...(obj[key] ?? []), {id, soduku, rating}]
+        obj[key] = [...(obj[key] ?? []), {id, soduku, difficulty}]
       }
     }
   }

@@ -1,9 +1,10 @@
-import 'server-only'
-
 import {lazy, Suspense} from 'react'
 import {BirdsWatchResponse} from '@/types/useBirds'
 
-const getBirds = async () => await fetch(process.env.URL + '/api/birds/')
+const getBirds = async () =>
+  await fetch(process.env.URL + '/api/birds/')
+    .then(async res => (await res.json()) as BirdsWatchResponse)
+    .catch(e => console.error(e))
 
 const Table = lazy(() =>
   getBirds().then(() => {
@@ -12,8 +13,8 @@ const Table = lazy(() =>
 )
 
 export default async function BirdsMix() {
-  const res = await getBirds()
-  const data = (await res.json()) as BirdsWatchResponse
+  const data = await getBirds()
+
   const commonStyles = 'card'
 
   return (

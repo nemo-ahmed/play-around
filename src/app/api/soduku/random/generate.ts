@@ -92,6 +92,8 @@ export function generateSudoku(difficulty = 'medium') {
       row = Math.floor(Math.random() * 9)
       col = Math.floor(Math.random() * 9)
     } while (puzzleBoard[row][col] === 0)
+
+    puzzleBoard[row][col] = 0
   }
 
   return {

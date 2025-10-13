@@ -27,4 +27,4 @@ function useSubmitSoduku() {
   })
 }
 
-export default useSubmitSoduku
+export {useSubmitSoduku}

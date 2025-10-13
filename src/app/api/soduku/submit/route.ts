@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   // ? {total: number[],data:{id: string,data: string,groupedBy:'grid'}[]}
 
   const res = await appendOrCreateFile({
-    [`solved-${Math.floor(Number(data.difficulty))}`]: [data],
+    [`solved-${data.difficulty}`]: [data],
   })
     .then(() => 'success')
     .catch(err => `failed ${JSON.stringify(err)}`)

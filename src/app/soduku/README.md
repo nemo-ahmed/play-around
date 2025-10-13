@@ -6,9 +6,9 @@ Read and Write using json Files (zipped)
 
 - Submit
 - Random
-  - Params: rating
+  - Params: difficulty
 - root
-  - Params: rating, offset, and limit.
+  - Params: difficulty, offset, and limit.
 - Upload
   - Not implemented
 
@@ -16,7 +16,7 @@ Read and Write using json Files (zipped)
 
 ### Features
 
-- New game: Random or chosen rating (using Params)
+- New game: Random or chosen difficulty (using Params)
 - Reset Game
 - Auto Hints
 - State History (Redo and Undo)

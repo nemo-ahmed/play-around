@@ -7,16 +7,17 @@ import {randomUUID} from 'node:crypto'
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams
   // ? This is to keep things within user's decision
-  const rating = params.get('rating') || random(0, 4)
-  const difficulty = SODUKU_DIFFICULTIES[Number(rating)]
+  const difficulty =
+    params.get('difficulty') || SODUKU_DIFFICULTIES[random(0, 4)]
+
   const puzzle = generateSudoku(difficulty)
   const id = randomUUID()
-
-  // await handleFilesBeforeExecution(rating)
+  console.log(puzzle)
+  // await handleFilesBeforeExecution(difficulty)
   // ? Ideally we want to chunk this file and send it in parts
   // ? But for now this is fine for now
   // ? Or maybe change it to array and offset it... 🤔
-  // const res = await readLocalFile(`${rating}.json`)
+  // const res = await readLocalFile(`${difficulty}.json`)
   // const obj = JSON.parse(res) as SodukuPromiseReturn
 
   // let data = obj.data

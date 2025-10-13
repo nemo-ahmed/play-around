@@ -6,12 +6,10 @@ import {Controls} from './Controls'
 import {cx} from '@/other/exports'
 import {useCallback, useSyncExternalStore} from 'react'
 import {CiWarning} from 'react-icons/ci'
-import IconButton from '@/components/IconButton'
-import {VscDebugStart} from 'react-icons/vsc'
 import Active from '@/components/ClientActivity'
 
 function SodukuComp() {
-  const [{rawData, onStart, isPlaying}, dispatch] = useSoduku()
+  const [{rawData}, dispatch] = useSoduku()
 
   const onkeydown = useCallback(
     (e: KeyboardEvent) => {
@@ -69,22 +67,6 @@ function SodukuComp() {
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((grid, i) => (
           <Grid key={`grid-${i}`} gridIndex={i} />
         ))}
-        <Active isVisible={!isPlaying}>
-          <div className="absolute sides-0 flex items-center justify-center bg-eerie-black/80">
-            <IconButton
-              type="button"
-              className="rounded-2xl p-5 border-6 border-eerie-black-300 dark:border-eerie-black-700 flex items-center justify-center"
-              onClick={onStart}
-              aria-label={'Start game'}
-            >
-              <VscDebugStart
-                aria-hidden
-                size={60}
-                className="text-eerie-black-300 dark:text-eerie-black-700"
-              />
-            </IconButton>
-          </div>
-        </Active>
       </section>
       <section
         aria-label="soduku controls"
@@ -101,9 +83,9 @@ function SodukuComp() {
         </Active>
 
         <Active isVisible={!!rawData?.difficulty}>
-          <div className="flex justify-between px-2 pt-2 pb-1.5">
+          <div className="flex justify-between px-2 pt-2 pb-1.5 capitalize">
             <h3 className="text-rich-black-100 font-extralight">
-              Rating: {rawData?.difficulty}
+              difficulty: {rawData?.difficulty}
             </h3>
           </div>
         </Active>

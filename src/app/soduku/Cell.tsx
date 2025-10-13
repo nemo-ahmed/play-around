@@ -23,11 +23,11 @@ export function Cell({
   cellIndex: number
 }) {
   const [
-    {given, selected, gridState, colState, rowState, autoHints, rawData},
+    {given, selected, gridState, colState, rowState, autoHints},
     dispatch,
   ] = useSoduku()
 
-  let value = gridState[gridIndex][cellIndex]
+  const value = gridState[gridIndex][cellIndex]
   const [notes, setNotes] = useState<SodukuNumbers[]>([])
   const [isMouseInside, setIsMouseInside] = useState(false)
 
