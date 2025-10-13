@@ -69,7 +69,7 @@ export default function SodukuProvider({
   }, [data])
 
   const onStart: ContextType['0']['onStart'] = () => {
-    refetch()
+    refetch({cancelRefetch: false})
   }
 
   const dispatch = useCallback(unsafeDispatch, [unsafeDispatch])
