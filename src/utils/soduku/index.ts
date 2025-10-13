@@ -1,4 +1,4 @@
-import fetchSoduku from './fetchSoduku'
+import {fetchSoduku} from './fetchSoduku'
 import {getGivenKey, initSoduku} from './init'
 import {
   DYNAMIC_NUMBERS,
