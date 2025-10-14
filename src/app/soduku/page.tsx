@@ -10,7 +10,7 @@ async function Page({searchParams}: PageProps<'/soduku'>) {
     .then(value => value.difficulty as SodukuDifficulties)
     .catch(() => undefined)
   if (difficulty) {
-    redirect('/' + difficulty)
+    redirect('/soduku/' + difficulty)
   }
   return (
     <div className="flex flex-col justify-around">
