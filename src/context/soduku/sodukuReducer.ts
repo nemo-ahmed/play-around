@@ -25,6 +25,7 @@ export const initialSodukuReducerState: SodukuState = {
   gridState: cloneDeep(emptyPuzzle),
   autoHints: false,
   isPlaying: false,
+  showKeyboard: false,
   submitSoduku: () => {},
 }
 
@@ -40,6 +41,7 @@ export type TypeAndPayload =
     }
   | {type: 'reset'; payload?: undefined}
   | {type: 'pause'; payload?: undefined}
+  | {type: 'toggle-keyboard'; payload?: undefined}
   | {type: 'toggle-auto-hints'; payload?: undefined}
 
 export default function sodukuReducer(
@@ -158,9 +160,17 @@ export default function sodukuReducer(
       }
 
     case 'pause':
+      console.log('object')
       return {
         ...state,
-        isPlaying: !state.isPlaying,
+        isPlaying: state.isPlaying ? false : true,
+      }
+
+    case 'pause':
+      console.log('object')
+      return {
+        ...state,
+        isPlaying: state.isPlaying ? false : true,
       }
 
     case 'reset':

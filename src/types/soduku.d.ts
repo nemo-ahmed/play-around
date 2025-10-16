@@ -54,6 +54,6 @@ export interface SodukuState {
   gridState: SodukuPuzzle
   autoHints: boolean
   isPlaying: boolean
+  showKeyboard: boolean
   submitSoduku: UseMutateFunction<Response, Error, SodukuPromiseData, unknown>
-  difficulty?: SodukuDifficulties
 }

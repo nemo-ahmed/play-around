@@ -7,7 +7,7 @@ import {cx} from '@/other/exports'
 import {useCallback, useSyncExternalStore} from 'react'
 
 function SodukuComp() {
-  const [, dispatch] = useSoduku()
+  const [{showKeyboard}, dispatch] = useSoduku()
 
   const onkeydown = useCallback(
     (e: KeyboardEvent) => {
@@ -15,11 +15,11 @@ function SodukuComp() {
       console.log(e.code)
       if (nKey >= 1 && nKey <= 9) {
         dispatch({type: 'key', payload: nKey})
-      } else if (e.key === 'Backspace' || e.key === 'Delete') {
+      } else if (e.code === 'Backspace' || e.code === 'Delete') {
         dispatch({type: 'key', payload: 'delete'})
       } else if (e.code === 'Space') {
         dispatch({type: 'pause'})
-      } else if (e.key === 'Escape') {
+      } else if (e.code === 'Escape') {
         dispatch({type: 'select', payload: undefined})
       } else if (
         e.shiftKey &&
@@ -31,17 +31,20 @@ function SodukuComp() {
         dispatch({type: 'key', payload: 'undo'})
       }
     },
-    [dispatch],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   )
 
   const subscribe = useCallback(() => {
-    window.addEventListener('keydown', onkeydown)
-    console.log('added keyboard listener')
+    if (!showKeyboard) {
+      window.addEventListener('keydown', onkeydown)
+      console.log('added keyboard listener')
+    }
     return () => {
       console.log('removed keyboard listener')
       window.removeEventListener('keydown', onkeydown)
     }
-  }, [onkeydown])
+  }, [onkeydown, showKeyboard])
 
   const isOnline = useSyncExternalStore(
     subscribe,
@@ -59,7 +62,7 @@ function SodukuComp() {
     >
       <section
         className={cx(
-          'size-[60dvh] relative grid grid-cols-3 grid-rows-3',
+          'size-[min(60dvh,80dvw)] relative grid grid-cols-3 grid-rows-3',
           'border-[0.5px] border-eerie-black-300 dark:border-eerie-black-700',
           'bg-eerie-black-900 dark:bg-eerie-black-800',
         )}

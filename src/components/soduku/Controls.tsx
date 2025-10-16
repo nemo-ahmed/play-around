@@ -2,7 +2,6 @@
 import Active from '@/components/ClientActivity'
 import IconButton from '@/components/IconButton'
 import {useSoduku} from '@/context/soduku/Soduku'
-import {useTimer} from '@/hooks/soduku/useTimer'
 import {cx} from '@/other/exports'
 import type {SodukuNumbers} from '@/types/soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
@@ -10,10 +9,10 @@ import {useEffect, useState} from 'react'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 import {CgSpinnerTwo} from 'react-icons/cg'
 import {CiWarning} from 'react-icons/ci'
-import {HiPlayPause} from 'react-icons/hi2'
 import {IoArrowRedoOutline, IoArrowUndoOutline} from 'react-icons/io5'
 import {LiaLightbulb} from 'react-icons/lia'
 import {VscDebugStart} from 'react-icons/vsc'
+import Timer from './Timer'
 
 export function Controls({
   variant,
@@ -39,7 +38,6 @@ export function Controls({
     },
     dispatch,
   ] = useSoduku()
-  const duration = useTimer()
   const [shouldDisplayKeypad, setShouldDisplayKeypad] = useState(false)
   const [{rawData}] = useSoduku()
   const cellStyles: Record<typeof variant, string> = {
@@ -52,7 +50,8 @@ export function Controls({
     setShouldDisplayKeypad(
       !(
         window.navigator.userAgent.includes('Windows') ||
-        window.navigator.userAgent.includes('Mac')
+        (window.navigator.userAgent.includes('Mac') &&
+          !window.navigator.userAgent.includes('iPhone'))
       ),
     )
   }, [])
@@ -64,6 +63,9 @@ export function Controls({
       className={cx(
         'p-1 bg-eerie-black-900 dark:bg-eerie-black-800 relative',
         'rounded border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
+        {
+          'w-[min(40dvh,60dvw)]': variant === 'keypad',
+        },
       )}
     >
       <Active isVisible={variant === 'keypad'}>
@@ -73,8 +75,7 @@ export function Controls({
             keyboard listener is not working
           </div>
         </Active>
-        {/* <button onClick={timer.countUp()}>zxczczxczxc</button> */}
-        <div className="flex justify-between px-2 pt-2 pb-1.5 capitalize">
+        <div className="flex flex-wrap justify-between px-2 pt-2 pb-1.5 capitalize">
           <h3 className="text-rich-black-100 font-extralight flex gap-1">
             difficulty:
             <Active
@@ -86,19 +87,18 @@ export function Controls({
               {rawData?.difficulty}
             </Active>
           </h3>
-          <h3>{duration}</h3>
+          <Timer />
         </div>
       </Active>
       <div
         className={cx({
-          'w-[40dvh]': variant === 'keypad',
           'size-full': variant === 'note',
         })}
       >
         <Active isVisible={variant === 'note' || shouldDisplayKeypad}>
           <div
             className={cx('grid grid-cols-3 grid-rows-3', {
-              'size-[40dvh]': variant === 'keypad',
+              // 'size-[40dvh]': variant === 'keypad',
               'size-full': variant === 'note',
             })}
           >
@@ -143,16 +143,18 @@ export function Controls({
           <div className="flex flex-col bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
             <IconButton
               type="button"
-              onClick={() =>
-                !isPlaying ? dispatch({type: 'pause'}) : onStart()
-              }
-              aria-label={!isPlaying ? 'Continue Game' : 'Start a new game'}
-              label={!isPlaying ? 'Continue Game' : 'new game'}
+              onClick={onStart}
+              aria-label={loading ? 'Submitting Game' : 'Start a new game'}
+              label={loading ? 'Submitting Game' : 'new game'}
               disabled={loading}
               className="h-8"
             >
-              {!isPlaying ? (
-                <HiPlayPause aria-hidden size={24} />
+              {loading ? (
+                <CgSpinnerTwo
+                  aria-hidden
+                  size={24}
+                  className="animate-spin text-blue-400"
+                />
               ) : (
                 <VscDebugStart aria-hidden className="mx-auto" size={24} />
               )}
