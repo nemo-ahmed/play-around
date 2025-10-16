@@ -36,7 +36,7 @@ function IconButtonWithoutActive({
       type="button"
       aria-label={ariaLabel}
       className={cx(
-        'size-full active:scroll-auto flex items-center justify-center overflow-hidden hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/10 dark:disabled:bg-platinum-900/10',
+        'size-full active:scroll-auto flex items-center justify-center overflow-hidden hover:bg-rich-black-800/10 active:bg-rich-black-800/18 disabled:bg-rich-black/40 dark:disabled:bg-platinum-900/10',
         className,
         'transition-all',
       )}

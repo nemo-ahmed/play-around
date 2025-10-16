@@ -37,14 +37,16 @@ export default function SodukuProvider({
   difficulty,
   children,
 }: {
-  difficulty?: SodukuDifficulties
+  difficulty?: SodukuDifficulties | 'random'
   children: ReactNode
 }) {
   const [state, unsafeDispatch] = useReducer(
     sodukuReducer,
     initialSodukuReducerState,
   )
-  const {data, isLoading, refetch, isRefetching} = useRandomSoduku({difficulty})
+  const {data, isLoading, refetch, isRefetching} = useRandomSoduku({
+    difficulty: difficulty === 'random' ? undefined : difficulty,
+  })
   const {mutate, isPending} = useSubmitSoduku()
 
   useEffect(() => {

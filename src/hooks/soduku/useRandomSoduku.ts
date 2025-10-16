@@ -12,6 +12,8 @@ function useRandomSoduku({difficulty}: {difficulty?: SodukuDifficulties}) {
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
     subscribed: true,
+    // ? we don't need to cache it
+    gcTime: 0,
   })
 }
 

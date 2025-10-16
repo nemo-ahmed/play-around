@@ -1,15 +1,17 @@
-import {Fragment, type ReactNode, Suspense} from 'react'
+import {Fragment, Suspense, type JSX, type ReactNode} from 'react'
 
 function Active({
   isVisible,
   children,
+  fallback,
 }: {
   isVisible: boolean
   children: ReactNode
+  fallback?: JSX.Element
 }) {
   return (
     <Fragment>
-      <Suspense fallback={<h1>🌀 Loading...</h1>}>
+      <Suspense fallback={fallback ?? <h1>🌀 Loading...</h1>}>
         {
           // ? Replace after NextJS release support
           // (   <Activity mode={isVisible ? 'visible' : 'hidden'}>

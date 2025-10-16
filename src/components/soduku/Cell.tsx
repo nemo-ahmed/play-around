@@ -42,13 +42,6 @@ export function Cell({
     cellIndex,
   })
 
-  // value = (Number(
-  //   (
-  //     rawData.solvedBoard.match(
-  //       /[1-9].{0,8}/gi,
-  //     ) as NonNullable<RegExpMatchArray>
-  //   )[rowIndex][colIndex],
-  // ) || null) as Nullish<SodukuNumbers>
   const hasFocus =
     selected &&
     selected.gridIndex === gridIndex &&
@@ -162,13 +155,7 @@ export function Cell({
         </div>
       </Active>
       <Active isVisible={(hasFocus && value === null) || notes.length > 0}>
-        <div
-          aria-hidden
-          className={cx(
-            'outline-0 data-[visible=false]:hidden',
-            commonStyles.true,
-          )}
-        >
+        <div aria-hidden className={cx(commonStyles.true)}>
           <Controls
             variant="note"
             onChange={n => {

@@ -5,19 +5,20 @@ import {Grid} from './Grid'
 import {Controls} from './Controls'
 import {cx} from '@/other/exports'
 import {useCallback, useSyncExternalStore} from 'react'
-import {CiWarning} from 'react-icons/ci'
-import Active from '@/components/ClientActivity'
 
 function SodukuComp() {
-  const [{rawData}, dispatch] = useSoduku()
+  const [, dispatch] = useSoduku()
 
   const onkeydown = useCallback(
     (e: KeyboardEvent) => {
       const nKey = Number(e.key)
+      console.log(e.code)
       if (nKey >= 1 && nKey <= 9) {
         dispatch({type: 'key', payload: nKey})
       } else if (e.key === 'Backspace' || e.key === 'Delete') {
         dispatch({type: 'key', payload: 'delete'})
+      } else if (e.code === 'Space') {
+        dispatch({type: 'pause'})
       } else if (e.key === 'Escape') {
         dispatch({type: 'select', payload: undefined})
       } else if (
@@ -68,30 +69,8 @@ function SodukuComp() {
           <Grid key={`grid-${i}`} gridIndex={i} />
         ))}
       </section>
-      <section
-        aria-label="soduku controls"
-        className={cx(
-          'p-1 bg-eerie-black-900 dark:bg-eerie-black-800 relative',
-          'rounded border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
-        )}
-      >
-        <Active isVisible={!isOnline}>
-          <div className="absolute -top-7 right-0 w-full h-5 flex items-center gap-1 capitalize">
-            <CiWarning className="text-amber-500" size={22} />
-            keyboard listener is not working
-          </div>
-        </Active>
 
-        <Active isVisible={!!rawData?.difficulty}>
-          <div className="flex justify-between px-2 pt-2 pb-1.5 capitalize">
-            <h3 className="text-rich-black-100 font-extralight">
-              difficulty: {rawData?.difficulty}
-            </h3>
-          </div>
-        </Active>
-
-        <Controls variant="keypad" />
-      </section>
+      <Controls variant="keypad" isOnline={isOnline} />
     </div>
   )
 }

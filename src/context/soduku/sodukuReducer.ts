@@ -28,7 +28,6 @@ export const initialSodukuReducerState: SodukuState = {
   submitSoduku: () => {},
 }
 
-// ToDo: Handle game complete
 export type TypeAndPayload =
   | {type: 'key'; payload: number | 'undo' | 'redo' | 'delete' | null}
   | {type: 'select'; payload?: SodukuState['selected']}
@@ -40,6 +39,7 @@ export type TypeAndPayload =
       }
     }
   | {type: 'reset'; payload?: undefined}
+  | {type: 'pause'; payload?: undefined}
   | {type: 'toggle-auto-hints'; payload?: undefined}
 
 export default function sodukuReducer(
@@ -155,6 +155,12 @@ export default function sodukuReducer(
       return {
         ...state,
         autoHints: !state.autoHints,
+      }
+
+    case 'pause':
+      return {
+        ...state,
+        isPlaying: !state.isPlaying,
       }
 
     case 'reset':
