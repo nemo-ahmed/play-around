@@ -5,14 +5,20 @@ import {useSoduku} from '@/context/soduku/Soduku'
 import {cx} from '@/other/exports'
 import type {SodukuNumbers} from '@/types/soduku'
 import {DYNAMIC_NUMBERS} from '@/utils/soduku'
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 import {CgSpinnerTwo} from 'react-icons/cg'
 import {CiWarning} from 'react-icons/ci'
-import {IoArrowRedoOutline, IoArrowUndoOutline} from 'react-icons/io5'
+import {
+  IoArrowRedoOutline,
+  IoArrowUndoOutline,
+  IoCloseOutline,
+  IoExpandOutline,
+} from 'react-icons/io5'
 import {LiaLightbulb} from 'react-icons/lia'
 import {VscDebugStart} from 'react-icons/vsc'
 import Timer from './Timer'
+import {motion} from 'motion/react'
 
 export function Controls({
   variant,
@@ -42,52 +48,46 @@ export function Controls({
   const [{rawData}] = useSoduku()
   const cellStyles: Record<typeof variant, string> = {
     keypad:
-      'p-4 size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border-2 border-eerie-black-300 dark:border-eerie-black-700',
+      'p-2 size-full fill-eerie-black-500 dark:fill-eerie-black-700 not-disabled:hover:fill-eerie-black-400 not-disabled:hover:dark:fill-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700',
     note: "size-full fill-transparent not-disabled:hover:fill-eerie-black-500 not-disabled:hover:dark:fill-eerie-black-700 data-[selected='true']:fill-eerie-black-400 data-[selected='true']:dark:fill-eerie-black-600",
   }
 
-  useEffect(() => {
-    setShouldDisplayKeypad(
-      !(
-        window.navigator.userAgent.includes('Windows') ||
-        (window.navigator.userAgent.includes('Mac') &&
-          !window.navigator.userAgent.includes('iPhone'))
-      ),
-    )
-  }, [])
-
   const loading = isLoading || isPending || false
+
   return (
     <section
       aria-label="soduku controls"
-      className={cx(
-        'p-1 bg-eerie-black-900 dark:bg-eerie-black-800 relative',
-        'rounded border-[3px] border-eerie-black-300 dark:border-eerie-black-700',
-        {
-          'w-[min(40dvh,60dvw)]': variant === 'keypad',
-        },
-      )}
+      className={cx({
+        'w-[min(30dvh,40dvw)]': variant === 'keypad',
+      })}
     >
       <Active isVisible={variant === 'keypad'}>
-        <Active isVisible={!isOnline}>
-          <div className="absolute -top-7 right-0 w-full h-5 flex items-center gap-1 capitalize">
-            <CiWarning className="text-amber-500" size={22} />
-            keyboard listener is not working
+        <div
+          className={cx(
+            'p-1 bg-eerie-black-900 dark:bg-eerie-black-800 relative ',
+            'rounded-t border border-eerie-black-300 dark:border-eerie-black-700',
+          )}
+        >
+          <Active isVisible={!isOnline}>
+            <div className="absolute -top-7 right-0 -me-7 w-full h-5 flex items-center gap-1 capitalize">
+              <CiWarning className="text-amber-500" size={22} />
+              keyboard listener is not working
+            </div>
+          </Active>
+          <div className="flex flex-wrap justify-between px-2 pt-2 pb-1.5 capitalize">
+            <h3 className="text-rich-black-100 font-extralight flex gap-1">
+              difficulty:
+              <Active
+                isVisible={!!rawData?.difficulty && !isLoading}
+                fallback={
+                  <div className="h-6 w-16 bg-eerie-black-600 dark:bg-eerie-black-500 animate-pulse rounded-xs" />
+                }
+              >
+                {rawData?.difficulty}
+              </Active>
+            </h3>
+            <Timer />
           </div>
-        </Active>
-        <div className="flex flex-wrap justify-between px-2 pt-2 pb-1.5 capitalize">
-          <h3 className="text-rich-black-100 font-extralight flex gap-1">
-            difficulty:
-            <Active
-              isVisible={!!rawData?.difficulty && !isLoading}
-              fallback={
-                <div className="h-6 w-16 bg-eerie-black-600 dark:bg-eerie-black-500 animate-pulse rounded-xs" />
-              }
-            >
-              {rawData?.difficulty}
-            </Active>
-          </h3>
-          <Timer />
         </div>
       </Active>
       <div
@@ -95,19 +95,43 @@ export function Controls({
           'size-full': variant === 'note',
         })}
       >
-        <Active isVisible={variant === 'note' || shouldDisplayKeypad}>
-          <div
-            className={cx('grid grid-cols-3 grid-rows-3', {
-              // 'size-[40dvh]': variant === 'keypad',
-              'size-full': variant === 'note',
-            })}
-          >
+        <motion.div
+          className={cx('grid grid-cols-3 grid-rows-3', {
+            'relative w-full max-h-fit border-2 border-eerie-black-300 dark:border-eerie-black-700':
+              variant === 'keypad',
+            'size-full': variant === 'note',
+          })}
+          animate={{
+            height:
+              variant === 'keypad' && shouldDisplayKeypad
+                ? 'min(30dvh,40dvw)'
+                : variant === 'keypad'
+                  ? 0
+                  : undefined,
+          }}
+          transition={{duration: 0.2}}
+        >
+          {variant === 'keypad' && (
+            <button
+              type="button"
+              className={cx(
+                'absolute right-0 -me-7 -top-[13px] size-fit p-1 border rounded-full transition-colors ease-in-out duration-500',
+                'text-eerie-black-700 dark:text-eerie-black-300 border-eerie-black-300 dark:border-eerie-black-700',
+                'bg-eerie-black-900 dark:bg-eerie-black-800 hover:bg-eerie-black-800 dark:hover:bg-eerie-black-700',
+              )}
+              onClick={() => setShouldDisplayKeypad(prev => !prev)}
+            >
+              {shouldDisplayKeypad ? <IoCloseOutline /> : <IoExpandOutline />}
+            </button>
+          )}
+
+          <Active isVisible={variant === 'note' || shouldDisplayKeypad}>
             {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
               <button
                 key={'note-numbers-' + n}
                 className={cx(cellStyles[variant], {
-                  'rounded-tr': n === 3,
-                  'rounded-tl': n === 1,
+                  // 'rounded-tr': n === 3,
+                  // 'rounded-tl': n === 1,
                 })}
                 aria-describedby={
                   selectedCell
@@ -137,8 +161,8 @@ export function Controls({
                 {DYNAMIC_NUMBERS[n]}
               </button>
             ))}
-          </div>
-        </Active>
+          </Active>
+        </motion.div>
         <Active isVisible={variant === 'keypad'}>
           <div className="flex flex-col bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
             <IconButton
