@@ -141,45 +141,43 @@ export function Controls({
               </div>
             </IconButton>
           </Active>
-          <Active isVisible={variant === 'keypad'}>
-            <div className={cx('grid grid-cols-3 grid-rows-3')}>
-              {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
-                <button
-                  key={'note-numbers-' + n}
-                  className={cx(cellStyles[variant], {
-                    // 'rounded-tr': n === 3,
-                    // 'rounded-tl': n === 1,
-                  })}
-                  aria-describedby={
-                    selectedCell
-                      ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
-                      : 'none'
+          <div className={cx('grid grid-cols-3 grid-rows-3')}>
+            {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
+              <button
+                key={'note-numbers-' + n}
+                className={cx(cellStyles[variant], {
+                  // 'rounded-tr': n === 3,
+                  // 'rounded-tl': n === 1,
+                })}
+                aria-describedby={
+                  selectedCell
+                    ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
+                    : 'none'
+                }
+                aria-label={
+                  selectedCell
+                    ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.gridIndex + 1}`
+                    : `select a cell`
+                }
+                data-selected={selected?.includes(n)}
+                onClick={() => {
+                  if (variant === 'keypad' && selectedCell) {
+                    dispatch({
+                      type: 'key',
+                      payload: n,
+                    })
                   }
-                  aria-label={
-                    selectedCell
-                      ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.gridIndex + 1}`
-                      : `select a cell`
-                  }
-                  data-selected={selected?.includes(n)}
-                  onClick={() => {
-                    if (variant === 'keypad' && selectedCell) {
-                      dispatch({
-                        type: 'key',
-                        payload: n,
-                      })
-                    }
-                    onChange?.(n)
-                  }}
-                  disabled={
-                    !selectedCell ||
-                    given[`${selectedCell.gridIndex}-${selectedCell.cellIndex}`]
-                  }
-                >
-                  {DYNAMIC_NUMBERS[n]}
-                </button>
-              ))}
-            </div>{' '}
-          </Active>
+                  onChange?.(n)
+                }}
+                disabled={
+                  !selectedCell ||
+                  given[`${selectedCell.gridIndex}-${selectedCell.cellIndex}`]
+                }
+              >
+                {DYNAMIC_NUMBERS[n]}
+              </button>
+            ))}
+          </div>
         </motion.div>
         <Active isVisible={variant === 'keypad'}>
           <div className="flex flex-col bg-outer-space-800 dark:bg-eerie-black-600 border border-eerie-black-300 dark:border-eerie-black-700 rounded-b">
