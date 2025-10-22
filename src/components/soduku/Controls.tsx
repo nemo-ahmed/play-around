@@ -12,8 +12,8 @@ import {CiWarning} from 'react-icons/ci'
 import {
   IoArrowRedoOutline,
   IoArrowUndoOutline,
-  IoCloseOutline,
-  IoExpandOutline,
+  IoArrowUpOutline,
+  IoRemoveOutline,
 } from 'react-icons/io5'
 import {LiaLightbulb} from 'react-icons/lia'
 import {VscDebugStart} from 'react-icons/vsc'
@@ -96,71 +96,89 @@ export function Controls({
         })}
       >
         <motion.div
-          className={cx('grid grid-cols-3 grid-rows-3', {
-            'relative w-full max-h-fit border-2 border-eerie-black-300 dark:border-eerie-black-700':
+          className={cx({
+            'w-full max-h-fit border border-y-0 border-eerie-black-300 dark:border-eerie-black-700 overflow-hidden':
               variant === 'keypad',
             'size-full': variant === 'note',
           })}
           animate={{
             height:
-              variant === 'keypad' && shouldDisplayKeypad
-                ? 'min(30dvh,40dvw)'
-                : variant === 'keypad'
-                  ? 0
-                  : undefined,
+              variant === 'keypad'
+                ? shouldDisplayKeypad
+                  ? 'calc(min(30dvh,40dvw) + 30px)'
+                  : 31
+                : undefined,
           }}
-          transition={{duration: 0.2}}
+          transition={{duration: 0.5}}
         >
-          {variant === 'keypad' && (
-            <button
+          <Active isVisible={variant === 'keypad'}>
+            <IconButton
               type="button"
-              className={cx(
-                'absolute right-0 -me-7 -top-[13px] size-fit p-1 border rounded-full transition-colors ease-in-out duration-500',
-                'text-eerie-black-700 dark:text-eerie-black-300 border-eerie-black-300 dark:border-eerie-black-700',
-                'bg-eerie-black-900 dark:bg-eerie-black-800 hover:bg-eerie-black-800 dark:hover:bg-eerie-black-700',
-              )}
               onClick={() => setShouldDisplayKeypad(prev => !prev)}
+              aria-label={shouldDisplayKeypad ? 'Hide keypad' : 'Show keypad'}
+              label={shouldDisplayKeypad ? 'Hide keypad' : 'Show keypad'}
+              className="h-8 bg-outer-space-800 dark:bg-eerie-black-600"
             >
-              {shouldDisplayKeypad ? <IoCloseOutline /> : <IoExpandOutline />}
-            </button>
-          )}
-
-          <Active isVisible={variant === 'note' || shouldDisplayKeypad}>
-            {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
-              <button
-                key={'note-numbers-' + n}
-                className={cx(cellStyles[variant], {
-                  // 'rounded-tr': n === 3,
-                  // 'rounded-tl': n === 1,
-                })}
-                aria-describedby={
-                  selectedCell
-                    ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
-                    : 'none'
-                }
-                aria-label={
-                  selectedCell
-                    ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.gridIndex + 1}`
-                    : `select a cell`
-                }
-                data-selected={selected?.includes(n)}
-                onClick={() => {
-                  if (variant === 'keypad' && selectedCell) {
-                    dispatch({
-                      type: 'key',
-                      payload: n,
-                    })
+              <div className="-space-y-2 h-fit size-full">
+                <IoRemoveOutline
+                  className={cx('transition-opacity duration-300 delay-300', {
+                    'opacity-0': !shouldDisplayKeypad,
+                    'opacity-100': shouldDisplayKeypad,
+                  })}
+                />
+                <IoArrowUpOutline
+                  className={cx('transition-transform duration-300', {
+                    'rotate-180': !shouldDisplayKeypad,
+                    'rotate-0': shouldDisplayKeypad,
+                  })}
+                />
+                <IoRemoveOutline
+                  className={cx('transition-opacity duration-300 delay-300', {
+                    'opacity-0': shouldDisplayKeypad,
+                    'opacity-100': !shouldDisplayKeypad,
+                  })}
+                />
+              </div>
+            </IconButton>
+          </Active>
+          <Active isVisible={variant === 'keypad'}>
+            <div className={cx('grid grid-cols-3 grid-rows-3')}>
+              {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
+                <button
+                  key={'note-numbers-' + n}
+                  className={cx(cellStyles[variant], {
+                    // 'rounded-tr': n === 3,
+                    // 'rounded-tl': n === 1,
+                  })}
+                  aria-describedby={
+                    selectedCell
+                      ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
+                      : 'none'
                   }
-                  onChange?.(n)
-                }}
-                disabled={
-                  !selectedCell ||
-                  given[`${selectedCell.gridIndex}-${selectedCell.cellIndex}`]
-                }
-              >
-                {DYNAMIC_NUMBERS[n]}
-              </button>
-            ))}
+                  aria-label={
+                    selectedCell
+                      ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.gridIndex + 1}`
+                      : `select a cell`
+                  }
+                  data-selected={selected?.includes(n)}
+                  onClick={() => {
+                    if (variant === 'keypad' && selectedCell) {
+                      dispatch({
+                        type: 'key',
+                        payload: n,
+                      })
+                    }
+                    onChange?.(n)
+                  }}
+                  disabled={
+                    !selectedCell ||
+                    given[`${selectedCell.gridIndex}-${selectedCell.cellIndex}`]
+                  }
+                >
+                  {DYNAMIC_NUMBERS[n]}
+                </button>
+              ))}
+            </div>{' '}
           </Active>
         </motion.div>
         <Active isVisible={variant === 'keypad'}>

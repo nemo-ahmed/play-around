@@ -1,34 +1,20 @@
 import {cx} from '@/other/exports'
-import {
-  type Dispatch,
-  type SetStateAction,
-  useState,
-  type ButtonHTMLAttributes,
-} from 'react'
-import {motion} from 'motion/react'
+import {type ButtonHTMLAttributes} from 'react'
 import Active from './ClientActivity'
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label?: string
   isActive?: boolean
-  y: number
-  setY: Dispatch<SetStateAction<number>>
 }
 
 const BORDER = 6
-const transitionVal = (isActive?: boolean) => (isActive ? 13 : 15)
 
 function IconButtonWithoutActive({
   'aria-label': ariaLabel,
   className,
   children,
   label,
-  isActive,
-  setY,
-  y,
   style,
-  onMouseEnter,
-  onMouseLeave,
   ...rest
 }: IconButtonProps) {
   return (
@@ -41,35 +27,25 @@ function IconButtonWithoutActive({
         'transition-all',
       )}
       style={{
-        height: isActive ? `calc(100% - ${BORDER}px)` : undefined,
+        // height: isActive ? `calc(100% - ${BORDER}px)` : undefined,
         ...(style ?? {}),
-      }}
-      onMouseEnter={e => {
-        if (!label) return
-        setY(-transitionVal(isActive) - (isActive ? 3 : 1))
-        onMouseEnter?.(e)
-      }}
-      onMouseLeave={e => {
-        if (!label) return
-        setY(transitionVal(isActive))
-        onMouseLeave?.(e)
       }}
       {...rest}
     >
-      <motion.div
-        className="flex items-center justify-center flex-col gap-[7px] text-center first:my-1"
-        animate={{y}}
-        initial={{y}}
+      <div
+        className="flex items-center justify-center gap-[7px] text-center"
         aria-hidden
-        transition={{type: 'spring'}}
       >
         {children}
         {label && (
-          <p aria-hidden className="size-full mx-auto capitalize text-nowrap">
+          <p
+            aria-hidden
+            className="size-full mx-auto capitalize text-nowrap text-sm"
+          >
             {label}
           </p>
         )}
-      </motion.div>
+      </div>
     </button>
   )
 }
@@ -78,13 +54,12 @@ function IconButton({
   isActive = false,
   ...rest
 }: Omit<IconButtonProps, 'y' | 'setY'>) {
-  const [y, setY] = useState(rest.label ? transitionVal(isActive) : 0)
   const color = '#9ae600'
 
   return (
     <>
       <Active isVisible={!isActive}>
-        <IconButtonWithoutActive {...rest} y={y} setY={setY} />
+        <IconButtonWithoutActive {...rest} />
       </Active>
       <Active isVisible={isActive}>
         <div
@@ -111,12 +86,7 @@ function IconButton({
               'bg-outer-space-800 dark:bg-eerie-black-600',
             )}
           >
-            <IconButtonWithoutActive
-              {...rest}
-              isActive={isActive}
-              y={y}
-              setY={setY}
-            />
+            <IconButtonWithoutActive {...rest} isActive={isActive} />
           </div>
         </div>
       </Active>
