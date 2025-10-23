@@ -1,15 +1,13 @@
 'use client'
 import type {Ele} from '@/types/typings'
-import {useEffect, useState} from 'react'
+import {useEffect, useEffectEvent, useState} from 'react'
 
 const CONTAINER_LIST = ['DIV', 'SECTION', 'ARTICLE', 'MAIN']
 const READABLE_LIST = ['P', 'CODE', 'BLOCKQUOTE']
 
 export function useGetTopLevelReadableElementsOnPage(): Ele[] {
   const [parsedElements, setParsedElements] = useState<Ele[]>([])
-  useEffect(() => {
-    if (typeof document === 'undefined') return
-
+  const effectEvent = useEffectEvent(() => {
     let eles = [
       ...(document.getElementsByTagName('main').item(0)?.children || []),
     ]
@@ -48,6 +46,11 @@ export function useGetTopLevelReadableElementsOnPage(): Ele[] {
     }
 
     setParsedElements(elements)
+  })
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    effectEvent()
   }, [])
 
   return parsedElements

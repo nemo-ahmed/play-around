@@ -86,7 +86,7 @@ function IconButton({
               'bg-outer-space-800 dark:bg-eerie-black-600',
             )}
           >
-            <IconButtonWithoutActive {...rest} isActive={isActive} />
+            <IconButtonWithoutActive {...rest} />
           </div>
         </div>
       </Active>

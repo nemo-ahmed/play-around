@@ -1,7 +1,6 @@
 'use client'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
-import {BirdDataType} from '@/types/useBirds'
-import React from 'react'
+import type {BirdDataType} from '@/types/useBirds'
 
 // ? id: the catalogue number of the recording on xeno-canto
 // ? gen: the generic name of the species

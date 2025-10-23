@@ -1,18 +1,9 @@
 import {SODUKU_DIFFICULTIES} from '@/consts/soduku'
 
-import type {SodukuDifficulties} from '@/types/soduku'
 import Link from 'next/link'
-import {redirect} from 'next/navigation'
 import {IoShuffle} from 'react-icons/io5'
 
-async function Page({searchParams}: PageProps<'/soduku'>) {
-  const difficulty = await searchParams
-    .then(value => value.difficulty as SodukuDifficulties)
-    .catch(() => undefined)
-  if (difficulty) {
-    redirect('/soduku/' + difficulty)
-  }
-
+function Page() {
   return (
     <div className="flex flex-col gap-5 items-center justify-center h-[calc(100dvh-55px)]">
       <pre className="font-medium">Select Difficulty:</pre>

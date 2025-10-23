@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import {useMemo, useRef} from 'react'
 
 const IfNoOnDataReturn = <T>(obj: Record<string, T>) => Object.values(obj)

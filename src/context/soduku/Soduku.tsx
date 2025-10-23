@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useEffectEvent,
   useReducer,
   type ActionDispatch,
   type ReactNode,
@@ -64,10 +65,13 @@ export default function SodukuProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.count])
 
-  useEffect(() => {
+  const startGame = useEffectEvent(() => {
     if (!data) return
+
     dispatch({type: 'start', payload: {data, mutate}})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  })
+  useEffect(() => {
+    startGame()
   }, [data])
 
   const onStart: ContextType['0']['onStart'] = () => {

@@ -134,8 +134,8 @@ export async function unzippingFiles(dir: 'soduku') {
       })
     }),
   )
-    .then(() => console.log('done'))
-    .catch(err => console.log('error', err))
+    .then(() => 'done')
+    .catch(err => err)
 
   // ? For now we will use gz files as backup
   // .finally(() => {

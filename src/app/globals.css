@@ -208,7 +208,7 @@ body {
   }
 
   blockquote {
-    @apply border-l-[20px] border-gray-600 py-5 pl-2.5 pr-8 text-center;
+    @apply border-l-20 border-gray-600 py-5 pl-2.5 pr-8 text-center;
     quotes: '\201C' '\201D' '\2018' '\2019';
   }
 }
@@ -218,14 +218,17 @@ form {
     @apply rounded-2xl border-2 border-zinc-500 w-fit px-4 self-center active:text-gray-700 active:dark:text-gray-300;
   }
 }
-/* 
-  ::highlight(speechify-paragraph-highlight) {
-    background-color: rgba(107, 120, 252, 0.5);
-  }
 
-  ::highlight(speechify-word-highlight) {
-    background-color: #6b78fc;
-  } */
+/* 
+? Its not supported (https://github.com/vercel/next.js/issues/78854)
+::highlight(speechify-paragraph-highlight) {
+  background-color: rgba(107, 120, 252, 0.5);
+}
+
+::highlight(speechify-word-highlight) {
+  background-color: #6b78fc; 
+}
+*/
 
 ::selection {
   background-color: #f06;

@@ -54,4 +54,5 @@ export interface BirdsWatchResponse {
   page: number
   numPages: number
   recordings: BirdDataType[]
+  message?: string
 }

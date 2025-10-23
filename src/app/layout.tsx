@@ -3,6 +3,7 @@ import {Geist, Geist_Mono} from 'next/font/google'
 import './globals.css'
 import AppLayout from '@/components/Layout'
 import Nav from '@/components/Nav'
+import {Suspense} from 'react'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,8 +31,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AppLayout>
-          <Nav />
-          <main id="body">{children}</main>
+          <Suspense>
+            <Nav />
+          </Suspense>
+          <main id="body">
+            <Suspense>{children}</Suspense>
+          </main>
         </AppLayout>
       </body>
     </html>

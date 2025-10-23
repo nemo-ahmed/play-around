@@ -1,18 +1,24 @@
-import {lazy, Suspense} from 'react'
+import {Suspense} from 'react'
 import {BirdsWatchResponse} from '@/types/useBirds'
+import Active from '@/components/ClientActivity'
+import Table from '@/components/Table'
 
 const getBirds = async () =>
   await fetch(process.env.URL + '/api/birds/')
     .then(async res => (await res.json()) as BirdsWatchResponse)
-    .catch(e => console.error(e))
-
-const Table = lazy(() =>
-  getBirds().then(() => {
-    return import('@/components/Table')
-  }),
-)
+    .catch(e => {
+      console.log(e)
+      return {
+        message: 'error',
+        numPages: 0,
+        numRecordings: 0,
+        numSpecies: 0,
+        recordings: [],
+      }
+    })
 
 export default async function BirdsMix() {
+  'use cache'
   const data = await getBirds()
 
   const commonStyles = 'card'
@@ -32,15 +38,14 @@ export default async function BirdsMix() {
           </div>
         </div>
       </div>
-      <Suspense fallback={<div>loading...</div>}>
-        {data?.recordings && (
-          <Table
-            data={data.recordings}
-            numPages={data.numPages}
-            isFetching={false}
-          />
-        )}
-      </Suspense>
+      <Active isVisible={!!data?.message}>
+        <p className="text-red-500 text-center">Failed to load data</p>
+      </Active>
+      <Table
+        data={(data as Required<BirdsWatchResponse>).recordings}
+        numPages={(data as Required<BirdsWatchResponse>).numPages}
+        isFetching={false}
+      />
     </div>
   )
 }

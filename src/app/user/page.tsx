@@ -1,7 +1,4 @@
-import {Params} from 'next/dist/server/request/params'
-import React from 'react'
-
-async function Page({searchParams}: {searchParams: Promise<Params>}) {
+async function Page({searchParams}: PageProps<'/user'>) {
   const params = await searchParams
   return (
     <div className="h-[calc(100dvh-23.9px)] flex items-center justify-center">

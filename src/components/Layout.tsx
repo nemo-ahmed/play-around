@@ -1,6 +1,5 @@
 'use client'
 import {NotificationProvider} from '@/context'
-import SpeakyProvider from '@/context/Speaky'
 import {queryClient} from '@/other/queryclient'
 import {QueryClientProvider} from '@tanstack/react-query'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
@@ -14,9 +13,7 @@ function AppLayout({
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
-      <NotificationProvider>
-        <SpeakyProvider>{children}</SpeakyProvider>
-      </NotificationProvider>
+      <NotificationProvider>{children}</NotificationProvider>
     </QueryClientProvider>
   )
 }

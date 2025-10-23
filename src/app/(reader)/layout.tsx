@@ -1,6 +1,8 @@
 import type {Metadata} from 'next'
 import '../globals.css'
 import AppLayout from '@/components/Layout'
+import SpeakyProvider from '@/context/Speaky'
+import ReaderNav from './Nav'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -14,12 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <AppLayout>
-      {/* <Nav /> */}
-      <nav className="text-center leading-12 h-24 bg-linear-to-br from-seasalt-100 via-seasalt-200 to-seasalt-300 text-transparent! text-3xl bg-clip-text">
-        This layout is shared between all the page routes inside (birds)
-        namespace
-      </nav>
-      {children}
+      <SpeakyProvider>
+        <>
+          <ReaderNav />
+          {children}
+        </>
+      </SpeakyProvider>
     </AppLayout>
   )
 }

@@ -1,10 +1,15 @@
 import {useSoduku} from '@/context/soduku/Soduku'
 import dayjs from 'dayjs'
-import {useEffect, useState} from 'react'
+import {useEffect, useEffectEvent, useState} from 'react'
 
 export function useTimer() {
   const [seconds, setSeconds] = useState(0)
   const [{isPlaying}] = useSoduku()
+
+  const countUp = useEffectEvent(() => {
+    setSeconds(prev => prev + 1)
+  })
+
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined
     console.log(isPlaying)
@@ -13,7 +18,7 @@ export function useTimer() {
       return
     }
     interval = setInterval(() => {
-      setSeconds(prev => prev + 1)
+      countUp()
     }, 1000)
     return () => {
       clearInterval(interval)

@@ -1,4 +1,10 @@
-import {UIEventHandler, useCallback, useEffect, useState} from 'react'
+import {
+  UIEventHandler,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useState,
+} from 'react'
 
 const MAX_ON_DISPLAY_DATA_SIZE = 300
 const MIN_ON_DISPLAY_DATA_SIZE = 100
@@ -22,18 +28,19 @@ function useInfiniteScroll<T = unknown>({
   const [start, setStart] = useState(0)
   const [end, setEnd] = useState(100)
   const [displayData, setDisplayData] = useState(data.slice(0, end))
-  const [IsScrollStuck, setIsScrollStuck] = useState(false)
+  const [isScrollStuck, setIsScrollStuck] = useState(false)
   const stackTotal = total ?? data.length
 
-  useEffect(() => {
-    if (data.length === 0 || displayData.length > 0) {
-      return
-    }
+  const handleDataReset = useEffectEvent(() => {
     setDisplayData(data.slice(0, end))
-  }, [data, displayData.length, end])
+  })
 
   useEffect(() => {
-    if (!IsScrollStuck || isFetching) return
+    if (data.length === 0 || displayData.length > 0) return
+    handleDataReset()
+  }, [data, displayData.length, end])
+
+  const handleDataChange = useEffectEvent(() => {
     let newEnd = end + INCREMENT_BY
     newEnd = newEnd < stackTotal ? newEnd : stackTotal
     setDisplayData(data.slice(start, newEnd))
@@ -42,15 +49,12 @@ function useInfiniteScroll<T = unknown>({
       setStart(prev => prev + INCREMENT_BY)
     }
     setIsScrollStuck(false)
-  }, [
-    IsScrollStuck,
-    data,
-    displayData.length,
-    end,
-    isFetching,
-    stackTotal,
-    start,
-  ])
+  })
+
+  useEffect(() => {
+    if (!isScrollStuck || isFetching) return
+    handleDataChange()
+  }, [isScrollStuck, isFetching])
 
   const onScroll = useCallback<UIEventHandler<HTMLTableSectionElement>>(
     e => {

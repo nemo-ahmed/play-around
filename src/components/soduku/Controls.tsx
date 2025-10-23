@@ -77,13 +77,11 @@ export function Controls({
           <div className="flex flex-wrap justify-between px-2 pt-2 pb-1.5 capitalize">
             <h3 className="text-rich-black-100 font-extralight flex gap-1">
               difficulty:
-              <Active
-                isVisible={!!rawData?.difficulty && !isLoading}
-                fallback={
-                  <div className="h-6 w-16 bg-eerie-black-600 dark:bg-eerie-black-500 animate-pulse rounded-xs" />
-                }
-              >
+              <Active isVisible={!!rawData?.difficulty && !isLoading}>
                 {rawData?.difficulty}
+              </Active>
+              <Active isVisible={!rawData?.difficulty || isLoading || false}>
+                <div className="h-6 w-16 bg-eerie-black-600 dark:bg-eerie-black-500 animate-pulse rounded-xs" />
               </Active>
             </h3>
             <Timer />
@@ -108,6 +106,9 @@ export function Controls({
                   ? 'calc(min(30dvh,40dvw) + 30px)'
                   : 31
                 : undefined,
+          }}
+          initial={{
+            height: variant === 'keypad' ? 31 : undefined,
           }}
           transition={{duration: 0.5}}
         >
@@ -202,7 +203,7 @@ export function Controls({
             <div
               aria-label="divider"
               aria-hidden
-              className="h-[1px] bg-eerie-black-300 dark:bg-eerie-black-700"
+              className="h-px bg-eerie-black-300 dark:bg-eerie-black-700"
             />
             <IconButton
               type="button"
@@ -221,13 +222,13 @@ export function Controls({
             <div
               aria-label="divider"
               aria-hidden
-              className="h-[1px] bg-eerie-black-300 dark:bg-eerie-black-700"
+              className="h-px bg-eerie-black-300 dark:bg-eerie-black-700"
             />
             <div
               className={cx(
                 'flex h-8',
                 // ? For some reason without this the edges is not aligned
-                'm-[-1]',
+                '-m-px',
               )}
             >
               <IconButton
@@ -267,13 +268,13 @@ export function Controls({
             <div
               aria-label="divider"
               aria-hidden
-              className="h-[1px] bg-eerie-black-300 dark:bg-eerie-black-700"
+              className="h-px bg-eerie-black-300 dark:bg-eerie-black-700"
             />
             <div
               className={cx(
                 'flex h-8',
                 // ? For some reason without this the edges is not aligned
-                'm-[-1]',
+                '-m-px',
               )}
             >
               <IconButton
