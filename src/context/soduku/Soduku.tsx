@@ -10,15 +10,16 @@ import {
   type ActionDispatch,
   type ReactNode,
 } from 'react'
+
+import {useRandomSoduku} from '@/hooks/soduku/useRandomSoduku'
+import {useSubmitSoduku} from '@/hooks/soduku/useSubmitSoduku'
+import type {SodukuDifficulties, SodukuState} from '@/types/soduku'
+import {validateSodukuLines} from '@/utils/soduku'
+
 import sodukuReducer, {
   initialSodukuReducerState,
   type TypeAndPayload,
 } from './sodukuReducer'
-import {validateSodukuLines} from '@/utils/soduku'
-import {useSubmitSoduku} from '@/hooks/soduku/useSubmitSoduku'
-
-import type {SodukuDifficulties, SodukuState} from '@/types/soduku'
-import {useRandomSoduku} from '@/hooks/soduku/useRandomSoduku'
 
 type ContextType = [
   SodukuState & {

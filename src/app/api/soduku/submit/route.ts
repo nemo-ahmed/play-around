@@ -1,6 +1,7 @@
+import type {NextRequest} from 'next/server'
+
 import type {SodukuPromiseData} from '@/types/soduku'
 import {appendOrCreateFile} from '@/utils/filesHandling/convertTxtToJson'
-import type {NextRequest} from 'next/server'
 
 export async function POST(req: NextRequest) {
   const data = (await req.json()) as SodukuPromiseData

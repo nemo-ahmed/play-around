@@ -1,6 +1,11 @@
 'use client'
 
+import {useEffect, useState} from 'react'
+
+import Active from '@/components/ClientActivity'
 import {useSoduku} from '@/context/soduku/Soduku'
+import {cx} from '@/other/exports'
+import {SodukuNumbers} from '@/types/soduku'
 import {
   DYNAMIC_NUMBERS,
   getColIndex,
@@ -9,11 +14,9 @@ import {
   isSodukuNumber,
   validateSodukuValue,
 } from '@/utils/soduku'
-import {useEffect, useState} from 'react'
+
 import {Controls} from './Controls'
-import {cx} from '@/other/exports'
-import {SodukuNumbers} from '@/types/soduku'
-import Active from '@/components/ClientActivity'
+
 
 export function Cell({
   gridIndex,

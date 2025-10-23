@@ -1,6 +1,7 @@
 'use client'
-import type {Ele} from '@/types/typings'
 import {useEffect, useEffectEvent, useState} from 'react'
+
+import type {Ele} from '@/types/typings'
 
 const CONTAINER_LIST = ['DIV', 'SECTION', 'ARTICLE', 'MAIN']
 const READABLE_LIST = ['P', 'CODE', 'BLOCKQUOTE']

@@ -1,5 +1,6 @@
-import MazeComponent from '@/components/Maze'
 import React from 'react'
+
+import MazeComponent from '@/components/Maze'
 
 function Maze() {
   const grids = [

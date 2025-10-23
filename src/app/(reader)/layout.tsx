@@ -1,7 +1,9 @@
 import type {Metadata} from 'next'
+
 import '../globals.css'
 import AppLayout from '@/components/Layout'
 import SpeakyProvider from '@/context/Speaky'
+
 import ReaderNav from './Nav'
 
 export const metadata: Metadata = {

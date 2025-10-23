@@ -1,10 +1,5 @@
 'use client'
-import Active from '@/components/ClientActivity'
-import IconButton from '@/components/IconButton'
-import {useSoduku} from '@/context/soduku/Soduku'
-import {cx} from '@/other/exports'
-import type {SodukuNumbers} from '@/types/soduku'
-import {DYNAMIC_NUMBERS} from '@/utils/soduku'
+import {motion} from 'motion/react'
 import {useState} from 'react'
 import {BsArrowRepeat, BsEraser} from 'react-icons/bs'
 import {CgSpinnerTwo} from 'react-icons/cg'
@@ -17,8 +12,16 @@ import {
 } from 'react-icons/io5'
 import {LiaLightbulb} from 'react-icons/lia'
 import {VscDebugStart} from 'react-icons/vsc'
+
+import Active from '@/components/ClientActivity'
+import IconButton from '@/components/IconButton'
+import {useSoduku} from '@/context/soduku/Soduku'
+import {cx} from '@/other/exports'
+import type {SodukuNumbers} from '@/types/soduku'
+import {DYNAMIC_NUMBERS} from '@/utils/soduku'
+
 import Timer from './Timer'
-import {motion} from 'motion/react'
+
 
 export function Controls({
   variant,

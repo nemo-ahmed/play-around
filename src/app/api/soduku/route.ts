@@ -1,7 +1,9 @@
-import {readLocalFile} from '@/utils/filesHandling/convertTxtToJson'
-import type {SodukuPromiseReturn} from '@/types/soduku'
 import type {NextRequest} from 'next/server'
+
 import {random} from '@/other/exports'
+import type {SodukuPromiseReturn} from '@/types/soduku'
+import {readLocalFile} from '@/utils/filesHandling/convertTxtToJson'
+
 import {handleFilesBeforeExecution} from './util'
 
 export async function GET(req: NextRequest) {

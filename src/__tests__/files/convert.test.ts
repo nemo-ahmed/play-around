@@ -1,12 +1,14 @@
+import {mkdirSync, rmdirSync, rmSync} from 'fs'
+import {writeFile} from 'fs/promises'
+
+import {expect, test, suite, beforeAll, afterAll, vi} from 'vitest'
+
 import {
   checkIfFileExist,
   appendOrCreateFile,
   readLocalFile,
   getPath,
 } from '@/utils/filesHandling'
-import {mkdirSync, rmdirSync, rmSync} from 'fs'
-import {writeFile} from 'fs/promises'
-import {expect, test, suite, beforeAll, afterAll, vi} from 'vitest'
 
 const FILENAME = 'test/testing'
 const FILE_DATA = [

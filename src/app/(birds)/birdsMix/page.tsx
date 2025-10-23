@@ -1,7 +1,8 @@
 import {Suspense} from 'react'
-import {BirdsWatchResponse} from '@/types/useBirds'
+
 import Active from '@/components/ClientActivity'
 import Table from '@/components/Table'
+import {BirdsWatchResponse} from '@/types/useBirds'
 
 const getBirds = async () =>
   await fetch(process.env.URL + '/api/birds/')

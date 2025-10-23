@@ -1,4 +1,5 @@
 import {BirdsWatchResponse} from '@/types/useBirds'
+
 import genericFetch from '../../../../utils/fetch'
 import {BIRDS_URL} from '../../../../utils/urls'
 

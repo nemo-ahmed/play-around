@@ -1,3 +1,6 @@
+import type {UseMutateFunction} from '@tanstack/react-query'
+
+import {cloneDeep} from '@/other/exports'
 import type {
   SodukuNumbers,
   SodukuPromiseData,
@@ -6,8 +9,6 @@ import type {
   SodukuState,
 } from '@/types/soduku'
 import {initSoduku, getGivenKey} from '@/utils/soduku'
-import {cloneDeep} from '@/other/exports'
-import type {UseMutateFunction} from '@tanstack/react-query'
 
 const emptyPuzzle: SodukuPuzzle = Array(9).fill(Array(9).fill(null))
 export const initialSodukuReducerState: SodukuState = {

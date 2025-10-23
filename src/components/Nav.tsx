@@ -1,6 +1,7 @@
 'use client'
-import CustomLink from './CustomLink'
 import {usePathname} from 'next/navigation'
+
+import CustomLink from './CustomLink'
 
 function Nav() {
   const path = usePathname()

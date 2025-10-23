@@ -1,13 +1,14 @@
 'use client'
 
+import clsx from 'clsx'
+import {motion} from 'motion/react'
+import React, {useRef} from 'react'
+
 import {
   gridValidation,
   getMazePath,
   REPLACING_NUMBER,
 } from '@/utils/findMazePath'
-import clsx from 'clsx'
-import {motion} from 'motion/react'
-import React, {useRef} from 'react'
 
 function MazeComponent({grids}: {grids: number[][][]}) {
   const ref = useRef<HTMLDivElement>(null)

@@ -1,8 +1,9 @@
 'use client'
-import {cx} from '@/other/exports'
 import {motion} from 'motion/react'
 import React, {JSX} from 'react'
 import {IoClose} from 'react-icons/io5'
+
+import {cx} from '@/other/exports'
 
 export interface Props {
   title: string

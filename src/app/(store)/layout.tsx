@@ -1,5 +1,6 @@
 import type {Metadata} from 'next'
 import {Geist, Geist_Mono} from 'next/font/google'
+
 import '../globals.css'
 import AppLayout from '@/components/Layout'
 
@@ -30,7 +31,7 @@ export default function RootLayout({
       >
         <AppLayout>
           {/* <Nav /> */}
-          <nav className="text-center leading-12 h-24 bg-gradient-to-br from-seasalt-100 via-seasalt-100 via-seasalt-200 via-seasalt-300 to-seasalt-300 !text-transparent text-3xl bg-clip-text">
+          <nav className="text-center leading-12 h-24 bg-linear-to-br from-seasalt-100 via-seasalt-200  to-seasalt-300 text-transparent! text-3xl bg-clip-text">
             This layout is shared between all the page routes inside (store)
             namespace
           </nav>

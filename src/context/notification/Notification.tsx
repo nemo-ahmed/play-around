@@ -1,8 +1,9 @@
 'use client'
-import React, {createContext, ReactNode, useSyncExternalStore} from 'react'
-import {notificationsStore, Props} from './helpers'
 import {uniqueId} from 'lodash'
 import dynamic from 'next/dynamic'
+import React, {createContext, ReactNode, useSyncExternalStore} from 'react'
+
+import {notificationsStore, Props} from './helpers'
 
 const NotificationPortal = dynamic(() => import('./Portal'), {
   ssr: false,

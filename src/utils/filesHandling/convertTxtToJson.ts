@@ -1,9 +1,11 @@
-import type {SodukuPromiseData} from '@/types/soduku'
 import fs from 'fs'
-import {uniqWith, isEqual} from '@/other/exports'
 import Readline from 'node:readline'
-import {getPath} from './getPath'
+
+import {uniqWith, isEqual} from '@/other/exports'
+import type {SodukuPromiseData} from '@/types/soduku'
+
 import {checkIfFileExist} from './checkFile'
+import {getPath} from './getPath'
 import {zippingFile} from './zipping'
 
 // ! look into this

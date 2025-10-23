@@ -1,7 +1,8 @@
 'use client'
-import useUSDaily from '@/hooks/useUSDaily'
 import React, {useMemo} from 'react'
 import {Chart, type ChartWrapperOptions} from 'react-google-charts'
+
+import useUSDaily from '@/hooks/useUSDaily'
 
 const options: ChartWrapperOptions['options'] = {
   title: 'US Daily Timeseries',

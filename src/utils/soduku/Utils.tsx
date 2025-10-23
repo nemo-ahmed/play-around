@@ -1,5 +1,4 @@
 'use client'
-import {SodukuNumbers} from '@/types/soduku'
 import {
   PiNumberOneBold,
   PiNumberTwoBold,
@@ -11,6 +10,8 @@ import {
   PiNumberEightBold,
   PiNumberNineBold,
 } from 'react-icons/pi'
+
+import {SodukuNumbers} from '@/types/soduku'
 
 export const getRowIndex = ({
   gridIndex,

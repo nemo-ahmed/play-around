@@ -1,7 +1,8 @@
-import {SODUKU_DIFFICULTIES} from '@/consts/soduku'
 
 import Link from 'next/link'
 import {IoShuffle} from 'react-icons/io5'
+
+import {SODUKU_DIFFICULTIES} from '@/consts/soduku'
 
 function Page() {
   return (

@@ -1,7 +1,9 @@
+import {NextRequest} from 'next/server'
+
 import {BirdsWatchResponse} from '@/types/useBirds'
+
 import genericFetch from '../../../../utils/fetch'
 import {BIRDS_URL} from '../../../../utils/urls'
-import {NextRequest} from 'next/server'
 
 export async function GET(request: NextRequest) {
   const data = await genericFetch<BirdsWatchResponse>({

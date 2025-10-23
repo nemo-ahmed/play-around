@@ -1,8 +1,9 @@
 'use client'
 
+import {useState} from 'react'
+
 import Table from '@/components/Table'
 import useBirdsWatch from '@/hooks/useBirdsWatch'
-import {useState} from 'react'
 
 function BirdsWatching() {
   const [page, setPage] = useState(1)

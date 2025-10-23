@@ -1,7 +1,7 @@
-import {fetchSoduku} from '@/utils/soduku'
 import {useQuery} from '@tanstack/react-query'
 
 import type {SodukuDifficulties, SodukuPromiseReturn} from '@/types/soduku'
+import {fetchSoduku} from '@/utils/soduku'
 
 function useRandomSoduku({difficulty}: {difficulty?: SodukuDifficulties}) {
   return useQuery<SodukuPromiseReturn>({

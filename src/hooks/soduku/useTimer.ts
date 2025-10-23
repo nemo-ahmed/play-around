@@ -1,6 +1,7 @@
-import {useSoduku} from '@/context/soduku/Soduku'
 import dayjs from 'dayjs'
 import {useEffect, useEffectEvent, useState} from 'react'
+
+import {useSoduku} from '@/context/soduku/Soduku'
 
 export function useTimer() {
   const [seconds, setSeconds] = useState(0)

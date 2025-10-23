@@ -1,8 +1,11 @@
+import {randomUUID} from 'node:crypto'
+
 import {random} from 'lodash'
 import type {NextRequest} from 'next/server'
+
 import {SODUKU_DIFFICULTIES} from '@/consts/soduku'
+
 import {generateSudoku} from './generate'
-import {randomUUID} from 'node:crypto'
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams

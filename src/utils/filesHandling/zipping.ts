@@ -1,5 +1,6 @@
 import fs from 'fs'
 import zlib from 'zlib'
+
 import {getPath} from './getPath'
 
 /**

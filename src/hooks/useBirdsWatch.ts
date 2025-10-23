@@ -1,6 +1,8 @@
-import genericFetch from '@/utils/fetch'
-import {BirdsWatchResponse} from '@/types/useBirds'
 import {useQuery} from '@tanstack/react-query'
+
+import {BirdsWatchResponse} from '@/types/useBirds'
+import genericFetch from '@/utils/fetch'
+
 import useInfiniteData from './useInfiniteData'
 
 // ? id: the catalogue number of the recording on xeno-canto

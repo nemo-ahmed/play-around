@@ -1,8 +1,10 @@
 'use client'
-import {useSoduku} from '@/context/soduku/Soduku'
-import {Cell} from './Cell'
-import Active from '@/components/ClientActivity'
 import {Fragment} from 'react'
+
+import Active from '@/components/ClientActivity'
+import {useSoduku} from '@/context/soduku/Soduku'
+
+import {Cell} from './Cell'
 
 export function Grid({gridIndex}: {gridIndex: number}) {
   const [{isPlaying}] = useSoduku()

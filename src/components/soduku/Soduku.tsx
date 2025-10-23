@@ -1,10 +1,11 @@
 'use client'
-import {useSoduku} from '@/context/soduku/Soduku'
-
-import {Grid} from './Grid'
-import {Controls} from './Controls'
-import {cx} from '@/other/exports'
 import {useCallback, useSyncExternalStore} from 'react'
+
+import {useSoduku} from '@/context/soduku/Soduku'
+import {cx} from '@/other/exports'
+
+import {Controls} from './Controls'
+import {Grid} from './Grid'
 
 function SodukuComp() {
   const [{showKeyboard}, dispatch] = useSoduku()

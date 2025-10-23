@@ -1,6 +1,7 @@
+import {useMutation} from '@tanstack/react-query'
+
 import {notify} from '@/context'
 import {SodukuPromiseData} from '@/types/soduku'
-import {useMutation} from '@tanstack/react-query'
 
 function useSubmitSoduku() {
   return useMutation({

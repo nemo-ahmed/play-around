@@ -1,9 +1,10 @@
 'use client'
-import {useHoveredParagraphCoordinate} from '@/hooks/useHoveredParagraphCoordinate'
-import {useGetTopLevelReadableElementsOnPage} from '@/hooks/useGetTopLevelReadableElementsOnPage'
-import {IoIosPause, IoIosPlay} from 'react-icons/io'
 import {useState, type ButtonHTMLAttributes} from 'react'
+import {IoIosPause, IoIosPlay} from 'react-icons/io'
+
 import {useSpeaky} from '@/context/Speaky'
+import {useGetTopLevelReadableElementsOnPage} from '@/hooks/useGetTopLevelReadableElementsOnPage'
+import {useHoveredParagraphCoordinate} from '@/hooks/useHoveredParagraphCoordinate'
 import {readAndHighlight} from '@/utils/speaky'
 
 const PlayButton = ({
