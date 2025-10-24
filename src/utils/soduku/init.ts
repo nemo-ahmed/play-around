@@ -4,8 +4,8 @@ import type {
   SodukuPuzzle,
   SodukuState,
 } from '@/types/soduku'
-
 import {getColIndex, getRowIndex, isSodukuNumber} from './Utils'
+
 
 const emptyPuzzle = JSON.stringify(Array(9).fill(Array(9).fill(null)))
 

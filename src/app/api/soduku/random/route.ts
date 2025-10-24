@@ -4,8 +4,8 @@ import {random} from 'lodash'
 import type {NextRequest} from 'next/server'
 
 import {SODUKU_DIFFICULTIES} from '@/consts/soduku'
-
 import {generateSudoku} from './generate'
+
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams

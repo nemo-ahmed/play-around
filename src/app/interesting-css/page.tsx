@@ -1,8 +1,8 @@
 'use client'
 
 import React, {useState} from 'react'
-
 import Spinner from './Spinner'
+
 
 function Page() {
   const [range, setRange] = useState(0.5)

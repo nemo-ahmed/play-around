@@ -1,6 +1,6 @@
 import InputWrapper from '@/components/InputWrapper'
-
 import {createPost} from './action'
+
 
 async function Form() {
   return (
