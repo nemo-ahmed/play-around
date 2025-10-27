@@ -1,4 +1,5 @@
 import InputWrapper from '@/components/InputWrapper'
+
 import {createPost} from './action'
 
 

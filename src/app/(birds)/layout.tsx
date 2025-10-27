@@ -1,6 +1,7 @@
+import AppLayout from '@/components/Layout'
+
 import type {Metadata} from 'next'
 
-import AppLayout from '@/components/Layout'
 import '../globals.css'
 
 export const metadata: Metadata = {

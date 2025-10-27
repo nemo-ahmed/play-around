@@ -1,10 +1,9 @@
-import type {NextRequest} from 'next/server'
-import type {SodukuPromiseReturn} from '@/types/soduku'
-
 import {random} from '@/other/exports'
 import {readLocalFile} from '@/utils/filesHandling/convertTxtToJson'
+
 import {handleFilesBeforeExecution} from './util'
 
+import type {NextRequest} from 'next/server'
 
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams

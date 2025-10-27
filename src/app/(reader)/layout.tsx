@@ -1,10 +1,10 @@
-import type {Metadata} from 'next'
-
 import '../globals.css'
 import AppLayout from '@/components/Layout'
 import SpeakyProvider from '@/context/Speaky'
 
 import ReaderNav from './Nav'
+
+import type {Metadata} from 'next'
 
 export const metadata: Metadata = {
   title: 'Create Next App',

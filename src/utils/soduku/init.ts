@@ -4,6 +4,7 @@ import type {
   SodukuPuzzle,
   SodukuState,
 } from '@/types/soduku'
+
 import {getColIndex, getRowIndex, isSodukuNumber} from './Utils'
 
 

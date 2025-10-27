@@ -14,6 +14,7 @@ import {
   isSodukuNumber,
   validateSodukuValue,
 } from '@/utils/soduku'
+
 import {Controls} from './Controls'
 
 export function Cell({

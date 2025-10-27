@@ -1,5 +1,3 @@
-import {fetchSoduku} from './fetchSoduku'
-import {getGivenKey, initSoduku} from './init'
 import {
   DYNAMIC_NUMBERS,
   getColIndex,
@@ -8,6 +6,8 @@ import {
   validateSodukuLines,
   validateSodukuValue,
 } from './Utils'
+import {fetchSoduku} from './fetchSoduku'
+import {getGivenKey, initSoduku} from './init'
 
 export {
   fetchSoduku,

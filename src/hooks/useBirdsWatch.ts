@@ -2,6 +2,7 @@ import {useQuery} from '@tanstack/react-query'
 
 import {BirdsWatchResponse} from '@/types/useBirds'
 import genericFetch from '@/utils/fetch'
+
 import useInfiniteData from './useInfiniteData'
 
 

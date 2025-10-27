@@ -1,4 +1,5 @@
 import type {BirdsWatchResponse} from '@/types/useBirds'
+
 import genericFetch from '../../../utils/fetch'
 
 const data = await genericFetch<BirdsWatchResponse>({
