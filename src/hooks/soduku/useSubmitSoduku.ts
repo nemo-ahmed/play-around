@@ -3,7 +3,7 @@ import {useMutation} from '@tanstack/react-query'
 import {notify} from '@/context'
 import {SodukuPromiseData} from '@/types/soduku'
 
-function useSubmitSoduku() {
+function useSubmitSoduku({refetch}: {refetch?: VoidFunction} = {}) {
   return useMutation({
     mutationKey: ['submit'],
     mutationFn: (body: SodukuPromiseData) =>
@@ -17,6 +17,7 @@ function useSubmitSoduku() {
         icon: '🥳',
         message: 'Soduku successfully saved',
       })
+      refetch?.()
     },
     onError() {
       notify({

@@ -4,12 +4,18 @@ import {useEffect, useEffectEvent, useState} from 'react'
 import {useSoduku} from '@/context/soduku/Soduku'
 
 export function useTimer() {
+  const [{rawData}] = useSoduku() // to re-render on isPlaying change
   const [seconds, setSeconds] = useState(0)
   const [{isPlaying}] = useSoduku()
 
   const countUp = useEffectEvent(() => {
     setSeconds(prev => prev + 1)
   })
+
+  const reset = useEffectEvent(() => setSeconds(0))
+  useEffect(() => {
+    reset()
+  }, [rawData])
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined

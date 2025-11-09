@@ -21,7 +21,6 @@ import sodukuReducer, {
   type TypeAndPayload,
 } from './sodukuReducer'
 
-
 type ContextType = [
   SodukuState & {
     onStart: VoidFunction
@@ -50,7 +49,7 @@ export default function SodukuProvider({
   const {data, isLoading, refetch, isRefetching} = useRandomSoduku({
     difficulty: difficulty === 'random' ? undefined : difficulty,
   })
-  const {mutate, isPending} = useSubmitSoduku()
+  const {mutate, isPending} = useSubmitSoduku({refetch})
 
   useEffect(() => {
     if (state.count < 81) return
