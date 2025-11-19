@@ -23,7 +23,7 @@ function CustomLink({
     )
   return (
     <Link
-      href={`/${children !== 'home' ? children : ''}`}
+      href={`/${children !== 'home' ? children.replace(/ /g, '-') : ''}`}
       className={className}
     >
       {children}
