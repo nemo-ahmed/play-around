@@ -22,8 +22,6 @@ import {DYNAMIC_NUMBERS} from '@/utils/soduku'
 
 import Timer from './Timer'
 
-
-
 export function Controls({
   variant,
   onChange,
@@ -45,6 +43,7 @@ export function Controls({
       onStart,
       isPending,
       isLoading,
+      colState,
     },
     dispatch,
   ] = useSoduku()
@@ -146,42 +145,60 @@ export function Controls({
               </div>
             </IconButton>
           </Active>
-          <div className={cx('grid grid-cols-3 grid-rows-3')}>
-            {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => (
-              <button
-                key={'note-numbers-' + n}
-                className={cx(cellStyles[variant], {
-                  // 'rounded-tr': n === 3,
-                  // 'rounded-tl': n === 1,
-                })}
-                aria-describedby={
-                  selectedCell
-                    ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
-                    : 'none'
-                }
-                aria-label={
-                  selectedCell
-                    ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.gridIndex + 1}`
-                    : `select a cell`
-                }
-                data-selected={selected?.includes(n)}
-                onClick={() => {
-                  if (variant === 'keypad' && selectedCell) {
-                    dispatch({
-                      type: 'key',
-                      payload: n,
-                    })
-                  }
-                  onChange?.(n)
-                }}
-                disabled={
-                  !selectedCell ||
-                  given[`${selectedCell.gridIndex}-${selectedCell.cellIndex}`]
-                }
-              >
-                {DYNAMIC_NUMBERS[n]}
-              </button>
-            ))}
+          <div className={'grid grid-cols-3 grid-rows-3'}>
+            {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => {
+              const num =
+                9 -
+                (colState.flat().join('').match(new RegExp(n.toString(), 'g'))
+                  ?.length ?? 0)
+              return (
+                <div
+                  key={'note-numbers-' + n}
+                  className={cx('relative size-fit', {
+                    'opacity-20': num === 0,
+                  })}
+                >
+                  <Active isVisible={variant === 'keypad'}>
+                    <p className="absolute z-10 right-2 top-1 text-eerie-black-200 dark:text-eerie-black-800">
+                      {num}
+                    </p>
+                  </Active>
+                  <button
+                    key={'note-numbers-' + n}
+                    className={cellStyles[variant]}
+                    aria-describedby={
+                      selectedCell
+                        ? `grid-${selectedCell.gridIndex + 1}_row-${selectedCell.rowIndex + 1}_col-${selectedCell.colIndex + 1}`
+                        : 'none'
+                    }
+                    aria-label={
+                      selectedCell
+                        ? `set row ${selectedCell.rowIndex + 1} col ${selectedCell.colIndex + 1} to be ${n} inside of grid ${selectedCell.gridIndex + 1}`
+                        : `select a cell`
+                    }
+                    data-selected={selected?.includes(n)}
+                    onClick={() => {
+                      if (variant === 'keypad' && selectedCell) {
+                        dispatch({
+                          type: 'key',
+                          payload: n,
+                        })
+                      }
+                      onChange?.(n)
+                    }}
+                    disabled={
+                      num === 0 ||
+                      !selectedCell ||
+                      given[
+                        `${selectedCell.gridIndex}-${selectedCell.cellIndex}`
+                      ]
+                    }
+                  >
+                    {DYNAMIC_NUMBERS[n]}
+                  </button>
+                </div>
+              )
+            })}
           </div>
         </motion.div>
         <Active isVisible={variant === 'keypad'}>
