@@ -145,7 +145,11 @@ export function Controls({
               </div>
             </IconButton>
           </Active>
-          <div className={'grid grid-cols-3 grid-rows-3'}>
+          <div
+            className={cx('grid grid-cols-3 grid-rows-3', {
+              'size-[calc(min(60dvh,80dvw)/9)]': variant === 'note',
+            })}
+          >
             {([1, 2, 3, 4, 5, 6, 7, 8, 9] as SodukuNumbers[]).map(n => {
               const num =
                 9 -
